@@ -1,3 +1,8 @@
+-- Qidi Avatar IV
+-- mm1980 15.11.2017
+
+-- a note to the bed size: the head can actually move up to 240x150, but there's no heated bed/platform
+
 version = 1
 
 bed_size_x_mm = 225
@@ -7,10 +12,10 @@ nozzle_diameter_mm = 0.4
 
 extruder_offset_x = {}
 extruder_offset_y = {}
-extruder_offset_x[0] =   0.0
-extruder_offset_y[0] =   0.0
+extruder_offset_x[0] = 0.0
+extruder_offset_y[0] = 0.0
 
-extruder_count = 1
+extruder_count = 2
 
 priming_mm_per_sec = 120
 
@@ -31,8 +36,8 @@ first_layer_print_speed_mm_per_sec_min = 1
 first_layer_print_speed_mm_per_sec_max = 60
 
 for i=0,63,1 do
-  _G['filament_diameter_mm_'..i] = 2.85
-  _G['filament_priming_mm_'..i] = 6.50
+  _G['filament_diameter_mm_'..i] = 1.75
+  _G['filament_priming_mm_'..i] = 2.00
   _G['extruder_temp_degree_c_' ..i] = 210
   _G['extruder_temp_degree_c_'..i..'_min'] = 150
   _G['extruder_temp_degree_c_'..i..'_max'] = 270
