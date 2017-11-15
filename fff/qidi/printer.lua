@@ -60,7 +60,7 @@ end
 
 function layer_start(zheight)
   comment(';(<layer>)')
-  output('G0 F100 Z' .. ff(zheight))
+  output('G0 F100 Z' .. f(zheight) .. ' F3000')
 end
 
 function layer_stop()
