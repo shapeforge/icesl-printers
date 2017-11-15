@@ -93,7 +93,7 @@ function adj_fan_speed(layer_filament_mm)
   debug_output(1, 'adj_fan_speed','<adj_fan_speed(layer_filament_mm =' .. layer_filament_mm .. ')')		
 end
 
-function layer_start(zheight)
+function layer_start(z)
   layer_count = layer_count + 1
   if layer_count == 1
   then
@@ -101,8 +101,8 @@ function layer_start(zheight)
     adj_fan_speed(first_layer_flag)
   end
   comment('<layer>' .. layer_count)
-  output('G1 Z' .. f(zheight) .. ' F3000') 
-  currentz = zheight
+  output('G1 Z' .. f(z) .. ' F3000') 
+  currentz = z
 end
 
 function layer_stop()
@@ -144,7 +144,8 @@ function move_xyz(x,y,z)
   else
     debug_output(1, 'currentz', 'Move is not to current layer')
     output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset))
-  end	
+    currentz = z
+  end
 end
 
 function move_xyze(x,y,z,e)
@@ -156,7 +157,7 @@ function move_xyze(x,y,z,e)
   else
     output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' ' .. letter .. ff(e - extruder_e_restart))
     debug_output(0, 'currentz', 'Move is not to current layer')
-    zheight = z
+    currentz = z
   end
 end
 
