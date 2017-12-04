@@ -59,7 +59,7 @@ function retract(extruder,e)
   output(';retract')
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60
-  output('G0 F' .. speed .. ' E' .. f(e - len - extruder_e_restart[extruder]))
+  output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart[extruder]))
   extruder_e[extruder] = e - len
   return e - len
 end
@@ -68,7 +68,7 @@ function prime(extruder,e)
   output(';prime')
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60
-  output('G0 F' .. speed .. ' E' .. f(e + len - extruder_e_restart[extruder]))
+  output('G0 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart[extruder]))
   extruder_e[extruder] = e + len
   return e + len
 end
@@ -266,4 +266,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_mixing_ratios(ratios)
+
 end

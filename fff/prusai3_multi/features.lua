@@ -6,7 +6,7 @@ bed_size_z_mm = 200
 
 nozzle_diameter_mm = 0.4
 
-extruder_count = 4
+extruder_count = 3
 extruder_swap_at_location = true
 extruder_swap_location_x_mm = 230
 extruder_swap_location_y_mm = 100
