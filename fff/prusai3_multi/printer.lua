@@ -1,5 +1,5 @@
 -- Prusa i3 MK2 MultiMaterial
--- 2017-11-15
+-- 2017-11-21
 
 version = 1
 
@@ -214,6 +214,7 @@ function move_xyz(x,y,z)
   end
 end
 
+coeff = 1
 function move_xyze(x,y,z,e)
   if traveling == 1 then
     traveling = 0 -- start path
@@ -222,13 +223,13 @@ function move_xyze(x,y,z,e)
       output('M204 S500')
       output('M205 X5')
     else
-      if      path_is_shell   then output(';shell')
-      elseif  path_is_infill  then output(';infill')
-      elseif  path_is_raft    then output(';raft')
-      elseif  path_is_brim    then output(';brim')
-      elseif  path_is_shield  then output(';shield')
-      elseif  path_is_support then output(';support')
-      elseif  path_is_tower   then output(';tower')
+      if      path_is_shell   then output(';shell')   coeff = 1
+      elseif  path_is_infill  then output(';infill')  coeff = 1
+      elseif  path_is_raft    then output(';raft')    coeff = 1
+      elseif  path_is_brim    then output(';brim')    coeff = 1
+      elseif  path_is_shield  then output(';shield')  coeff = 1
+      elseif  path_is_support then output(';support') coeff = 1
+      elseif  path_is_tower   then output(';tower')   coeff = 2
       end
       output('M204 S1000')
       output('M205 X10')   
@@ -238,9 +239,9 @@ function move_xyze(x,y,z,e)
   extruder_e[current_extruder] = e
   letter = 'E'
   if z == current_z then
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
+    output('G1 F' .. f(current_frate * coeff) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
   else
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
+    output('G1 F' .. f(current_frate * coeff) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
     current_z = z
   end
 end
