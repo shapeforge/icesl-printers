@@ -1,6 +1,5 @@
 -- Qidi Avatar IV
--- mm1980 22.10.2017
--- tools swapped (1st extruder: left, 2nd extruder: right)
+-- mm1980 15.11.2017
 -- no retraction while z<=0.2mm (for better adhesion of the first layer)
 
 version = 1
@@ -17,7 +16,7 @@ current_e[1] = 0
 --constants
 bed_origin_x = bed_size_x_mm / 2.0  --xy correction
 bed_origin_y = bed_size_y_mm / 2.0  --xy correction
---constants, swapped
+--constants
 letter = {}             --tool code (A for tool 0/right extruder, B for tool 1/left extruder)
 letter[0] = 'A'	        --1st extduder code
 letter[1] = 'B'	        --2nd extduder code
@@ -61,7 +60,7 @@ end
 
 function layer_start(zheight)
   comment(';(<layer>)')
-  output('G0 F100 Z' .. ff(zheight))
+  output('G0 F100 Z' .. f(zheight) .. ' F3000')
 end
 
 function layer_stop()
