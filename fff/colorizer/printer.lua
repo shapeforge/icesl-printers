@@ -71,6 +71,11 @@ end
 function move_xyze(x,y,z,e)
   extruder_e = e
   letter = 'E'
+  if path_is_raft then
+    current_A = 0.33
+    current_B = 0.33
+    current_C = 0.34
+  end
   output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. f(e - extruder_e_restart) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
 end
 
