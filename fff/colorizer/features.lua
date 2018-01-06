@@ -9,7 +9,7 @@ extruder_count = 1
 
 z_offset   = 0.0
 
-priming_mm_per_sec = 50
+priming_mm_per_sec = 40
 
 z_layer_height_mm_min = 0.05
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
@@ -29,7 +29,7 @@ first_layer_print_speed_mm_per_sec_max = 80
 
 for i=0,63,1 do
   _G['filament_diameter_mm_'..i] = 1.75
-  _G['filament_priming_mm_'..i] = 3.0
+  _G['filament_priming_mm_'..i] = 6.0
   _G['extruder_temp_degree_c_' ..i] = 210
   _G['extruder_temp_degree_c_'..i..'_min'] = 150
   _G['extruder_temp_degree_c_'..i..'_max'] = 270
