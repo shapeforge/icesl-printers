@@ -71,6 +71,11 @@ end
 function move_xyze(x,y,z,e)
   extruder_e = e
   letter = 'E'
+  if path_is_raft then
+    current_A = 0.33
+    current_B = 0.33
+    current_C = 0.34
+  end
   output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. f(e - extruder_e_restart) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
 end
 
@@ -99,6 +104,12 @@ function set_extruder_temperature(extruder,temperature)
 end
 
 function set_mixing_ratios(ratios)
+  sum = ratios[0] + ratios[1] + ratios[2]
+  if sum == 0 then 
+    ratios[0] = 0.33
+    ratios[1] = 0.33
+    ratios[2] = 0.34
+  end
   current_A = ratios[0]
   current_B = ratios[1]
   current_C = ratios[2]
