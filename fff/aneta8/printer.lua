@@ -1,4 +1,5 @@
--- Generic reprap
+-- Anet A8
+-- 2017-12-27
 
 version = 1
 
@@ -8,6 +9,9 @@ end
 
 extruder_e = 0
 extruder_e_restart = 0
+
+function prep_extruder(extruder)
+end
 
 function header()
   h = file('header.gcode')
@@ -21,13 +25,14 @@ function footer()
 end
 
 function layer_start(zheight)
-  comment('<layer>')
+  output(';(<layer ' .. layer_id .. '>)')
+  if layer_id == 1 then
+    output('M106 S255') -- fan ON
+  end
   output('G1 Z' .. f(zheight))
 end
 
 function layer_stop()
-  extruder_e_restart = extruder_e
-  output('G92 E0')
   comment('</layer>')
 end
 
@@ -65,30 +70,23 @@ end
 function move_xyze(x,y,z,e)
   if traveling == 1 then
     traveling = 0 -- start path
-    if path_is_perimeter then
-      output(';perimeter')
-      output('M204 S500')
-      output('M205 X5')
-    else
-      if      path_is_shell   then output(';shell')
-      elseif  path_is_infill  then output(';infill')
-      elseif  path_is_raft    then output(';raft')
-      elseif  path_is_brim    then output(';brim')
-      elseif  path_is_shield  then output(';shield')
-      elseif  path_is_support then output(';support')
-      elseif  path_is_tower   then output(';tower')
-      end
-      output('M204 S1000')
-      output('M205 X10')
+    if      path_is_perimeter then output(';perimeter')
+    elseif  path_is_shell     then output(';shell')
+    elseif  path_is_infill    then output(';infill')
+    elseif  path_is_raft      then output(';raft')
+    elseif  path_is_brim      then output(';brim')
+    elseif  path_is_shield    then output(';shield')
+    elseif  path_is_support   then output(';support')
+    elseif  path_is_tower     then output(';tower')
     end
   end
 
   extruder_e = e
   letter = 'E'
   if z == current_z then
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
+    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e-extruder_e_restart)))
   else
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
+    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff((e-extruder_e_restart)))
     current_z = z
   end
 end

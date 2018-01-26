@@ -51,7 +51,7 @@ function footer()
   output('M107')
   output('M104 S0')
   output('M140 S0')
-  output('G28 X0')
+  output('G1 X0')
   output('M84')
 end
 
