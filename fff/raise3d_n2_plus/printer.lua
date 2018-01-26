@@ -223,15 +223,15 @@ function move_xyze(x,y,z,e)
   if traveling == 1 then
     traveling = 0 -- start path
     if path_is_perimeter then
-      output(';perimeter')
+      output(';TYPE:WALL-OUTER')
     else
-      if      path_is_shell   then output(';shell')
-      elseif  path_is_infill  then output(';infill')
-      elseif  path_is_raft    then output(';raft')
-      elseif  path_is_brim    then output(';brim')
-      elseif  path_is_shield  then output(';shield')
-      elseif  path_is_support then output(';support')
-      elseif  path_is_tower   then output(';tower')
+      if      path_is_shell   then output(';TYPE:WALL-INNER')
+      elseif  path_is_infill  then output(';TYPE:FILL')
+      elseif  path_is_raft    then output(';TYPE:RAFT')
+      elseif  path_is_brim    then output(';TYPE:SKIRT')
+      elseif  path_is_shield  then output(';TYPE:SHIELD')
+      elseif  path_is_support then output(';TYPE:SUPPORT')
+      elseif  path_is_tower   then output(';TYPE:TOWER')
       end 
     end
   end
