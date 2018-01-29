@@ -1,6 +1,7 @@
-name_en = "ABS_strong"
-name_es = "ABS_strong"
-name_fr = "ABS_strong"
+name_en = "ABS strong"
+name_es = "ABS strong"
+name_fr = "ABS strong"
+name_ch = "ABS strong"
 
 --qidi custom
 qidi_swap_extruders = false

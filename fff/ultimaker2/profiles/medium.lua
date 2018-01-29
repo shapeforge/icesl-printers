@@ -1,6 +1,7 @@
 name_en = "Standard quality"
 name_es = "Calidad estándar"
 name_fr = "Qualité standard"
+name_ch = "标准质量"
 
 z_layer_height_mm = 0.2
 

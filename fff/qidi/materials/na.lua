@@ -1,6 +1,7 @@
 name_en = "na"
 name_es = "na"
 name_fr = "na"
+name_ch = "na"
 
 --The profiles include all material specific settings
 --For me it's easier to have only one switch to toggle

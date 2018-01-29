@@ -1,6 +1,7 @@
-name_en = "ABS_swap"
-name_es = "ABS_swap"
-name_fr = "ABS_swap"
+name_en = "ABS swap"
+name_es = "ABS swap"
+name_fr = "ABS swap"
+name_ch = "ABS swap"
 
 --qidi custom
 qidi_swap_extruders = true

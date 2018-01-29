@@ -1,6 +1,7 @@
 name_en = "PETG swap"
 name_es = "PETG swap"
 name_fr = "PETG swap"
+name_ch = "PETG swap"
 
 --qidi custom
 qidi_swap_extruders = true
