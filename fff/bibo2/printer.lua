@@ -33,9 +33,9 @@ function prep_extruder(extruder)
   -- go slightly above plate
   output('G0 Z' .. 3.0)
   -- heat up nozzle
-  outpiut('M109 T' .. extruder .. ' S' .. extruder_temp_degree_c[extruder])
+  output('M109 T' .. extruder .. ' S' .. extruder_temp_degree_c[extruder])
 
-	output('G0 Z0.3 X'.. f(-bed_size_x_mm/2) .. ' Y' .. f(-bed_size_y_mm/2 + extruder*2.5) .. ' ; move to start-line position')
+  output('G0 Z0.3 X'.. f(-bed_size_x_mm/2) .. ' Y' .. f(-bed_size_y_mm/2 + extruder*2.5) .. ' ; move to start-line position')
   output('G1 X0 F3000.0 E20.0')
   output('G1 Z0.2 X'.. f(bed_size_x_mm/2) ..'F3000.0 E40.0')
 
@@ -60,8 +60,18 @@ end
 
 function footer()
   output('M106 S0 ; fan off')
-  output('M104 T0 S0')
-  output('M104 T1 S0')
+  output('M104 T0 S0 ; cool extruder 0')
+  output('M104 T1 S0 ; cool extruder 1')
+  output('M106 S255') -- fan ON
+  output('M140 S0  ;heated bed heater off (if you have it)')
+  output('G91')
+  output('G1 Z1 F100   ;relative positioning')
+  output('G1 E-1 F300 ;retract the filament a bit before lifting the nozzle, to release some of the pressure')
+  output('G1 Z+0.5 E-2 X-20 Y-20 F600 ;move Z up a bit and retract filament even more')
+  output('G28 X0 Y0                              ;move X/Y to min endstops, so the head is out of the way')
+  output('M84                         ;steppers off')
+  output('G90                         ;absolute positioning')
+  output('M106 S0 ; fan off')
 end
 
 function retract(extruder,e)

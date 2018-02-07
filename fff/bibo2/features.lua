@@ -22,7 +22,7 @@ tower_side_x_mm = 10.0
 tower_side_y_mm = 5.0
 tower_brim_num_contours = 12
 
-enable_active_temperature_control = true
+enable_active_temperature_control = false
 
 z_offset   = 0.0
 
@@ -34,7 +34,7 @@ z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 print_speed_mm_per_sec_min = 5
 print_speed_mm_per_sec_max = 80
 
-bed_temp_degree_c = 50
+bed_temp_degree_c = 100
 bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 120
 
@@ -50,7 +50,7 @@ fan_speed_multiplier = 1.0 -- between 0 and 1
 for i=0,63,1 do
   _G['filament_diameter_mm_'..i] = 1.75
   _G['filament_priming_mm_'..i] = 4.0
-  _G['extruder_temp_degree_c_' ..i] = 210
+  _G['extruder_temp_degree_c_' ..i] = 235
   _G['extruder_temp_degree_c_'..i..'_min'] = 150
   _G['extruder_temp_degree_c_'..i..'_max'] = 270
   _G['extruder_mix_count_'..i] = 1
