@@ -55,10 +55,11 @@ function header()
   output('G28 ; home all axes')
 
   output('M190 S' .. bed_temp_degree_c .. ' ; heat bed')
+  output('M106 S0 ; fan off')
 end
 
 function footer()
-  output('M107')
+  output('M106 S0 ; fan off')
   output('M104 T0 S0')
   output('M104 T1 S0')
 end
@@ -84,7 +85,7 @@ end
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
   if layer_id == 1 then
-    output('M106 S255') -- fan ON
+    output('M106 S' .. math.floor(255 * fan_speed_multiplier)) -- fan ON
   end
   if layer_id == 0 then
     output('G0 F600 Z' .. ff(zheight))
