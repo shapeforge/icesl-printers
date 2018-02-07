@@ -59,8 +59,10 @@ end
 
 function footer()
   output('M107')
-  output('M104 T0 S0')
-  output('M104 T1 S0')
+  output('M190 S0 ; cool down bed')
+  output('M104 T0 S0 ; cool extruder 0')
+  output('M104 T1 S0 ; cool extruder 1')
+  output('M106 S255') -- fan ON
 end
 
 function retract(extruder,e)
@@ -84,7 +86,7 @@ end
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
   if layer_id == 1 then
-    output('M106 S255') -- fan ON
+    output(';M106 S255') -- fan ON
   end
   if layer_id == 0 then
     output('G0 F600 Z' .. ff(zheight))
