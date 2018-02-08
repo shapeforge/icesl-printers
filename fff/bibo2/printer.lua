@@ -104,6 +104,8 @@ function layer_start(zheight)
 end
 
 function layer_stop()
+  extruder_e_restart[current_extruder] = extruder_e[current_extruder]
+  output('G92 E0')
   output(';(</layer>)')
 end
 
@@ -181,7 +183,8 @@ function move_xyze(x,y,z,e)
   end
   x = x + extruder_offset_x[current_extruder] - bed_size_x_mm/2
   y = y + extruder_offset_y[current_extruder] - bed_size_y_mm/2
-  r = filament_diameter_mm[extruders[0]] / 2
+  extruder_e[current_extruder] = e
+
   letter = 'E'
   if z == current_z then
     output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
@@ -192,6 +195,7 @@ function move_xyze(x,y,z,e)
 end
 
 function move_e(e)
+  extruder_e[current_extruder] = e
   letter = 'E'
   output('G0 ' .. letter .. ff((e-extruder_e_restart[current_extruder])))
 end
@@ -215,4 +219,8 @@ end
 
 function set_and_wait_extruder_temperature(extruder,temperature)
   output('M109 T' .. extruder .. ' S' .. f(temperature))
+end
+
+function set_mixing_ratios(ratios)
+
 end
