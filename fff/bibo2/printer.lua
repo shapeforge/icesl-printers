@@ -37,7 +37,7 @@ function prep_extruder(extruder)
 
   output('G0 Z0.3 X'.. f(-bed_size_x_mm/2) .. ' Y' .. f(-bed_size_y_mm/2 + extruder*2.5) .. ' ; move to start-line position')
   output('G1 X0 F3000.0 E20.0')
-  output('G1 Z0.2 X'.. f(bed_size_x_mm/2) ..'F3000.0 E40.0')
+  output('G1 Z0.2 X'.. f(bed_size_x_mm/2) ..' F3000.0 E40.0')
 
   -- first time prime
   output('G280')
