@@ -39,8 +39,6 @@ function prep_extruder(extruder)
   output('G1 X0 F3000.0 E20.0')
   output('G1 Z0.2 X'.. f(bed_size_x_mm/2) ..' F3000.0 E40.0')
 
-  -- first time prime
-  output('G280')
   -- go to zero to wipe on bed
   output('G0 Z' .. 0.0)
   -- prime done, reset E
