@@ -1,6 +1,6 @@
 -- Generic reprap
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -105,7 +105,7 @@ end
 
 function set_mixing_ratios(ratios)
   sum = ratios[0] + ratios[1] + ratios[2]
-  if sum == 0 then 
+  if sum == 0 then
     ratios[0] = 0.33
     ratios[1] = 0.33
     ratios[2] = 0.34
@@ -113,4 +113,8 @@ function set_mixing_ratios(ratios)
   current_A = ratios[0]
   current_B = ratios[1]
   current_C = ratios[2]
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

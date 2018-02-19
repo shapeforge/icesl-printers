@@ -1,7 +1,7 @@
 -- Raise3D N2 plus
 -- 2018-01-24
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -34,42 +34,42 @@ function header()
     output('T'..extruder)
   end
   set_and_wait_bed_temperature(bed_temp_degree_c)
-  
+
   output('M107')
-  
+
   -- homing
   output('G28 X0 Y0')
   output('G28 Z0')
-  
+
   -- settings
   output('M82 ; use absolute distances for extrusion')
   output('G21 ; set units to millimeters')
   output('G90 ; use absolute coordinates')
- 
+
   output('G21 ; set units to millimeters')
   output('M82 ; use absolute distances for extrusion')
-  
+
   -- cleaning
   output('G1 Z15.0 F9000.00')
-  
+
   for _, extruder in pairs(extruders) do
     len = filament_priming_mm[extruder]
-    
+
     output(';T' .. extruder)
     output(';G92 E0')
     output(';G1 F200 E10')
     output(';G92 E0')
     output(';G1 F200 E' .. ff(-len))
-  
+
     current_extruder = extruder
   end
-  
+
   output('M1001 ; start counting lines (power failure)')
 end
 
 function footer()
   output('M1002 ; stop counting lines')
-  
+
   for _, extruder in pairs(extruders) do
     output('M104 T' .. extruder .. ' S0')
   end
@@ -78,22 +78,22 @@ function footer()
   output('G28 X0 Y0')
   output('M84')
   output('G90')
-  
+
   local nb_extr = 0
   for _, extruder in pairs(extruders) do
     nb_extr = nb_extr + 1
   end
   local nb_line_recover = 20 + nb_extr * 8
-  
+
   -- Recover from power failure
   output(';Recover start:'..nb_line_recover)
   output(';G21')
   output(';G90')
   output(';G28 X0 Y0')
   output(';G92 X0 Y0 Z{z}')
-  
+
   set_bed_temperature(bed_temp_degree_c)
-  
+
   -- 3 lines per extruder
   for _, extruder in pairs(extruders) do
     set_extruder_temperature(extruder, extruder_temp_degree_c[extruder])
@@ -104,26 +104,26 @@ function footer()
   for _, extruder in pairs(extruders) do
     output('T'..extruder)
   end
-  
-  
+
+
   set_and_wait_bed_temperature(bed_temp_degree_c)
   output(';G21')
   output(';G90')
   output(';M82')
   output(';M106 S0')
-  
-  for _, extruder in pairs(extruders) do  
+
+  for _, extruder in pairs(extruders) do
     len = filament_priming_mm[extruder]
-    
+
     output(';T' .. extruder)
     output(';G92 E0')
     output(';G1 F200 E10')
     output(';G92 E0')
     output(';G1 F200 E' .. ff(-len))
-  
+
     current_extruder = extruder
   end
-  
+
   output(';T{current_extruder}')
   output(';M106{current_fan_speed}')
   output(';G92 E{current_extrusion}')
@@ -137,7 +137,7 @@ function footer()
   output(';Recover end')
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   output(';retract')
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60
@@ -232,10 +232,10 @@ function move_xyze(x,y,z,e)
       elseif  path_is_shield  then output(';TYPE:SHIELD')
       elseif  path_is_support then output(';TYPE:SUPPORT')
       elseif  path_is_tower   then output(';TYPE:TOWER')
-      end 
+      end
     end
   end
-  
+
   extruder_e[current_extruder] = e
   letter = 'E'
   if z == current_z then
@@ -281,6 +281,6 @@ function set_and_wait_extruder_temperature(extruder,temperature)
   output('M109 T' .. extruder .. ' S' .. f(temperature))
 end
 
-function set_mixing_ratios(ratios)
-
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

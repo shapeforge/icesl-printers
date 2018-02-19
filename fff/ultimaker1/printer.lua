@@ -1,6 +1,6 @@
 -- Ultimaker 1
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -25,17 +25,17 @@ function header()
 end
 
 function footer()
-output('M104 S0                     ;extruder heater off ') 
-output('M140 S0                     ;heated bed heater off (if you have it) ') 
-output('G91                                    ;relative positioning ') 
-output('G1 E-1 F300                            ;retract the filament a bit before lifting the nozzle, to release some of the pressure ') 
-output('G1 Z+0.5 E-5 X-20 Y-20 F9000 ;move Z up a bit and retract filament even more ') 
-output('G28 X0 Y0                              ;move X/Y to min endstops, so the head is out of the way ') 
-output('M84                         ;steppers off ') 
-output('G90                         ;absolute positioning ') 
+output('M104 S0                     ;extruder heater off ')
+output('M140 S0                     ;heated bed heater off (if you have it) ')
+output('G91                                    ;relative positioning ')
+output('G1 E-1 F300                            ;retract the filament a bit before lifting the nozzle, to release some of the pressure ')
+output('G1 Z+0.5 E-5 X-20 Y-20 F9000 ;move Z up a bit and retract filament even more ')
+output('G28 X0 Y0                              ;move X/Y to min endstops, so the head is out of the way ')
+output('M84                         ;steppers off ')
+output('G90                         ;absolute positioning ')
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   output(';<retract>')
@@ -124,4 +124,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

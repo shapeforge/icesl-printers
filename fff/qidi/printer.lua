@@ -2,7 +2,7 @@
 -- mm1980 11.12.2017
 -- no retraction while z<=0.2mm (for better adhesion of the first layer)
 
-version = 1
+version = 1.1
 
 --variables
 current_z = 0		    --Z cache, produce shorter G-code (emit Z only if changed
@@ -22,7 +22,7 @@ if qidi_swap_extruders == nil then qidi_swap_extruders = false end      --bool, 
 if qidi_extra_z_distance == nil then qidi_extra_z_distance = 0.0 end    --if >0 it provide extra z space (for SoftPLA/PETG)
 if qidi_extra_z_distance<0 then qidi_extra_z_distance=0 end             --do not dive into the bed
 if qidi_retract_after_z == nil then qidi_retract_after_z = 0.0 end      --
-  
+
 letter = {}                          --tool code (A for tool 0/right extruder, B for tool 1/left extruder)
 if qidi_swap_extruders == false then --normal tool codes
   letter[0] = 'A'	                     --1st extduder letter code
@@ -66,7 +66,7 @@ function header()
       output(';(**** Filament T1: ' .. filament_tot_length_mm[extruders[0]] .. 'mm ****)')
       output(';(**** Filament T0: ' .. filament_tot_length_mm[extruders[1]] .. 'mm ****)')
     end
-  end  
+  end
   output(';')
 
   output(';(**** QIDI Avatar IV ****)')
@@ -247,4 +247,8 @@ end
 
 function progress(percent)
   output('M73 P' .. percent)
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

@@ -1,7 +1,7 @@
 -- Ultimaker 3
 -- Sylvain Lefebvre  2017-07-28
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -90,7 +90,7 @@ function footer()
   output('M104 T1 S0')
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   output(';retract')
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60
@@ -136,7 +136,7 @@ function select_extruder(extruder)
     local speed = extruder_swap_retract_speed_mm_per_sec * 60;
     output('G0 F' .. speed .. ' E' .. - len)
     output('G92 E0')
-    extruder_stored[current_extruder] = true  
+    extruder_stored[current_extruder] = true
   end
   output('T' .. extruder)
   current_extruder = extruder
@@ -154,8 +154,8 @@ function swap_extruder(from,to,x,y,z)
   local speed = extruder_swap_retract_speed_mm_per_sec * 60;
   output('G0 F' .. speed .. ' E' .. - len)
   output('G92 E0')
-  extruder_stored[from] = true  
-  -- swap extruder  
+  extruder_stored[from] = true
+  -- swap extruder
   output('T' .. to)
   -- check if stored
   if extruder_stored[to] then
@@ -202,7 +202,7 @@ function move_xyze(x,y,z,e)
       elseif  path_is_tower   then output(';tower')
       end
       output('M204 S1000')
-      output('M205 X10')   
+      output('M205 X10')
     end
   end
   x = x + extruder_offset_x[current_extruder]
@@ -241,4 +241,8 @@ end
 
 function set_and_wait_extruder_temperature(extruder,temperature)
   output('M109 T' .. extruder .. ' S' .. f(temperature))
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

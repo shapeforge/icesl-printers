@@ -1,6 +1,6 @@
 -- Replicator Dual GPX
 
-version = 1
+version = 1.1
 
 bed_origin_x = bed_size_x_mm / 2.0
 bed_origin_y = bed_size_y_mm / 2.0
@@ -14,7 +14,7 @@ function header()
   if number_of_extruders == 1 then
     h = h:gsub( '<TOOL>', extruders[0] )
     h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
-  else 
+  else
     h = h:gsub( '<T0TEMP>', extruder_temp_degree_c[0] )
 	h = h:gsub( '<T1TEMP>', extruder_temp_degree_c[1] )
   end
@@ -46,7 +46,7 @@ function swap_extruder(from,to,x,y,z)
   current_extruder = to
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   if extruder == 0 then letter = 'A' else letter = 'B' end
@@ -104,4 +104,8 @@ end
 function set_and_wait_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
   output('M133 ' .. 'T' .. extruder)
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

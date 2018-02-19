@@ -1,7 +1,7 @@
 -- Prusa i3 MK2 MultiMaterial
 -- 2017-11-21
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -26,22 +26,22 @@ traveling = 0
 
 function header()
   output('M107')
-  
+
   output('M115 U3.0.12 ;latest firmware version')
-  
+
   output('M104 S' .. extruder_temp_degree_c[extruders[0]] )
   output('M140 S' .. bed_temp_degree_c )
   output('M109 S' .. extruder_temp_degree_c[extruders[0]] )
   output('M190 S' .. bed_temp_degree_c )
-  
+
   -- Z calibration + homing
   output('G28 W')
   output('G80')
-  
+
   output('M82 ; use absolute distances for extrusion')
   output('G21 ;set units to millimeters')
   output('G90 ;use absolute coordinates')
- 
+
   output('G21 ; set units to millimeters')
   output('M82 ; use absolute distances for extrusion')
   output('G92 E0')
@@ -55,7 +55,7 @@ function footer()
   output('M84')
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   output(';retract')
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60
@@ -98,7 +98,7 @@ swap_dist_mm = 60
 function load_extruder(extruder)
   local tower_u = extruder_swap_location_y_mm - swap_dist_mm/2
   local tower_d = extruder_swap_location_y_mm + swap_dist_mm/2
-  
+
   -- load filament
   output(';load extruder ' .. extruder)
   output('T' .. extruder)
@@ -107,11 +107,11 @@ function load_extruder(extruder)
   output('G1 E60.0000 Y' .. f(tower_u) .. ' F3000')
   output('G1 E80.0000 Y' .. f(tower_d) .. ' F1600')
   output('G1 E90.0000 Y' .. f(tower_u) .. ' F1000')
-  
+
   output('G4 S0')
-  
+
   output('G92 E0')
-  
+
   current_extruder = extruder
 end
 
@@ -125,7 +125,7 @@ function unload_extruder(extruder)
   output('G1 E-65.0000 Y' .. f(tower_d) .. ' F5400')
   output('G1 E-80.0000 Y' .. f(tower_u) .. ' F3000')
   output('G1 E-92.0000 Y' .. f(tower_d) .. ' F2000')
-  
+
   output('G1 E-89.0000 Y' .. f(tower_u) .. ' F1600')
   output('G1 E-94.0000 Y' .. f(tower_d))
   output('G1 E-89.0000 Y' .. f(tower_u) .. ' F2000')
@@ -142,9 +142,9 @@ end
 function select_extruder(extruder)
   local tower_u = swap_dist_mm
   local tower_d = 0
-  
+
   output('G1 Z1.5 X0.0000 Y' .. (-3 + f(extruder)*2.5) .. ' F3000.0')
-  
+
   if current_extruder > -1 then
     output(';unload extruder ' .. current_extruder)
     output('G92 E0')
@@ -152,7 +152,7 @@ function select_extruder(extruder)
     output('G1 E-65.0000 X' .. f(tower_d) .. ' F5400')
     output('G1 E-80.0000 X' .. f(tower_u) .. ' F3000')
     output('G1 E-92.0000 X' .. f(tower_d) .. ' F2000')
-  
+
     output('G1 E-89.0000 X' .. f(tower_u) .. ' F1600')
     output('G1 E-94.0000 X' .. f(tower_d))
     output('G1 E-89.0000 X' .. f(tower_u) .. ' F2000')
@@ -163,25 +163,25 @@ function select_extruder(extruder)
     output('G1 E-89.0000 X' .. f(tower_d))
     output('G1 E-92.0000 X' .. f(tower_u))
   end
-  
+
   -- load filament
   output(';load extruder ' .. extruder)
   output('T' .. extruder)
   output('G92 E0')
-  
+
   output('G1 E20.0000 X' .. f(tower_d) .. ' F1400')
   output('G1 E60.0000 X' .. f(tower_u) .. ' F3000')
   output('G1 E80.0000 X' .. f(tower_d) .. ' F1600')
   output('G1 E90.0000 X' .. f(tower_u) .. ' F1000')
-  
+
   output('G4 S0')
-  
+
   output('G92 E0')
-  
+
   -- prime outside print area
   output('G1 Z0.5 X100.0 E5.00 F1000.0')
   output('G1 Z0.5 X200.0 E20.0 F1000.0')
-  
+
   -- prime done, reset E
   output('G92 E0')
   current_extruder = extruder
@@ -192,7 +192,7 @@ function swap_extruder(from,to,x,y,z)
 
   local len   = extruder_swap_retract_length_mm
   local speed = extruder_swap_retract_speed_mm_per_sec * 60
-  
+
   output(';swap_extruder')
   unload_extruder(from)
   load_extruder(to)
@@ -232,10 +232,10 @@ function move_xyze(x,y,z,e)
       elseif  path_is_tower   then output(';tower')   coeff = 2
       end
       output('M204 S1000')
-      output('M205 X10')   
+      output('M205 X10')
     end
   end
-  
+
   extruder_e[current_extruder] = e
   letter = 'E'
   if z == current_z then
@@ -269,6 +269,6 @@ function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
-function set_mixing_ratios(ratios)
-
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

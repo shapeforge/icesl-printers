@@ -8,9 +8,9 @@
 -- Changes made to reduce gcode size; no speed information if speed is set already; no z value if the movement is at the current height
 -- Change precision to ff (from f 3 digits precision) for all extruder moves
 -- Make the layer change speed to be a fixed value
--- Added a layer_count 
+-- Added a layer_count
 
-version = 1
+version = 1.1
 
 debug_level = 0 -- Higher number means more detailed debug in the gcode output
 debug_match = nil --  A string for differing debug domains ( currentz, adj_fan_speed, feedrate)
@@ -31,11 +31,11 @@ function debug_lvl(lvl, variable_to_output)
     comment('dbg!' .. variable_to_output)
   end
 end
-	
+
 function debug_output(lvl, match, variable_to_output)
   if debug_match then
     if match == debug_match then
-      debug_lvl(lvl, variable_to_output) 
+      debug_lvl(lvl, variable_to_output)
     end
   else
     debug_lvl(lvl, variable_to_output)
@@ -90,7 +90,7 @@ function adj_fan_speed(layer_filament_mm)
     end
     debug_output(2, 'adj_fan_speed', 'No fan setting')
   end
-  debug_output(1, 'adj_fan_speed','<adj_fan_speed(layer_filament_mm =' .. layer_filament_mm .. ')')		
+  debug_output(1, 'adj_fan_speed','<adj_fan_speed(layer_filament_mm =' .. layer_filament_mm .. ')')
 end
 
 function layer_start(z)
@@ -101,7 +101,7 @@ function layer_start(z)
     adj_fan_speed(first_layer_flag)
   end
   comment('<layer>' .. layer_count)
-  output('G1 Z' .. f(z) .. ' F3000') 
+  output('G1 Z' .. f(z) .. ' F3000')
   currentz = z
 end
 
@@ -187,4 +187,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

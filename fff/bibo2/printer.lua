@@ -1,7 +1,7 @@
 -- Bibo 2 Touch X
 -- 2018-02-06
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -221,6 +221,6 @@ function set_and_wait_extruder_temperature(extruder,temperature)
   output('M109 T' .. extruder .. ' S' .. f(temperature))
 end
 
-function set_mixing_ratios(ratios)
-
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end

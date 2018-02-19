@@ -1,7 +1,7 @@
 -- Ultimaker 2
 -- Sylvain Lefebvre  2014-03-08
 
-version = 1
+version = 1.1
 
 function comment(text)
   output('; ' .. text)
@@ -106,4 +106,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. f(temperature) .. ' T' .. extruder)
+end
+
+function set_fan_speed(speed)
+	output('M106 S'.. f(255*speed))
 end
