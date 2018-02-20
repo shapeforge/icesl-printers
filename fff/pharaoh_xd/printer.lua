@@ -1,6 +1,6 @@
 -- Pharaoh delta printer
 
-version = 1.1
+version = 2
 
 bed_origin_x = bed_size_x_mm/2
 bed_origin_y = bed_size_y_mm/2
@@ -102,5 +102,5 @@ function set_extruder_temperature(extruder,temperature)
 end
 
 function set_fan_speed(speed)
-	output('M106 S'.. f(255*speed))
+  output('M106 S'.. math.floor(255 * speed/100))
 end

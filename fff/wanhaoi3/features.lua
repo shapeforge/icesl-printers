@@ -1,7 +1,7 @@
 --Wanhao Duplicator i3
 --13.11.2017 Colin Hudson
 
-version = 1
+version = 2
 
 bed_size_x_mm = 200
 bed_size_y_mm = 200
@@ -18,7 +18,7 @@ extra_length_on_prime = 0.05   -- similar to slic3r feature; usually set to eith
 
 
 -- Values for rudimentary fan control
--- Really needs to know when when bridging is occurring 
+-- Really needs to know when when bridging is occurring
 -- Also should be a material setting but placing these values at the material level does not seem to work
 
 -- Fan speed 0..255

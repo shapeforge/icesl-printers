@@ -2,7 +2,7 @@
 -- mm1980 11.12.2017
 -- no retraction while z<=0.2mm (for better adhesion of the first layer)
 
-version = 1.1
+version = 2
 
 --variables
 current_z = 0		    --Z cache, produce shorter G-code (emit Z only if changed
@@ -250,5 +250,5 @@ function progress(percent)
 end
 
 function set_fan_speed(speed)
-	output('M106 S'.. f(255*speed))
+  output('M106 S'.. math.floor(255 * speed/100))
 end

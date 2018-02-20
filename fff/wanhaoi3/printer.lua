@@ -10,7 +10,7 @@
 -- Make the layer change speed to be a fixed value
 -- Added a layer_count
 
-version = 1.1
+version = 2
 
 debug_level = 0 -- Higher number means more detailed debug in the gcode output
 debug_match = nil --  A string for differing debug domains ( currentz, adj_fan_speed, feedrate)
@@ -190,5 +190,5 @@ function set_extruder_temperature(extruder,temperature)
 end
 
 function set_fan_speed(speed)
-	output('M106 S'.. f(255*speed))
+  output('M106 S'.. math.floor(255 * speed/100))
 end

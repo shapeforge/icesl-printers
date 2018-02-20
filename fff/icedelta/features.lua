@@ -1,4 +1,4 @@
-version = 1
+version = 2
 
 bed_size_x_mm = 100
 bed_size_y_mm = 100
@@ -35,4 +35,3 @@ for i=0,63,1 do
   _G['extruder_temp_degree_c_'..i..'_max'] = 270
   _G['extruder_mix_count_'..i] = 1
 end
-
