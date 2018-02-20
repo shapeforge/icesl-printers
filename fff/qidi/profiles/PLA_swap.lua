@@ -1,6 +1,7 @@
-name_en = "PLA_swap"
-name_es = "PLA_swap"
-name_fr = "PLA_swap"
+name_en = "PLA swap"
+name_es = "PLA swap"
+name_fr = "PLA swap"
+name_ch = "PLA swap"
 
 --qidi custom
 qidi_swap_extruders = true

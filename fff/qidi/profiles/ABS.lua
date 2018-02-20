@@ -1,6 +1,7 @@
 name_en = "ABS"
 name_es = "ABS"
 name_fr = "ABS"
+name_ch = "ABS"
 
 --qidi custom
 qidi_swap_extruders = false

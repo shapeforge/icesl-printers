@@ -1,6 +1,7 @@
-name_en = "TPU_swap"
-name_es = "TPU_swap"
-name_fr = "TPU_swap"
+name_en = "TPU swap"
+name_es = "TPU swap"
+name_fr = "TPU swap"
+name_ch = "TPU swap"
 
 --qidi custom
 qidi_swap_extruders = true

@@ -1,6 +1,7 @@
 name_en = "Fast print"
 name_es = "Impresión rápida"
 name_fr = "Impression rapide"
+name_ch = "快速打印"
 
 z_layer_height_mm = 0.3
 
