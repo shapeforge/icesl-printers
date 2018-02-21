@@ -1,6 +1,6 @@
 -- Replicator 2x Makerbot
 
-version = 1
+version = 2
 
 bed_origin_x = bed_size_x_mm / 2.0
 bed_origin_y = bed_size_y_mm / 2.0
@@ -35,7 +35,7 @@ end
 current_extruder = 0
 current_frate = 0
 
-function retract(extruder,e) 
+function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   if extruder == 0 then letter = 'A' else letter = 'B' end
@@ -92,4 +92,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_fan_speed(speed)
+  output('M106 S'.. math.floor(255 * speed/100))
 end

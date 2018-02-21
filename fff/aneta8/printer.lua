@@ -1,7 +1,7 @@
 -- Anet A8
 -- 2017-12-27
 
-version = 1
+version = 2
 
 function comment(text)
   output('; ' .. text)
@@ -113,4 +113,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_fan_speed(speed)
+  output('M106 S'.. math.floor(255 * speed/100))
 end
