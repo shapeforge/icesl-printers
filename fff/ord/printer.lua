@@ -1,6 +1,6 @@
 -- ORD
 
-version = 1
+version = 2
 
 current_extruder = 0
 current_frate = 0
@@ -40,7 +40,7 @@ function header()
   for _,t in pairs(extruders) do
     output('T' .. t)
     output('G92 E0')
-    output('G1 E20.0 F300.0')    
+    output('G1 E20.0 F300.0')
   end
   output('G92 E0')
 end
@@ -58,7 +58,7 @@ function layer_stop()
   comment('</layer>')
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   letter = 'E'
@@ -124,4 +124,8 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_fan_speed(speed)
+  output('M106 S'.. math.floor(255 * speed/100))
 end

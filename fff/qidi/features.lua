@@ -1,7 +1,7 @@
 -- Qidi Avatar IV
 -- mm1980 11.12.2017
 
-version = 1
+version = 2
 
 --
 --qidi profile custom variables, can be overwritten by profile.lua and material.lua
