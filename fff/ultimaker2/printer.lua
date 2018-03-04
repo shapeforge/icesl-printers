@@ -42,7 +42,7 @@ current_frate = 600
 function layer_start(zheight)
   output(';(<layer>)')
   if layer == 1 then
-    output('M106 S255') -- fan ON
+    -- output('M106 S255') -- fan ON -- now directly managed by IceSL
   end
   if layer == 0 then
     output('G0 F600 Z' .. ff(zheight))
