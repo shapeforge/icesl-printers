@@ -1,15 +1,11 @@
 G21 ; set units to millimeters
-M106 S204 ; turn fan on
 M190 S<HBPTEMP> ; wait for bed temperature to be reached
 M104 S<TOOLTEMP> ; set temperature
 G28 ; home all axes
-G92 E0
 M109 S<TOOLTEMP> ; wait for temperature to be reached
 G90 ; use absolute coordinates
-G92 E0
 M82 ; use absolute distances for extrusion
 G92 E0
-M106 S204 ; turn fan on
 G1 Z1.0 F3000 ; move z up little to prevent scratching of surface
 G1 X0.1 Y20 Z0.3 F5000.0 ; move to start-line position
 G1 X0.1 Y200.0 Z0.3 F1500.0 E15 ; draw 1st line
