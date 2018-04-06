@@ -22,7 +22,7 @@ brim_num_contours=3
 
 extruder_0=0
 num_shells_0=1
-num_covers_0=4
+cover_thickness_mm_0=0.8
 print_perimeter_0=true
 infill_percentage_0=15
 flow_multiplier_0=0.97
