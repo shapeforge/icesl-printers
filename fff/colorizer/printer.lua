@@ -115,6 +115,10 @@ function set_mixing_ratios(ratios)
   current_C = ratios[2]
 end
 
+current_fan_speed = -1
 function set_fan_speed(speed)
-  output('M106 S'.. math.floor(255 * speed/100))
+  if speed ~= current_fan_speed then
+    output('M106 S'.. math.floor(255 * speed/100))
+    current_fan_speed = speed
+  end
 end
