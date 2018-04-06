@@ -8,16 +8,15 @@
 -- Changes made to reduce gcode size; no speed information if speed is set already; no z value if the movement is at the current height
 -- Change precision to ff (from f 3 digits precision) for all extruder moves
 -- Make the layer change speed to be a fixed value
--- Added a layer_count
 
 version = 2
 
+custom_fan_management = false -- activate Colin Hudson strategy
 debug_level = 0 -- Higher number means more detailed debug in the gcode output
 debug_match = nil --  A string for differing debug domains ( currentz, adj_fan_speed, feedrate)
 currentz = 0 -- The current z height
 extruder_e = 0
 extruder_e_restart = 0
-layer_count = 0
 last_fspeed = -1
 current_extruder = 0
 current_frate = 0
@@ -94,19 +93,22 @@ function adj_fan_speed(layer_filament_mm)
 end
 
 function layer_start(z)
-  layer_count = layer_count + 1
-  if layer_count == 1
-  then
-    last_fspeed = -1
-    adj_fan_speed(first_layer_flag)
+  if custom_fan_management then
+    if layer_id == 1
+    then
+      last_fspeed = -1
+      adj_fan_speed(first_layer_flag)
+    end
   end
-  comment('<layer>' .. layer_count)
+  comment('<layer>' .. layer_id)
   output('G1 Z' .. f(z) .. ' F3000')
   currentz = z
 end
 
 function layer_stop()
-  adj_fan_speed(extruder_e-extruder_e_restart)
+  if custom_fan_management then
+    adj_fan_speed(extruder_e-extruder_e_restart)
+  end
   extruder_e_restart = extruder_e
   output('G92 E0')
   comment('</layer>')
@@ -125,7 +127,7 @@ end
 function prime(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60 * priming_speed_pct/100
-   debug_output(1, 'retraction', 'Priming')
+  debug_output(1, 'retraction', 'Priming')
   letter = 'E'
   output('G1 F' .. speed .. ' ' .. letter .. ff(e + len - extruder_e_restart+extra_length_on_prime))
   extruder_e = e + len + extra_length_on_prime
@@ -189,6 +191,12 @@ function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
+current_fan_speed = -1
 function set_fan_speed(speed)
-  output('M106 S'.. math.floor(255 * speed/100))
+  if not custom_fan_management then
+    if speed ~= current_fan_speed then
+      output('M106 S'.. math.floor(255 * speed/100))
+      current_fan_speed = speed
+    end
+  end
 end

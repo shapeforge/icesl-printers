@@ -157,9 +157,6 @@ end
 
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
-  if layer_id == 1 then
-    output('M106 S255') -- fan ON
-  end
   if layer_id == 0 then
     output('G0 F600 Z' .. ff(zheight))
   else
@@ -281,6 +278,10 @@ function set_and_wait_extruder_temperature(extruder,temperature)
   output('M109 T' .. extruder .. ' S' .. f(temperature))
 end
 
+current_fan_speed = -1
 function set_fan_speed(speed)
-  output('M106 S'.. math.floor(255 * speed/100))
+  if speed ~= current_fan_speed then
+    output('M106 S'.. math.floor(255 * speed/100))
+    current_fan_speed = speed
+  end
 end

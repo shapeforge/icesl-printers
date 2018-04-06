@@ -28,7 +28,7 @@ extruder_1 = 1
 
 for i=0,63,1 do
   _G['num_shells_' .. i] = 0
-  _G['num_covers_' .. i] = 3
+  _G['cover_thickness_mm_' .. i] = 0.6
   _G['print_perimeter_' .. i] = true
   _G['infill_percentage_' .. i] = 15
   _G['flow_multiplier_' .. i] = 1.0
