@@ -34,20 +34,18 @@ function prime(extruder,e)
   return e
 end
 
-layer = 0
 current_z = 0
 current_extruder = 0
 current_frate = 600
 
 function layer_start(zheight)
   output(';(<layer>)')
-  if layer == 0 then
+  if layer_id == 0 then
     output('G0 F600 Z' .. ff(zheight))
   else
     output('G0 F100 Z' .. ff(zheight))
   end
   current_z = zheight
-  layer = layer + 1
 end
 
 function layer_stop()
