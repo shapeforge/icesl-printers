@@ -15,7 +15,7 @@ M132 X Y Z A B (Recall stored home offsets for XYZAB axis)
 G1 X-110.5 Y-74 Z50 F3300.0 (move to waiting position)
 G130 X20 Y20 Z20 A20 B20 (Lower stepper Vrefs while heating)
 
-M109 S<HBPTEMP> T0 (set HBP temperature)
+M140 S<HBPTEMP> (set HBP temperature)
 M134 T0 (wait for bed temp)
 M135 T0 (switch to tool)
 M104 S<TOOLTEMP> T<TOOL> (set extruder temperature)
