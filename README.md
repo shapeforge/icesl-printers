@@ -1,9 +1,9 @@
 # icesl-printers
 
-The are printer profiles for the IceSL modeler and slicer.
+These are printer profiles for IceSL; a modeler and slicer.
 
 http://shapeforge.loria.fr/icesl/
 
 # License
 
-Unless otherwise specified in the file themselves, default license is 3-clause BSD.
+Unless otherwise specified in the file itself, default license is 3-clause BSD.
