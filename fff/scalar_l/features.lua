@@ -29,6 +29,12 @@ first_layer_print_speed_mm_per_sec_max = 80
 
 ----------------- Adavanced features-------------------
 -- Cooling (static + progressive) --
+add_checkbox_setting('override_cooling_fan', 'Progressive Cooling')
+add_setting('fan_speed_max_percent', 'Progressive Cooling max fan speed (%)', 0, 100)
+add_setting('fan_speed_min_percent', 'Progressive Cooling min fan speed (%)', 0, 100)
+add_setting('fan_speed_start_at_layer', 'Progressive Cooling starts at layer', 0, 1000)
+add_setting('fan_speed_max_at_layer', 'Progressive Cooling max speed at layer', 0, 1000)
+
 override_cooling_fan = false
 fan_speed_max_percent = 100
 fan_speed_min_percent = 30
@@ -42,14 +48,23 @@ ABL_FRONT_PROBE_BED_POSITION = 10
 ABL_BACK_PROBE_BED_POSITION = 285
 
 -- Incrementaal bed leveling --
+add_checkbox_setting('enable_g29_incremental_bed_leveling', 'Incremental bed leveling')
+add_setting('g29_margin', 'Incremental bed leveling Margin', 0, 100)
+
 enable_g29_incremental_bed_leveling = true
 g29_margin = 5
 
 -- Zfade --
+add_checkbox_setting('enable_ZFade', 'Z Fade')
+add_setting('ZFade_height', 'Z Fade Height', 0, 100)
+
 enable_ZFade = false;
 ZFade_height = 2.0
 
 --Vertical Lift when retracting
+add_checkbox_setting('enable_vertical_lift', 'Lift on retraction')
+add_setting('retract_vertical_lift', 'Lift on retraction Height', 0,2)
+
 enable_vertical_lift = false
 retract_vertical_lift = 0.15
 

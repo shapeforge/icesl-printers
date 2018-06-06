@@ -1,8 +1,8 @@
 version = 2
 
-bed_size_x_mm = 200
-bed_size_y_mm = 200
-bed_size_z_mm = 200
+bed_size_x_mm = 400
+bed_size_y_mm = 400
+bed_size_z_mm = 300
 nozzle_diameter_mm = 0.4
 
 extruder_count = 1
@@ -12,7 +12,7 @@ z_offset   = 0.0
 priming_mm_per_sec = 50
 
 z_layer_height_mm_min = 0.05
-z_layer_height_mm_max = nozzle_diameter_mm /2
+z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 
 print_speed_mm_per_sec_min = 10
 print_speed_mm_per_sec_max = 80
@@ -42,10 +42,10 @@ fan_speed_start_at_layer=1
 fan_speed_max_at_layer=3
 
 -- Auto bed leveling --
-ABL_LEFT_PROBE_BED_POSITION = 40
-ABL_RIGHT_PROBE_BED_POSITION = 150
-ABL_FRONT_PROBE_BED_POSITION = 10
-ABL_BACK_PROBE_BED_POSITION = 185
+ABL_LEFT_PROBE_BED_POSITION = 10
+ABL_RIGHT_PROBE_BED_POSITION = 390
+ABL_FRONT_PROBE_BED_POSITION = 30
+ABL_BACK_PROBE_BED_POSITION = 360
 
 -- Incrementaal bed leveling --
 add_checkbox_setting('enable_g29_incremental_bed_leveling', 'Incremental bed leveling')
@@ -70,8 +70,8 @@ retract_vertical_lift = 0.15
 
 
 for i=0,63,1 do
-  _G['filament_diameter_mm_'..i] = 1.75
-  _G['filament_priming_mm_'..i] = 1.2
+  _G['filament_diameter_mm_'..i] = 2.85
+  _G['filament_priming_mm_'..i] = 1.5
   _G['extruder_temp_degree_c_' ..i] = 200
   _G['extruder_temp_degree_c_'..i..'_min'] = 190
   _G['extruder_temp_degree_c_'..i..'_max'] = 280
