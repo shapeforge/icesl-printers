@@ -2,9 +2,9 @@ name_en = "High quality"
 name_es = "Alta calidad"
 name_fr = "Haute qualité"
 
-z_layer_height_mm = 0.1
+z_layer_height_mm = 0.15
 
-print_speed_mm_per_sec=20
+print_speed_mm_per_sec=40
 first_layer_print_speed_mm_per_sec=10
 perimeter_print_speed_mm_per_sec=15
 travel_speed_mm_per_sec=80

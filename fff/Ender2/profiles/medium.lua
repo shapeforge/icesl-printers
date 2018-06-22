@@ -4,7 +4,7 @@ name_fr = "Qualité standard"
 
 z_layer_height_mm = 0.2
 
-print_speed_mm_per_sec=50
+print_speed_mm_per_sec=80
 first_layer_print_speed_mm_per_sec=20
 perimeter_print_speed_mm_per_sec=35
 travel_speed_mm_per_sec=100
@@ -18,7 +18,7 @@ support_extruder=0
 
 add_brim=true
 brim_distance_to_print=1.0
-brim_num_contours=3
+brim_num_contours=2
 
 extruder_0=0
 num_shells_0=3
