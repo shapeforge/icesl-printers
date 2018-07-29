@@ -1,8 +1,8 @@
-name_en = "High quality"
+name_en = "Ultra High quality"
 name_es = "Alta calidad"
-name_fr = "Haute qualité"
+name_fr = "Trés Haute qualité"
 
-z_layer_height_mm = 0.15
+z_layer_height_mm = 0.1
 
 print_speed_mm_per_sec=40
 first_layer_print_speed_mm_per_sec=10
