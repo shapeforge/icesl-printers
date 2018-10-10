@@ -1,5 +1,6 @@
 name_en = "High quality"
 name_fr = "Haute qualité"
+name_es = "Alta calidad"
 
 z_layer_height_mm = 0.15
 
