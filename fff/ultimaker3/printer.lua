@@ -48,46 +48,43 @@ function header()
   to_mm_cube_0 = 3.14159 * r0 * r0
   r1 = filament_diameter_mm[1] / 2
   to_mm_cube_1 = 3.14159 * r1 * r1
-  output(';START_OF_HEADER')
-  output(';HEADER_VERSION:0.1')
-  output(';FLAVOR:Griffin')
-  output(';GENERATOR.NAME:IceSL')
-  output(';GENERATOR.VERSION:2.1')
-  output(';GENERATOR.BUILD_DATE:2017-07-28')
-  output(';TARGET_MACHINE.NAME:Ultimaker 3')
+
+  h = file('header.gcode')
+
   if filament_tot_length_mm[0] > 0 then
-    output(';EXTRUDER_TRAIN.0.INITIAL_TEMPERATURE:'..extruder_temp_degree_c[0])
+    h = h:gsub('<TOOLTEMP0>', extruder_temp_degree_c[0])
   else
-    output(';EXTRUDER_TRAIN.0.INITIAL_TEMPERATURE:'..0)
+    h = h:gsub('<TOOLTEMP0>', 0)
   end
-  output(';EXTRUDER_TRAIN.0.MATERIAL.VOLUME_USED:' .. filament_tot_length_mm[0]*to_mm_cube_0)
-  output(';EXTRUDER_TRAIN.0.MATERIAL.GUID:506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9')
-  output(';EXTRUDER_TRAIN.0.NOZZLE.DIAMETER:0.4')
+
+  h = h:gsub('<TOOLVOLUME0>', filament_tot_length_mm[0]*to_mm_cube_0)
+  h = h:gsub('<TOOLMATERIAL0>', material_guid)
+  -- h = h:gsub('<TOOLNOZZLE0>', nozzle_diameter_mm_0)
+
   if filament_tot_length_mm[1] > 0 then
-    output(';EXTRUDER_TRAIN.1.INITIAL_TEMPERATURE:'..extruder_temp_degree_c[1])
+    h = h:gsub('<TOOLTEMP1>', extruder_temp_degree_c[1])
   else
-    output(';EXTRUDER_TRAIN.1.INITIAL_TEMPERATURE:'..0)
+    h = h:gsub('<TOOLTEMP1>', 0)
   end
-  output(';EXTRUDER_TRAIN.1.MATERIAL.VOLUME_USED:' .. filament_tot_length_mm[1]*to_mm_cube_1)
-  output(';EXTRUDER_TRAIN.1.MATERIAL.GUID:506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9')
-  output(';EXTRUDER_TRAIN.1.NOZZLE.DIAMETER:0.4')
-  output(';BUILD_PLATE.INITIAL_TEMPERATURE:' .. bed_temp_degree_c)
-  output(';PRINT.TIME:' .. time_sec)
-  output(';PRINT.SIZE.MIN.X:'..0)
-  output(';PRINT.SIZE.MIN.Y:'..0)
-  output(';PRINT.SIZE.MIN.Z:'..0)
-  output(';PRINT.SIZE.MAX.X:'..f(min_corner_x+extent_x))
-  output(';PRINT.SIZE.MAX.Y:'..f(min_corner_y+extent_y))
-  output(';PRINT.SIZE.MAX.Z:'..f(extent_z))
-  output(';END_OF_HEADER')
+
+  h = h:gsub('<TOOLVOLUME1>', filament_tot_length_mm[1]*to_mm_cube_0)
+  h = h:gsub('<TOOLMATERIAL1>', material_guid)
+  -- h = h:gsub('<TOOLNOZZLE1>', nozzle_diameter_mm_0)
+
+  h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
+  h = h:gsub('<ESTPTIME>', time_sec)
+  h = h:gsub('<XMIN>', 0)
+  h = h:gsub('<YMIN>', 0)
+  h = h:gsub('<ZMIN>', 0)
+  h = h:gsub('<XMAX>', f(min_corner_x+extent_x))
+  h = h:gsub('<YMAX>', f(min_corner_y+extent_y))
+  h = h:gsub('<ZMAX>', f(extent_z))
+
+  output(h)
 end
 
 function footer()
-  output('M204 S3000')
-  output('M205 X20')
-  output('M107')
-  output('M104 T0 S0')
-  output('M104 T1 S0')
+  output(file('footer.gcode'))
 end
 
 function retract(extruder,e)
