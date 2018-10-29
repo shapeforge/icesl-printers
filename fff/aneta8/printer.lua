@@ -14,7 +14,11 @@ function prep_extruder(extruder)
 end
 
 function header()
-  h = file('header.gcode')
+  if auto_bed_leveling == true then
+    h = file('bed_level_header.gcode')
+  else
+    h = file('header.gcode')
+  end
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
   output(h)
