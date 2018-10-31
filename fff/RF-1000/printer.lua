@@ -1,5 +1,4 @@
--- Anet A8
--- 2017-12-27
+-- Generic reprap
 
 version = 2
 
@@ -10,15 +9,8 @@ end
 extruder_e = 0
 extruder_e_restart = 0
 
-function prep_extruder(extruder)
-end
-
 function header()
-  if auto_bed_leveling == true then
-    h = file('bed_level_header.gcode')
-  else
-    h = file('header.gcode')
-  end
+  h = file('header.gcode')
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
   output(h)
@@ -29,11 +21,13 @@ function footer()
 end
 
 function layer_start(zheight)
-  output(';(<layer ' .. layer_id .. '>)')
+  comment('<layer>')
   output('G1 Z' .. f(zheight))
 end
 
 function layer_stop()
+  extruder_e_restart = extruder_e
+  output('G92 E0')
   comment('</layer>')
 end
 
@@ -41,7 +35,8 @@ function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   letter = 'E'
-  output('G1 F' .. speed .. ' ' .. letter .. f(e - len - extruder_e_restart))
+--  output('G1 F' .. speed .. ' ' .. letter .. f(e - len - extruder_e_restart))
+  output('G1 ' .. letter .. f(e - len - extruder_e_restart) .. ' F' .. speed .. ' ')
   extruder_e = e - len
   return e - len
 end
@@ -50,7 +45,8 @@ function prime(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   letter = 'E'
-  output('G1 F' .. speed .. ' ' .. letter .. f(e + len - extruder_e_restart))
+--  output('G1 F' .. speed .. ' ' .. letter .. f(e + len - extruder_e_restart))
+  output('G1 ' .. letter .. f(e + len - extruder_e_restart) .. ' F' .. speed .. ' ')
   extruder_e = e + len
   return e + len
 end
@@ -69,27 +65,10 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
-  if traveling == 1 then
-    traveling = 0 -- start path
-    if      path_is_perimeter then output(';perimeter')
-    elseif  path_is_shell     then output(';shell')
-    elseif  path_is_infill    then output(';infill')
-    elseif  path_is_raft      then output(';raft')
-    elseif  path_is_brim      then output(';brim')
-    elseif  path_is_shield    then output(';shield')
-    elseif  path_is_support   then output(';support')
-    elseif  path_is_tower     then output(';tower')
-    end
-  end
-
   extruder_e = e
   letter = 'E'
-  if z == current_z then
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e-extruder_e_restart)))
-  else
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff((e-extruder_e_restart)))
-    current_z = z
-  end
+--  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. f(e - extruder_e_restart))
+  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' ' .. letter .. f(e - extruder_e_restart))
 end
 
 function move_e(e)
