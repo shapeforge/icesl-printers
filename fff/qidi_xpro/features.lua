@@ -1,19 +1,19 @@
 version = 2
 
 -- custom settings in the UI
-tooltip_z_caching = 'G1 commands will not emit Z when it does not change/nthe only effect is having a smaller gcode file'
-tooltip_xy_caching = 'G1 commands will not emit X and Y when they do not change/nthe only effect is having a smaller gcode file'
-tooltip_qidi_z_offset = 'Z axis offset [mm]/nfixed extra distance between nozzle and heated bed/nand can be either positive or negative'
-tooltip_qidi_z_extra_height = 'Z height inflation [%]/ndoes not affect extruded volume and act a Z height multiplier:/nFinal Z height = Z height * 0.01 (Z height inflation)/ncan be positive or negative and the effect is kind of similar to flow multiplier/n(flow multiplier affects flow and leaves Z height untouched, here is the opposite)'
-tooltip_qidi_retract_after_z = 'Minimum Z height for retraction [mm]/nRetraction will happen only for higher Z values/nuseful to disable retractions for the first layer(s)/nQuality should not be affected but adhesion should be better (depending on the number of retractions)'
-tooltip_extruder_e_restart = 'Extra extrusion distance [mm]/napplied after each retract, can be positive or negative/nuseful to remove respectively voids or blobs caused by retractions'
+tooltip_z_caching = 'G1 commands will not emit Z when it does not change\nthe only effect is having a smaller gcode file'
+tooltip_xy_caching = 'G1 commands will not emit X and Y when they do not change\nthe only effect is having a smaller gcode file'
+tooltip_qidi_z_offset = 'Z axis offset [mm]\nfixed extra distance between nozzle and heated bed\nand can be either positive or negative'
+tooltip_qidi_z_extra_height = 'Z height inflation [%]\ndoes not affect extruded volume and act a Z height multiplier:\nFinal Z height = Z height * 0.01 (Z height inflation)\ncan be positive or negative and the effect is kind of similar to flow multiplier\n(flow multiplier affects flow and leaves Z height untouched, here is the opposite)'
+tooltip_qidi_retract_after_z = 'Minimum Z height for retraction [mm]\nRetraction will happen only for higher Z values\nuseful to disable retractions for the first layer(s)\nQuality should not be affected but adhesion should be better (depending on the number of retractions)'
+tooltip_extruder_e_restart = 'Extra extrusion distance [mm]\napplied after each retract, can be positive or negative\nuseful to remove respectively voids or blobs caused by retractions'
 
-add_checkbox_setting('z_caching', 'Enable Z caching', 'tooltip')
-add_checkbox_setting('xy_caching', 'Enable XY caching', 'tooltip')
-add_setting('qidi_z_offset', 'Z axis offset [mm]', -0.1, 2, 'tooltip')
-add_setting('qidi_z_extra_height', 'extra Z inflation (does not affect flow) [%]', -50, 50, 'tooltip_qidi_z_extra_height')
-add_setting('qidi_retract_after_z', 'minimum Z height for retraction [mm]', 0, 1, 'tooltip')
-add_setting('extruder_e_restart', 'extra restart distance after retraction [mm]', -1, 1, 'tooltip_extruder_e_restart')
+add_checkbox_setting('z_caching', 'Enable Z caching', tooltip_z_caching)
+add_checkbox_setting('xy_caching', 'Enable XY caching', tooltip_xy_caching)
+add_setting('qidi_z_offset', 'Z axis offset [mm]', -0.1, 2, tooltip_qidi_z_offset)
+add_setting('qidi_z_extra_height', 'extra Z inflation (does not affect flow) [%]', -50, 50, tooltip_qidi_z_extra_height)
+add_setting('qidi_retract_after_z', 'minimum Z height for retraction [mm]', 0, 1, tooltip_qidi_retract_after_z)
+add_setting('extruder_e_restart', 'extra restart distance after retraction [mm]', -1, 1, tooltip_extruder_e_restart)
 
 z_layer_height_first_layer_mm = 0.2
 
