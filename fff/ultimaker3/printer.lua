@@ -49,6 +49,17 @@ function header()
   r1 = filament_diameter_mm[1] / 2
   to_mm_cube_1 = 3.14159 * r1 * r1
 
+  -- material guid management for custom settings
+  if material_guid == nil then
+    if extruder_temp_degree_c[0] <= 180 and extruder_temp_degree_c[0] >= 210 then 
+      material_guid = '506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9'
+    elseif extruder_temp_degree_c[0] <= 230 and extruder_temp_degree_c[0] >= 260 then
+      material_guid = '60636bb4-518f-42e7-8237-fe77b194ebe0'
+    else
+      material_guid = '506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9'
+    end
+  end
+
   h = file('header.gcode')
 
   if filament_tot_length_mm[0] > 0 then
