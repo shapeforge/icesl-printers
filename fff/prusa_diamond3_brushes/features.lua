@@ -5,7 +5,7 @@ bed_size_y_mm = 200
 bed_size_z_mm = 160
 nozzle_diameter_mm = 0.4
 
-extruder_count = 3
+extruder_count = 5
 nb_nozzle_in = 3 -- number of inputed filament in the nozzle
 
 gen_tower = true
@@ -59,13 +59,14 @@ perimeter_print_speed_mm_per_sec = 10
 first_layer_print_speed_mm_per_sec = 10
 print_speed_microlayers_mm_per_sec = 40
 travel_speed_mm_per_sec = 80
-add_brim = false
+add_brim = true
 extruder_purge_volume_mm3 = 10
 shield_distance_to_part_mm = 2
 mixing_shield_speed_multiplier = 1
 filament_priming_mm_0 = 6
-travel_max_length_without_retract = 1
+travel_max_length_without_retract = 5
 extruder_swap_zlift_mm = 0
+extruder_swap_retract_length_mm = 0
 flow_dampener_path_length_end_mm = 6
 flow_dampener_path_length_start_mm = 6
 flow_dampener_e_length_mm = 6

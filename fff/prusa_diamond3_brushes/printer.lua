@@ -6,22 +6,23 @@ current_frate = 0
 
 current_e  = 0
 extruder_e = {}
-extruder_e[0] = 0.0
-extruder_e[1] = 0.0
-extruder_e[2] = 0.0
+
+for i=0,extruder_count-1 do
+  extruder_e[i] = 0.0
+end
 
 current_A  = 0.33
 current_B  = 0.33
 current_C  = 0.34
 
 function other_e(e)
-  if e == 0 then
-    return extruder_e[1] + extruder_e[2]
-  elseif e == 1 then
-    return extruder_e[0] + extruder_e[2]  
-  else
-    return extruder_e[0] + extruder_e[1]  
+  local sum = 0.0
+  for i=0,extruder_count-1 do
+    if i ~= e then
+	  sum = sum + extruder_e[i]
+	end
   end
+  return sum
 end
 
 function comment(text)
@@ -62,6 +63,7 @@ function retract(extruder,e)
   letter = 'E'
   output('G1 F' .. speed .. ' ' .. letter .. f(e - len + other_e(current_e)) .. ' A0.33 B0.33 C0.34')
   extruder_e[current_e] = e - len
+  comment('<retract from ' .. (e + other_e(current_e)) .. ' to ' .. (e - len + other_e(current_e)) .. '>')
   return e - len
 end
 
@@ -73,6 +75,7 @@ function prime(extruder,e)
   letter = 'E'
   output('G1 F' .. speed .. ' ' .. letter .. f(e + len + other_e(current_e)) .. ' A0.33 B0.33 C0.34')
   extruder_e[current_e] = e + len
+  comment('<prime from ' .. (e + other_e(current_e)) .. ' to ' .. (e + len + other_e(current_e)) .. '>')
   return e + len
 end
 
@@ -82,6 +85,7 @@ function select_extruder(extruder)
 end
 
 function swap_extruder(from,to,x,y,z)
+    comment('</swap ' .. to .. '>')
     current_e = to
 end
 
