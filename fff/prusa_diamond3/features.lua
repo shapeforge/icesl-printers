@@ -14,6 +14,7 @@ priming_mm_per_sec = 100
 
 z_layer_height_mm_min = 0.05
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
+z_layer_height_mm = 0.3
 
 print_speed_mm_per_sec_min = 5
 print_speed_mm_per_sec_max = 80
@@ -43,6 +44,7 @@ for i=0,63,1 do
 end
 
 add_checkbox_setting('auto_bed_leveling', 'Auto Bed Levelling sensor','Auto Levelling Sensor (BLTouch, Pinda, capacitive sensor, etc.)')
+auto_bed_leveling = true
 
 add_setting('filament_diameter_A','Filament diameter extruder A',1.0,2.0)
 filament_diameter_A = 1.75
