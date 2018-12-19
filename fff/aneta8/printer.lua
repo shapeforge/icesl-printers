@@ -14,13 +14,18 @@ function prep_extruder(extruder)
 end
 
 function header()
-  if auto_bed_leveling == true then
-    h = file('bed_level_header.gcode')
-  else
-    h = file('header.gcode')
-  end
+  auto_level_string = 'G29 ; auto bed levelling\nG0 F6200 X0 Y0 ; back to the origin to begin the purge '
+
+  h = file('header.gcode')
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
+
+  if auto_bed_leveling == true then
+    h = h:gsub( '<BEDLVL>', auto_level_string )
+  else
+    h = h:gsub( '<BEDLVL>', "" )
+  end
+
   output(h)
 end
 
@@ -29,7 +34,7 @@ function footer()
 end
 
 function layer_start(zheight)
-  output(';(<layer ' .. layer_id .. '>)')
+  output(';<layer ' .. layer_id .. '>')
   output('G1 Z' .. f(zheight))
 end
 
@@ -69,19 +74,6 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
-  if traveling == 1 then
-    traveling = 0 -- start path
-    if      path_is_perimeter then output(';perimeter')
-    elseif  path_is_shell     then output(';shell')
-    elseif  path_is_infill    then output(';infill')
-    elseif  path_is_raft      then output(';raft')
-    elseif  path_is_brim      then output(';brim')
-    elseif  path_is_shield    then output(';shield')
-    elseif  path_is_support   then output(';support')
-    elseif  path_is_tower     then output(';tower')
-    end
-  end
-
   extruder_e = e
   letter = 'E'
   if z == current_z then
