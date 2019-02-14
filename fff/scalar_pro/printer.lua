@@ -93,7 +93,7 @@ function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   letter = 'E'
-  output ('G1 F' .. speed .. ' ' .. letter .. f(e - len - extruder_e_restart))
+  output ('G1 F' .. speed .. ' ' .. letter .. ff(e - len - extruder_e_restart))
   if enable_vertical_lift == true then
 	  output ('G91  ; use relative coordinates')
 	  output ('G1 Z'..f(retract_vertical_lift)..'  ; Lift the nozzle')
@@ -114,7 +114,7 @@ function prime(extruder,e)
 	  output ('G1 Z-'..f(retract_vertical_lift)..'  ; Lift the nozzle')
 	  output ('G90  ; use absolute coordinates')
   end
-  output ('G1 F' .. speed .. ' ' .. letter .. f(e + len - extruder_e_restart))
+  output ('G1 F' .. speed .. ' ' .. letter .. ff(e + len - extruder_e_restart))
   extruder_e = e + len
   return e + len
 end
@@ -139,13 +139,13 @@ end
 function move_xyze(x,y,z,e)
   extruder_e = e
   letter = 'E'
-  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. f(e - extruder_e_restart))
+  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff(e - extruder_e_restart))
 end
 
 function move_e(e)
   extruder_e = e
   letter = 'E'
-  output('G1 ' .. letter .. f(e - extruder_e_restart))
+  output('G1 ' .. letter .. ff(e - extruder_e_restart))
 end
 
 function set_feedrate(feedrate)

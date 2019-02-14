@@ -78,7 +78,7 @@ end
 function move_e(e)
   extruder_e[current_extruder] = e
   letter = 'E'
-  output('G0 ' .. letter .. f(e-extruder_e_restart))
+  output('G0 ' .. letter .. ff(e-extruder_e_restart))
 end
 
 function set_feedrate(feedrate)
