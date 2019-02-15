@@ -42,7 +42,7 @@ function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
   letter = 'E'
-  output('G1 F' .. speed .. ' E' .. f(e - len - extruder_e_restart) .. ' A1 B1 C1')
+  output('G1 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart) .. ' A1 B1 C1')
   extruder_e = e - len
   return e - len
 end
@@ -50,7 +50,7 @@ end
 function prime(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = priming_mm_per_sec * 60;
-  output('G1 F' .. speed .. ' E' .. f(e + len - extruder_e_restart) .. ' A1 B1 C1')
+  output('G1 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart) .. ' A1 B1 C1')
   extruder_e = e + len
   return e + len
 end
@@ -76,13 +76,13 @@ function move_xyze(x,y,z,e)
     current_B = 0.33
     current_C = 0.34
   end
-  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. f(e - extruder_e_restart) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
+  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. ff(e - extruder_e_restart) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
 end
 
 function move_e(e)
   extruder_e = e
   letter = 'E'
-  output('G1 ' .. letter .. f(e - extruder_e_restart))
+  output('G1 ' .. letter .. ff(e - extruder_e_restart))
 end
 
 function set_feedrate(feedrate)
