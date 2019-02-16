@@ -3,6 +3,9 @@
 
 version = 2
 
+extruder_e = 0
+extruder_e_restart = 0
+
 function comment(text)
   output('; ' .. text)
 end
@@ -49,6 +52,8 @@ function layer_start(zheight)
 end
 
 function layer_stop()
+  extruder_e_restart = extruder_e
+  output('G92 E0')
   output(';(</layer>)')
 end
 
@@ -68,22 +73,24 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
+  extruder_e = e
   r = filament_diameter_mm[extruders[0]] / 2
   to_mm_cube = 3.14159 * r * r
   letter = 'E'
   if z == current_z then
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff(e*to_mm_cube))
+    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' ' .. letter .. ff((e - extruder_e_restart)*to_mm_cube))
   else
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff(e*to_mm_cube))
+    output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' ' .. letter .. ff((e - extruder_e_restart)*to_mm_cube))
     current_z = z
   end
 end
 
 function move_e(e)
+  extruder_e = e
   letter = 'E'
   r = filament_diameter_mm[extruders[0]] / 2
   to_mm_cube = 3.14159 * r * r
-  output('G1 ' .. letter .. ff(e*to_mm_cube))
+  output('G1 ' .. letter .. ff((e - extruder_e_restart)*to_mm_cube))
 end
 
 function set_feedrate(feedrate)
