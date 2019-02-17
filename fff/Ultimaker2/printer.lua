@@ -5,6 +5,7 @@ version = 2
 
 extruder_e = 0
 extruder_e_restart = 0
+reset_e_on_next_prime = false
 
 function comment(text)
   output('; ' .. text)
@@ -28,12 +29,19 @@ function footer()
 end
 
 function retract(extruder,e)
+  extruder_e = e
   output('G10')
   return e
 end
 
 function prime(extruder,e)
+  extruder_e = e
   output('G11')
+  if reset_e_on_next_prime then
+    output('G92 E0')
+    extruder_e_restart = extruder_e
+    reset_e_on_next_prime = false
+  end
   return e
 end
 
@@ -52,8 +60,7 @@ function layer_start(zheight)
 end
 
 function layer_stop()
-  extruder_e_restart = extruder_e
-  output('G92 E0')
+  reset_e_on_next_prime = true
   output(';(</layer>)')
 end
 
