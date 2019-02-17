@@ -11,13 +11,11 @@ tooltip_extruder_e_restart = 'Extra extrusion distance [mm]\napplied after each 
 add_checkbox_setting('z_caching', 'Enable Z caching', tooltip_z_caching)
 add_checkbox_setting('xy_caching', 'Enable XY caching', tooltip_xy_caching)
 add_setting('qidi_z_offset', 'Z axis offset [mm]', -0.1, 2, tooltip_qidi_z_offset)
-add_setting('qidi_z_extra_height', 'extra Z inflation (does not affect flow) [%]', -50, 50, tooltip_qidi_z_extra_height)
+add_setting('qidi_z_extra_height', 'extra Z inflation [%] (not affecting flow) ', -50, 50, tooltip_qidi_z_extra_height)
 add_setting('qidi_retract_after_z', 'minimum Z height for retraction [mm]', 0, 1, tooltip_qidi_retract_after_z)
 add_setting('extruder_e_restart', 'extra restart distance after retraction [mm]', -1, 1, tooltip_extruder_e_restart)
 
-z_layer_height_first_layer_mm = 0.2
-
--- default values for the custom settings
+-- default values for the custom settings ...could be added at the end of the add_setting commands
 z_caching = true  -- GCODE dimensions reduced by default
 xy_caching = true  -- GCODE dimensions reduced by default
 qidi_z_offset = 0.0  --extra distance between build plate and head on first layer
@@ -26,16 +24,16 @@ qidi_z_extra_height = 0.0  -- Z inflation/compression applied on each layer. Use
                               -- the layers need to be squeezed or spaced more to get better quality
                               --  it does not affect the layer height or extruded amount
                               -- it's a very similar setting to extrusion flow multiplier
-qidi_retract_after_z = z_layer_height_first_layer_mm + 0.01   -- retract only after this height
+qidi_retract_after_z = 0.0  -- retract only after this height
                              --  retraction on the first layer can result in adhesion problems
                              --  not having retraction on the first layer doesn't USUALLY affect print quality
 extruder_e_restart = 0.0 -- extra restart distance to fix eventual blobs or voids due to retraction
                           -- can be positive or negative: positive useful to fix voids, negative to fix blobs
 
 -- slicing algorithm settings
-xy_mm_per_pixels = 0.01
-xy_max_deviation_mm = 0.025
-tile_size_mm = 100
+xy_mm_per_pixels = 0.05
+xy_max_deviation_mm = 0.05
+tile_size_mm = 30
 
 -- geometric settings for printer
 bed_size_x_mm = 230

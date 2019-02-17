@@ -2,7 +2,7 @@
 -- modified from Generic RepRap and from Qidi Avatar IV profile by mm1980
 -- both single and dual extrusion should be OK
 -- this version uses only E command to extrude so it is always necessary to toolchange before extruding
--- A & B letters in place of E for G0 or G1 commands would let simultaneous extrusion on both extruders
+-- A & B letters in place of E for G0 or G1 commands would allow simultaneous extrusion on both extruders
 
 
 version = 2
@@ -11,7 +11,7 @@ function comment(text)
   output('; ' .. text)
 end
 
---variables
+--variables initialization
 current_x = 0       --X cache, produce shorter G-code (emit X only if changed)
 current_y = 0       --Y cache, produce shorter G-code (emit Y only if changed)
 current_z = 0       --Z cache, produce shorter G-code (emit Z only if changed)
@@ -20,16 +20,21 @@ current_extruder = 0
 disabled_extruder = 0
 extruder_e = 0
 last_e = 0
-z_ratio = 0.01 * (100 + qidi_z_extra_height) -- calculating Z inflation ratio
-qidi_retract_after_z = qidi_retract_after_z * z_ratio + 0.005 -- correcting the variable with z_ratio
 swapping = false -- global variable to handle extruder swaps and their retractions/primings
 
 -- if using both extruders, retracts the idle one after purging since both are being preheated with the header
 -- and can't handle iceSL calls to extruder swap or similar during header
 if number_of_extruders == 1 then
- startingretraction = false
+  startingretraction = false
 else
- startingretraction = true
+  startingretraction = true
+end
+
+-- disabling smart retraction if qidi_retract_after_z <= 0
+if qidi_retract_after_z > 0 then
+  smart_retraction = true
+else
+  smart_retraction = false
 end
 
 filament_priming_mm = {}                        -- retraction/priming lengths
@@ -40,7 +45,16 @@ idle_extruder_temp_degree_c = {}                        -- idle extruder tempera
 idle_extruder_temp_degree_c[0] = idle_extruder_temp_degree_c_0  -- extruder 0 (right) idle temp
 idle_extruder_temp_degree_c[1] = idle_extruder_temp_degree_c_1  -- extruder 1 (left) idle temp
 
+if use_different_height_first_layer then
+  header_priming_height = z_layer_height_first_layer_mm + qidi_z_offset
+  header_priming_length = (225-35) * nozzle_diameter_mm * z_layer_height_first_layer_mm / (1.75^2*3.14/4)
+else
+  header_priming_height = z_layer_height_mm + qidi_z_offset
+  header_priming_length = (225-35) * nozzle_diameter_mm * z_layer_height_mm / (1.75^2*3.14/4)
+end
+
 function header()
+
   h = file('header.gcode')
 
   if number_of_extruders == 1 then
@@ -48,8 +62,8 @@ function header()
     h = h:gsub( '<TOOLTEMP0>', 'M104 S' .. extruder_temp_degree_c[current_extruder] .. ' T' .. current_extruder )
     h = h:gsub( '<WAITTEMP0>', 'M133 T' .. current_extruder )
     h = h:gsub( '<TOOLCHOICE>', 'T' ..  current_extruder .. '; ensuring the right extruder is active')
-    h = h:gsub( '<PRIMINGTOOL0>', 'G1 X220 E10 F2400' .. '; purging and priming 10mm on first move')
-    h = h:gsub( '<PRIMINGTOOL1>', 'G1 X35 E10 F2400' .. '; purging and priming 10mm on second move')
+    h = h:gsub( '<PRIMINGTOOL0>', 'G1 X220 E' .. header_priming_length .. ' F2400' .. '; purging and priming some mm on first move')
+    h = h:gsub( '<PRIMINGTOOL1>', 'G1 X35 E' .. header_priming_length .. ' F2400' .. '; purging and priming some mm on second move')
 
     if extruders[0] == 0 then
       disabled_extruder = 1
@@ -68,14 +82,15 @@ function header()
       h = h:gsub( '<WAITTEMP1>', 'M133 T' .. extruders[1] )
       h = h:gsub( '<TOOLCHOICE>', '; dual printing is active')
       current_extruder = 0
-      h = h:gsub( '<PRIMINGTOOL0>', 'G1 X220 E10 F2400 T1' .. '; purging and priming 10mm the left extruder')
+      h = h:gsub( '<PRIMINGTOOL0>', 'G1 X220 E' .. header_priming_length .. ' F2400 T1' .. '; purging and priming some mm on the left extruder')
       current_extruder = 1
-      h = h:gsub( '<PRIMINGTOOL1>', 'G1 X35 E10 F2400 T0' .. '; purging and priming 10mm the right extruder')
+      h = h:gsub( '<PRIMINGTOOL1>', 'G1 X35 E' .. header_priming_length .. ' F2400 T0' .. '; purging and priming some mm on the right extruder')
   else
 
     error('wrong number of extruders' .. extruders .. ' ' .. number_of_extruders .. ' ' .. asd)
   end
 
+  h = h:gsub( '<PRIMINGHEIGHT>', header_priming_height)
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
   output(h)
 end
@@ -87,7 +102,7 @@ end
 function layer_start(zheight)
   comment('<layer>')
   current_z = zheight
-  output('G1 Z' .. f(zheight * z_ratio + qidi_z_offset))
+  output('G1 Z' .. f(zheight * (0.01 * (100 + qidi_z_extra_height)) + qidi_z_offset))
 end
 
 function layer_stop()
@@ -126,7 +141,12 @@ function swap_extruder(from,to,x,y,z)
 end
 
 function Qretract(speed,len,swapping)
-  if current_z > qidi_retract_after_z or swapping then
+  if smart_retraction then
+    if current_z >= qidi_retract_after_z * (0.01 * (100 + qidi_z_extra_height)) or swapping then -- correcting qidi_retract_after_z with (0.01 * (100 + qidi_z_extra_height))
+      extruder_e = extruder_e - len
+      output('G1 F' .. speed .. ' E' .. ff(extruder_e - last_e))
+    end
+  else
     extruder_e = extruder_e - len
     output('G1 F' .. speed .. ' E' .. ff(extruder_e - last_e))
   end
@@ -134,9 +154,14 @@ function Qretract(speed,len,swapping)
 end
 
 function Qrestore(speed,len,swapping)
-  if current_z > qidi_retract_after_z or swapping then
-    extruder_e = extruder_e + len  + extruder_e_restart
-    output('G1 F' .. speed .. ' E' .. ff(extruder_e - last_e))
+  if smart_retraction then
+    if current_z >= qidi_retract_after_z * (0.01 * (100 + qidi_z_extra_height)) or swapping then -- correcting qidi_retract_after_z with (0.01 * (100 + qidi_z_extra_height))
+      extruder_e = extruder_e + len  + extruder_e_restart
+      output('G1 F' .. speed .. ' E' .. ff(extruder_e - last_e))
+    end
+  else
+      extruder_e = extruder_e + len  + extruder_e_restart
+      output('G1 F' .. speed .. ' E' .. ff(extruder_e - last_e))
   end
    return extruder_e
 end
@@ -175,7 +200,7 @@ function move_xyz(x,y,z)
     z_string = ''
   else
     current_z = z
-    z_string = (' Z' .. f(z * z_ratio + qidi_z_offset))
+    z_string = (' Z' .. f(z * (0.01 * (100 + qidi_z_extra_height)) + qidi_z_offset))
   end
 
   output('G1' .. x_string .. y_string .. z_string)
@@ -204,7 +229,7 @@ function move_xyze(x,y,z,e)
     z_string = ''
   else
     current_z = z
-    z_string = (' Z' .. f(z * z_ratio + qidi_z_offset))
+    z_string = (' Z' .. f(z * (0.01 * (100 + qidi_z_extra_height)) + qidi_z_offset))
   end
 
   output('G1' .. x_string .. y_string .. z_string .. ' E' .. ff(extruder_e - last_e))

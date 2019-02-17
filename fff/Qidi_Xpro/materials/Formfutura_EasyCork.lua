@@ -1,37 +1,38 @@
-name_en = "PLA"
-name_fr = "PLA"
-name_es = "PLA"
+name_en = "EasyCork"
+name_fr = "EasyCork"
+name_es = "EasyCork"
 
--- filament dimensions and extruder side
-filament_diameter_mm_0 = 1.75
-filament_diameter_mm_1 = 1.75
+-- filament/nozzle dimensions and extruder side
+filament_diameter_mm_0 = 1.8
+filament_diameter_mm_1 = 1.8
 nozzle_diameter_mm = 0.4
-extruder_0 = 0
-infill_extruder_0 = 0
+extruder_0 = 1
+infill_extruder_0 = 1
 
 -- temps and layer heigth
 qidi_retract_after_z = 0
-z_layer_height_mm = 0.2
-extruder_temp_degree_c_0 = 190
-extruder_temp_degree_c_1 = 190
-bed_temp_degree_c = 55
+qidi_z_offset = 0.0
+z_layer_height_mm = 0.25
+extruder_temp_degree_c_0 = 225
+extruder_temp_degree_c_1 = 225
+bed_temp_degree_c = 60
 
 -- speeds and multipliers
-print_speed_mm_per_sec = 50
-perimeter_print_speed_mm_per_sec = 40
+print_speed_mm_per_sec = 35
+perimeter_print_speed_mm_per_sec = 35
 first_layer_print_speed_mm_per_sec = 25
 travel_speed_mm_per_sec = 80
-flow_multiplier_0 = 1.0
+flow_multiplier_0 = 1.05
 speed_multiplier_0 = 1.0
 
 -- retraction settings
-filament_priming_mm_0 = 1
+filament_priming_mm_0 = 1.5
 priming_mm_per_sec = 60
 
 -- fan settings
 enable_fan = true
 enable_fan_first_layer = false
-fan_speed_percent = 100
+fan_speed_percent = 75
 fan_speed_percent_on_bridges = 100
 
 -- secondary settings
