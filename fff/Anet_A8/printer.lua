@@ -35,6 +35,8 @@ end
 
 function layer_start(zheight)
   output(';<layer ' .. layer_id .. '>')
+  output('G92 E0')
+  extruder_e_restart = extruder_e
   output('G1 Z' .. f(zheight))
 end
 
