@@ -17,13 +17,18 @@ function comment(text)
 end
 
 function header()
-  if auto_bed_leveling == true then
-    h = file('bed_level_header.gcode')
-  else
-    h = file('header.gcode')
-  end
+  auto_level_string = 'G29 ; auto bed levelling\nG0 F6200 X0 Y0 ; back to the origin to begin the purge '
+  
+  h = file('header.gcode')
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
+
+  if auto_bed_leveling == true then
+    h = h:gsub( '<BEDLVL>', auto_level_string )
+  else
+    h = h:gsub( '<BEDLVL>', "G0 F6200 X0 Y0" )
+  end
+
   output(h)
 end
 
@@ -82,34 +87,43 @@ function move_xyze(x,y,z,e)
     current_D = 0.2
     current_H = 0.2
   end
-   -- adjust based on filament diameters
+  
   delta_e    = e - extruder_e
   extruder_e = e
-  r_a = current_A * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_A * filament_diameter_A)
-  r_b = current_B * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_B * filament_diameter_B)
-  r_c = current_C * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_C * filament_diameter_C)
-  r_d = current_D * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_D * filament_diameter_D)
-  r_h = current_H * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_H * filament_diameter_H)
-  sum = (r_a + r_b + r_c + r_d + r_h)
-  r_a = r_a / sum
-  r_b = r_b / sum
-  r_c = r_c / sum
-  r_d = r_d / sum
-  r_h = r_h / sum
+  
+  -- adjust based on filament diameters
+  if filament_diameter_management == true then
+    r_a = current_A * (filament_diameter_mm_0 * filament_diameter_mm_0)
+          / (filament_diameter_A * filament_diameter_A)
+    r_b = current_B * (filament_diameter_mm_0 * filament_diameter_mm_0)
+          / (filament_diameter_B * filament_diameter_B)
+    r_c = current_C * (filament_diameter_mm_0 * filament_diameter_mm_0)
+          / (filament_diameter_C * filament_diameter_C)
+    r_d = current_D * (filament_diameter_mm_0 * filament_diameter_mm_0)
+          / (filament_diameter_D * filament_diameter_D)
+    r_h = current_H * (filament_diameter_mm_0 * filament_diameter_mm_0)
+          / (filament_diameter_H * filament_diameter_H)
+    sum = (r_a + r_b + r_c + r_d + r_h)
+    r_a = r_a / sum
+    r_b = r_b / sum
+    r_c = r_c / sum
+    r_d = r_d / sum
+    r_h = r_h / sum
+    delta_e_adjusted = delta_e * sum
+    extruder_e_adjusted = extruder_e_adjusted + delta_e_adjusted
+    output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. ff(extruder_e_adjusted-extruder_e_reset) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c) .. ' D' .. f(r_d) .. ' H' .. f(r_h))
   -------------------------------------
-  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. ff(e) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c) .. ' D' .. f(r_d) .. ' H' .. f(r_h))
+  else 
+    output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. ff(e - extruder_e_reset) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C) .. ' D' .. f(current_D) .. ' H' .. f(current_H))
+  end
 end
 
 function move_e(e)
-  
+  delta_e             = e - extruder_e
   extruder_e          = e
+  extruder_e_adjusted = extruder_e_adjusted + delta_e
   letter = ' E'
-  output('G1 ' .. letter .. ff(e))
+  output('G1 ' .. letter .. ff(e-extruder_e_reset))
 end
 
 function set_feedrate(feedrate)
