@@ -29,4 +29,4 @@ print_perimeter_0 = true
 flow_multiplier_0 = 1.0
 speed_multiplier_0 = 1.0
 
-procees_thin_features = false
+process_thin_features = false
