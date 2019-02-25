@@ -22,10 +22,10 @@ M134
 <WAITTEMP1>
 G130 X127 Y127 A127 B127  ; Set Stepper motor Vref to defaults
 
-; priming sequence (using 20 mm on all the active extruders)
+; priming sequence (using 5 mm on all the active extruders)
 <TOOLCHOICE>
 G92 E0 A0 B0
-G0 X0 Y4 Z0.3 F2400
+G0 X35 Y4 Z<PRIMINGHEIGHT> F2400
 <PRIMINGTOOL0>
 G1 X220 Y5 F2400
 <PRIMINGTOOL1>
