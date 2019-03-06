@@ -26,8 +26,8 @@ function header()
   output(';MATERIAL2:0')
   output(';NOZZLE_DIAMETER:' .. round(nozzle_diameter_mm,2))
   output('M107')
-  output('M207 F' .. priming_mm_per_sec * 60 .. ' S' .. filament_priming_mm_0)
-  output('M208 F' .. priming_mm_per_sec * 60 .. ' S' .. filament_priming_mm_0)
+  --output('M207 F' .. priming_mm_per_sec * 60 .. ' S' .. filament_priming_mm_0)
+  --output('M208 F' .. priming_mm_per_sec * 60 .. ' S' .. filament_priming_mm_0)
   output('M82')
 end
 
