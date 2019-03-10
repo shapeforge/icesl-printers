@@ -7,11 +7,9 @@ function comment(text)
   output('; ' .. text)
 end
 
-to_cubic_mm = 1
-
 function to_mm_cube(e)
   local r = filament_diameter_mm[extruders[0]] / 2
-  return (math.pi * r^2 ) * e
+  return math.pi * r * r * e
 end
 
 function round(number, decimals)
@@ -22,13 +20,14 @@ end
 function header()
   output(';FLAVOR:UltiGCode')
   output(';TIME:' .. time_sec)
-  output(';MATERIAL:' .. to_mm_cube(filament_tot_length_mm[extruders[0]]) )
+  output(';MATERIAL:' .. to_mm_cube( filament_tot_length_mm[extruders[0]]) )
   output(';MATERIAL2:0')
   output(';NOZZLE_DIAMETER:' .. round(nozzle_diameter_mm,2))
   output('M107')
   --output('M207 F' .. priming_mm_per_sec * 60 .. ' S' .. filament_priming_mm_0)
   --output('M208 F' .. priming_mm_per_sec * 60 .. ' S' .. filament_priming_mm_0)
   output('M82')
+  output('G92 E0')
 end
 
 function footer()
