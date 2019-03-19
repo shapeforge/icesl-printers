@@ -1,7 +1,5 @@
 -- Generic reprap
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

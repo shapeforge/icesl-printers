@@ -1,8 +1,6 @@
 -- Bibo 2 Touch X
 -- 2018-02-06
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

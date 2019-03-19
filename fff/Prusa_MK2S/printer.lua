@@ -1,8 +1,6 @@
 -- Original Prusa MK2S 
 -- 13/09/2018
 
-version = 2
-
 extruder_e = 0
 extruder_e_restart = 0
 

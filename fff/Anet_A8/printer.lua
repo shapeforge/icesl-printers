@@ -1,8 +1,6 @@
 -- Anet A8
 -- 2017-12-27
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

@@ -1,7 +1,5 @@
 -- Dagoma DiscoEasy200
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

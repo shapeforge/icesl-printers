@@ -1,7 +1,5 @@
 -- Foldarap Mega 200x200x450
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

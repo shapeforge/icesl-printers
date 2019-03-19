@@ -1,5 +1,3 @@
-version = 2
-
 bed_size_x_mm = 214
 bed_size_y_mm = 186
 bed_size_z_mm = 160

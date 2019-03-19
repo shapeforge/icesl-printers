@@ -2,8 +2,6 @@
 -- mm1980 11.12.2017
 -- no retraction while z<=0.2mm (for better adhesion of the first layer)
 
-version = 2
-
 --variables
 current_z = 0		    --Z cache, produce shorter G-code (emit Z only if changed
 retraction_z = 0.21 --min z value for retraction (test current_z>retraction_z)
@@ -37,6 +35,10 @@ filament_priming_mm[0] = filament_priming_mm_0 	-- 1st extruder retraction lengt
 filament_priming_mm[1] = filament_priming_mm_1 	-- 2nd extruder retraction length
 
 --code
+
+function comment(text)
+  output('; ' .. text)
+end
 
 function header()
   output(';(**** QIDI Tech Avatar IV - profile QIDI ****)')
@@ -247,6 +249,10 @@ end
 
 function progress(percent)
   output('M73 P' .. percent)
+end
+
+function set_extruder_temperature(extruder,temperature)
+  output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
 current_fan_speed = -1

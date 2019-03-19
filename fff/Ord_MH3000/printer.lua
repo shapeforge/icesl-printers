@@ -1,7 +1,5 @@
 -- ORD
 
-version = 2
-
 current_extruder = 0
 current_frate = 0
 extruder_e = {}

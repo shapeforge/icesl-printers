@@ -1,5 +1,3 @@
-version = 2
-
 -- Printer dimmensions
 bed_size_x_mm = 220
 bed_size_y_mm = 220

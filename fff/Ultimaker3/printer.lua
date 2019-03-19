@@ -1,8 +1,6 @@
 -- Ultimaker 3
 -- Sylvain Lefebvre  2017-07-28
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

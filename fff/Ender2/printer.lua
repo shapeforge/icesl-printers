@@ -1,7 +1,5 @@
 -- Ender 2
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

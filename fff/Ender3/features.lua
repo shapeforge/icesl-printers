@@ -1,7 +1,5 @@
 -- Ender 3
 
-version = 2
-
 bed_size_x_mm = 220
 bed_size_y_mm = 220
 bed_size_z_mm = 250

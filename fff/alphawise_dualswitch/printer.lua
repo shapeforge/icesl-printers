@@ -1,8 +1,6 @@
 -- Alpha wise dual color switching extruder
 -- sylefeb 2018-12-08
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

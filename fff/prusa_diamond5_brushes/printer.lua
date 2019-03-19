@@ -1,6 +1,5 @@
 -- Diamond5 profile for brushes
 -- Use with caution, this is a highly experimental profile
-version = 2
 
 ----------------------------------------
 -- Verbose: Put this value to true to 
