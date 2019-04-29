@@ -4,7 +4,7 @@ These are printer profiles for IceSL; a modeler and slicer.
 
 http://icesl.loria.fr/
 
-Documentation for writting profiles:
+Documentation for writing profiles:
 
 https://gitlab.inria.fr/mfx/icesl-documentation/wikis/Printer-profile
 
