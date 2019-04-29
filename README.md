@@ -2,7 +2,11 @@
 
 These are printer profiles for IceSL; a modeler and slicer.
 
-http://shapeforge.loria.fr/icesl/
+http://icesl.loria.fr/
+
+Documentation for writting profiles:
+
+https://gitlab.inria.fr/mfx/icesl-documentation/wikis/Printer-profile
 
 # License
 
