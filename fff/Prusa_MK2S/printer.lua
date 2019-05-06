@@ -44,7 +44,6 @@ function layer_start(zheight)
   else
     output('G0 F100 Z' .. ff(zheight))
   end
-  current_z = zheight
 end
 
 function layer_stop()
@@ -74,7 +73,7 @@ function move_xyze(x,y,z,e)
 end
 
 function move_e(e)
-  extruder_e[current_extruder] = e
+  extruder_e = e
   letter = 'E'
   output('G0 ' .. letter .. ff(e-extruder_e_restart))
 end
