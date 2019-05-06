@@ -9,8 +9,6 @@
 -- Change precision to ff (from f 3 digits precision) for all extruder moves
 -- Make the layer change speed to be a fixed value
 
-version = 2
-
 custom_fan_management = false -- activate Colin Hudson strategy
 debug_level = 0 -- Higher number means more detailed debug in the gcode output
 debug_match = nil --  A string for differing debug domains ( currentz, adj_fan_speed, feedrate)

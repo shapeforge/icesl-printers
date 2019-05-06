@@ -1,8 +1,6 @@
 -- Anet A8
 -- 2017-12-27
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end
@@ -35,6 +33,8 @@ end
 
 function layer_start(zheight)
   output(';<layer ' .. layer_id .. '>')
+  output('G92 E0')
+  extruder_e_restart = extruder_e
   output('G1 Z' .. f(zheight))
 end
 

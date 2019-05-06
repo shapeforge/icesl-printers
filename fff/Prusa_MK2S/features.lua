@@ -1,8 +1,6 @@
 -- Original Prusa MK2S
 -- 13/09/2018
 
-version = 2
-
 bed_size_x_mm = 250
 bed_size_y_mm = 210
 bed_size_z_mm = 200

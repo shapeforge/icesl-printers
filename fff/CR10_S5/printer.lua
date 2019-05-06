@@ -1,7 +1,5 @@
 -- Generic reprap
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end
@@ -96,4 +94,12 @@ end
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
+end
+
+current_fan_speed = -1
+function set_fan_speed(speed)
+  if speed ~= current_fan_speed then
+    output('M106 S'.. math.floor(255 * speed/100))
+    current_fan_speed = speed
+  end
 end

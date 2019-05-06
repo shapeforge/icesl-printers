@@ -1,5 +1,3 @@
-version = 2
-
 -- custom settings in the UI
 tooltip_z_caching = 'G1 commands will not emit Z when it does not change\nthe only effect is having a smaller gcode file'
 tooltip_xy_caching = 'G1 commands will not emit X and Y when they do not change\nthe only effect is having a smaller gcode file'
@@ -69,6 +67,8 @@ enable_curved_covers_2 = false
 enable_curved_covers_3 = false
 priming_mm_per_sec = 120
 
+
+z_layer_height_mm = 0.1
 z_layer_height_mm_min = 0.1
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 

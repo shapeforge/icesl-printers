@@ -1,7 +1,5 @@
 -- Ender 2
 
-version = 2
-
 bed_size_x_mm = 165
 bed_size_y_mm = 165
 bed_size_z_mm = 205

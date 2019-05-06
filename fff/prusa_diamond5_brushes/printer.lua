@@ -1,116 +1,189 @@
 -- Diamond5 profile for brushes
--- Use with caution, this is aa highly experimental profile
-version = 2
+-- Use with caution, this is a highly experimental profile
 
-extruder_e = 0
-extruder_e_reset = 0
-extruder_e_adjusted = 0
+----------------------------------------
+-- Verbose: Put this value to true to 
+-- monitor retractions, primes and path types
+verbose    = true
+----------------------------------------
 
-current_A = 0.2
-current_B = 0.2
-current_C = 0.2
-current_D = 0.2
-current_H = 0.2
+current_e = 0
+
+extruder_e = {}
+for i = 0, extruder_count - 1 do
+  extruder_e[i] = 0.0
+end
+
+current_frate = 0
+
+current_A = 0.20
+current_B = 0.20
+current_C = 0.20
+current_D = 0.20
+current_H = 0.20
+
+current_fan_speed = -1
+
+retracted = false
+
+in_tower = false
+in_part = false
+
+-- ########################################
+
+function other_e(e)
+  local sum = 0.0
+  for i=0,extruder_count-1 do
+    if i ~= e then
+      sum = sum + extruder_e[i]
+    end
+  end
+  return sum
+end
+
+-- ########################################
 
 function comment(text)
   output('; ' .. text)
 end
 
+-- ########################################
+
 function header()
-  if auto_bed_leveling == true then
-    h = file('bed_level_header.gcode')
-  else
-    h = file('header.gcode')
-  end
+  auto_level_string = 'G29 ; auto bed levelling\nG0 F6200 X0 Y0 ; back to the origin to begin the purge '
+  
+  h = file('header.gcode')
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
+
+  if auto_bed_leveling == true then
+    h = h:gsub( '<BEDLVL>', auto_level_string )
+  else
+    h = h:gsub( '<BEDLVL>', "G0 F6200 X0 Y0" )
+  end
+
   output(h)
 end
+
+-- ########################################
 
 function footer()
   output(file('footer.gcode'))
 end
+
+-- ########################################
 
 function layer_start(zheight)
   comment('<layer>')
   output('G1 Z' .. f(zheight))
 end
 
+-- ########################################
+
 function layer_stop()
   comment('</layer>')
 end
 
+-- ########################################
+
 function retract(extruder,e)
-  len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec * 60;
+  if retracted then 
+    return e 
+  end
   letter = 'E'
-  output('G1 F' .. speed .. ' ' .. letter .. f(e - len ) .. ' A0.2 B0.2 C0.2 D0.2 H0.2 ')
-  extruder_e = e - len
+  len   = filament_priming_mm[extruder] * nb_filament_in
+  speed = (priming_mm_per_sec * nb_filament_in) * 60
+  extruder_e[current_e] = e - len
+  ----------------------------------------
+  if verbose == true then
+    comment('<retract from ' .. (e + other_e(current_e)) .. ' to ' .. (e - len + other_e(current_e)) .. '>')
+  end
+  ----------------------------------------
+  output('G1 F' .. speed .. ' ' .. letter .. ff(e - len + other_e(current_e)) .. ' A0.20 B0.20 C0.20 D0.20 H0.20')
+  retracted = true
   return e - len
 end
 
+-- ########################################
+
 function prime(extruder,e)
-  len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec * 60;
+  if not retracted then 
+    return e 
+  end
   letter = 'E'
-  output('G1 F' .. speed .. ' ' .. letter .. f(e + len ) .. ' A0.2 B0.2 C0.2 D0.2 H0.2 ')
-  extruder_e = e + len
+  len   = filament_priming_mm[extruder] * nb_filament_in
+  speed = (priming_mm_per_sec * nb_filament_in) * 60
+  extruder_e[current_e] = e + len
+  ----------------------------------------
+  if verbose == true then
+    comment('<prime from ' .. (e + other_e(current_e)) .. ' to ' .. (e + len + other_e(current_e)) .. '>')
+  end
+  ----------------------------------------
+  output('G1 F' .. speed .. ' ' .. letter .. ff(e + len + other_e(current_e)) .. ' A0.20 B0.20 C0.20 D0.20 H0.20')
+  retracted = false
   return e + len
 end
 
-current_extruder = 0
-current_frate = 0
+-- ########################################
 
 function select_extruder(extruder)
+  current_e = extruder
   comment('</select ' .. extruder .. '>')
 end
 
+-- ########################################
+
 function swap_extruder(from,to,x,y,z)
+  current_e = to
   comment('</swap>')
 end
 
+-- ########################################
+
 function move_xyz(x,y,z)
-  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset))
+  output('G0 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset))
 end
+
+-- ########################################
 
 function move_xyze(x,y,z,e)
-  letter = ' E'
+  letter = 'E'
   if path_is_raft then
-    current_A = 0.2
-    current_B = 0.2
-    current_C = 0.2
-    current_D = 0.2
-    current_H = 0.2
+    current_A = 0.20
+    current_B = 0.20
+    current_C = 0.20
+    current_D = 0.20
+    current_H = 0.20
   end
-   -- adjust based on filament diameters
-  delta_e    = e - extruder_e
-  extruder_e = e
-  r_a = current_A * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_A * filament_diameter_A)
-  r_b = current_B * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_B * filament_diameter_B)
-  r_c = current_C * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_C * filament_diameter_C)
-  r_d = current_D * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_D * filament_diameter_D)
-  r_h = current_H * (filament_diameter_mm_0 * filament_diameter_mm_0)
-        / (filament_diameter_H * filament_diameter_H)
-  sum = (r_a + r_b + r_c + r_d + r_h)
-  r_a = r_a / sum
-  r_b = r_b / sum
-  r_c = r_c / sum
-  r_d = r_d / sum
-  r_h = r_h / sum
-  -------------------------------------
-  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. ff(e) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c) .. ' D' .. f(r_d) .. ' H' .. f(r_h))
+
+  ----------------------------------------
+  if verbose == true then 
+    if path_is_perimeter == true or path_is_shell == true or path_is_infill == true then 
+      if in_part == false then
+        output(';Part')
+      end
+      in_part = true
+      in_tower = false
+    elseif path_is_tower == true then
+      if in_tower == false then
+        output(';Tower')
+      end
+      in_tower = true
+      in_part = false
+    end
+  end
+  ----------------------------------------  
+  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. current_frate .. ' ' .. letter .. ff(e + other_e(current_e)) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C) .. ' D' .. f(current_D) .. ' H' .. f(current_H))
 end
 
+-- ########################################
+
 function move_e(e)
-  
-  extruder_e          = e
   letter = ' E'
-  output('G1 ' .. letter .. ff(e))
+  output('G1 ' .. letter .. ff(e + other_e(current_e)))
 end
+
+-- ########################################
 
 function set_feedrate(feedrate)
   feedrate = math.floor(feedrate)
@@ -118,27 +191,37 @@ function set_feedrate(feedrate)
   current_frate = feedrate
 end
 
+-- ########################################
+
 function extruder_start()
 end
+
+-- ########################################
 
 function extruder_stop()
 end
 
+-- ########################################
+
 function progress(percent)
 end
+
+-- ########################################
 
 function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
+-- ########################################
+
 function set_mixing_ratios(ratios)
   sum = ratios[0] + ratios[1] + ratios[2] + ratios[3] + ratios[4]
   if sum == 0 then
-    ratios[0] = 0.2
-    ratios[1] = 0.2
-    ratios[2] = 0.2
-    ratios[3] = 0.2
-    ratios[4] = 0.2
+    ratios[0] = 0.20
+    ratios[1] = 0.20
+    ratios[2] = 0.20
+    ratios[3] = 0.20
+    ratios[4] = 0.20
   end
   current_A = ratios[0]
   current_B = ratios[1]
@@ -147,10 +230,13 @@ function set_mixing_ratios(ratios)
   current_H = ratios[4]
 end
 
-current_fan_speed = -1
+-- ########################################
+
 function set_fan_speed(speed)
   if speed ~= current_fan_speed then
     output('M106 S'.. math.floor(255 * speed/100))
     current_fan_speed = speed
   end
 end
+
+-- ########################################

@@ -1,8 +1,6 @@
 -- Raise3D N2 plus
 -- 2018-01-24
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

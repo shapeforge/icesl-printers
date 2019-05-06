@@ -1,7 +1,5 @@
 -- Prusa with Diamond 3 filaments
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

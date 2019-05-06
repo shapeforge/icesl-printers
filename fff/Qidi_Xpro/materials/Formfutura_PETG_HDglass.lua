@@ -44,4 +44,4 @@ support_extruder = 0
 add_brim = true
 brim_distance_to_print = 2.0
 brim_num_contours = 2
-procees_thin_features = false
+process_thin_features = false

@@ -4,9 +4,6 @@
 -- this version uses only E command to extrude so it is always necessary to toolchange before extruding
 -- A & B letters in place of E for G0 or G1 commands would allow simultaneous extrusion on both extruders
 
-
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

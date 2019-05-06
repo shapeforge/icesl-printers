@@ -1,8 +1,6 @@
 -- Prusa i3 MK2 MultiMaterial
 -- 2017-11-21
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end

@@ -1,8 +1,6 @@
 --Wanhao Duplicator i3
 --13.11.2017 Colin Hudson
 
-version = 2
-
 bed_size_x_mm = 200
 bed_size_y_mm = 200
 bed_size_z_mm = 180

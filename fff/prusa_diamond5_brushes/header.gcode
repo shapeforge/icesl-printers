@@ -5,6 +5,7 @@ M190 S<HBPTEMP> ; wait for bed temperature to be reached
 M109 S<TOOLTEMP> ; wait for temperature to be reached
 G28 ;home all axes
 G90 ; use absolute coordinates
+<BEDLVL>
 M82 ; use absolute distances for extrusion
 G92 E0
 G1 Z0.3

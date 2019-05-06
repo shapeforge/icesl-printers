@@ -1,5 +1,4 @@
 -- Generic reprap customized for Tevo Tarantula (still pretty generic, would work for any Marlin printer with Linear Advance feature enabled)
-version=2
 
 function comment(text)
   output('; ' .. text)

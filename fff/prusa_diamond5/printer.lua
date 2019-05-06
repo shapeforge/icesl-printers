@@ -1,7 +1,5 @@
 -- Diamond with Diamond 5 filaments
 
-version = 2
-
 function comment(text)
   output('; ' .. text)
 end
