@@ -1,8 +1,8 @@
-name_en = "PLA"
-name_es = "PLA"
-name_fr = "PLA"
+name_en = "TPU - Cheetah"
+name_es = "TPU - Cheetah"
+name_fr = "TPU - Cheetah"
 
-extruder_temp_degree_c_0 = 210
+extruder_temp_degree_c_0 = 240
 
 flow_multiplier_0 = 1.0
 
