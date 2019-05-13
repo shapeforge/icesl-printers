@@ -35,9 +35,10 @@ tower_side_x_mm = 10.0
 tower_side_y_mm = 25.0
 tower_brim_num_contours = 12
 
-extruder_swap_at_location = true -- Sent the toll head to the specified location to swap materials and create the purge tower
-extruder_swap_location_x_mm = bed_size_x_mm - (tower_side_x_mm / 2) - (tower_brim_num_contours * z_layer_height_mm) * 2
-extruder_swap_location_y_mm = bed_size_y_mm - (tower_side_y_mm / 2) - (tower_brim_num_contours * z_layer_height_mm) * 2
+extruder_swap_at_location = true -- Sent the tool head to the specified location to swap materials and create the purge tower
+purge_tower_offset = 5 -- Offset between the side of the build plate and the purging tower
+extruder_swap_location_x_mm = bed_size_x_mm - (tower_side_x_mm / 2) - ((tower_brim_num_contours * z_layer_height_mm) * 2) - purge_tower_offset
+extruder_swap_location_y_mm = bed_size_y_mm - (tower_side_y_mm / 2) - ((tower_brim_num_contours * z_layer_height_mm) * 2) - purge_tower_offset
 
 -- Printing speed limits
 print_speed_mm_per_sec = 60

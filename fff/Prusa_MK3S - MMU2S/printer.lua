@@ -130,6 +130,7 @@ function swap_extruder(from,to,x,y,z)
 
   extruder_e_swap[from] = extruder_e_swap[from] + extruder_e[from] - extruder_e_reset[from]
   current_extruder = to
+  skip_prime_retract = true
 
   --output('T' .. to)
   local s = file('swap.gcode')
@@ -247,6 +248,9 @@ end
 
 function set_and_wait_extruder_temperature(extruder,temperature) -- /!\ is called implicitly after swap_extruder()
   output('M109 S' .. temperature .. ' T' .. extruder)
+end
+
+function set_mixing_ratios(ratios)
 end
 
 function set_fan_speed(speed)
