@@ -1,5 +1,5 @@
 M107
-M115 U3.5.1 ; tell printer latest fw version
+M115 U3.7.1 ; tell printer latest fw version
 G21 ; set units to millimeters
 M104 S<TOOLTEMP> ; set extruder temp
 M140 S<HBPTEMP> ; set bed temp

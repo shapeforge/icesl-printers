@@ -56,7 +56,8 @@ first_layer_print_speed_mm_per_sec_max = 50
 travel_speed_mm_per_sec = 120
 
 -- Misc default settings
-flow_compensation = false -- prusa-like flow compensation for low layer height printing
+add_checkbox_setting('flow_compensation', 'Flow compensation','Prusa-like flow compensation low-layer-height printing.') -- prusa-like flow compensation for low layer height printing
+flow_compensation = false
 
 filament_type = 0 -- for M403 command for the MMU2 (0: default; 1:flex; 2: PVA)
 
@@ -68,8 +69,6 @@ process_thin_features = false
 
 curved_covers = false 
 
-material_mixing_enable_optimizer = false -- turn off the optimizer for material mixing, as the printer doesn't have a mixing extruder
-
 --#################################################
 
 -- Internal procedure to fill brushes / extruder settings
@@ -79,7 +78,7 @@ for i=0,63,1 do
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
-  _G['extruder_mix_count_'..i] = extruder_count
+  _G['extruder_mix_count_'..i] = 1
   _G['enable_curved_covers_'..i] = curved_covers
   _G['filament_priming_mm_'..i] = filament_priming_mm
 end

@@ -101,13 +101,14 @@ function select_extruder(extruder) -- called at the start of the print job for e
     output('; E stands for extruder number, F stands for filament type (0: default; 1:flex; 2: PVA)')
   end
 
-  last_extruder_selected = last_extruder_selected + 1
-  skip_prime_retract = true
   -- generate informations for the MMU2
   output('M403 E' .. extruder .. ' F' .. filament_type)
 
+  last_extruder_selected = last_extruder_selected + 1
+  skip_prime_retract = true
+
   -- generate the purge part of the "header" after selecting the last extruder 
-  if last_extruder_selected == extruder_count then 
+  if last_extruder_selected == number_of_extruders then -- number_of_extruders is an IceSL internal Lua global variable which is used to know how many extruders will be used for a print job
     skip_prime_retract = false
     local p = file('purge.gcode')
     p = p:gsub('<FIRST_EXTRUDER>', extruder)
@@ -132,8 +133,8 @@ function swap_extruder(from,to,x,y,z)
   current_extruder = to
   skip_prime_retract = true
 
-  --output('T' .. to)
   local s = file('swap.gcode')
+  s = s:gsub('<NEW_TOOL_TEMP>', extruder_temp_degree_c[extruders[to]])
   s = s:gsub('<NEW_TOOL>', 'T' .. to)
   output(s)
 end
@@ -243,11 +244,13 @@ function progress(percent)
 end
 
 function set_extruder_temperature(extruder,temperature)
-  output('M104 S' .. temperature .. ' T' .. extruder)
+  --output('M104 S' .. temperature .. ' T' .. extruder)
+  output('M104 S' .. temperature)
 end
 
 function set_and_wait_extruder_temperature(extruder,temperature) -- /!\ is called implicitly after swap_extruder()
-  output('M109 S' .. temperature .. ' T' .. extruder)
+  --output('M109 S' .. temperature .. ' T' .. extruder)
+  --output('M109 S' .. temperature)
 end
 
 function set_mixing_ratios(ratios)
