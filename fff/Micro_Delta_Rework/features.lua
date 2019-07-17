@@ -22,7 +22,7 @@ z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 
 -- Retraction Settings
 filament_priming_mm_0 = 2.0 -- min 0.5 - max 4
-priming_mm_per_sec = 80
+priming_mm_per_sec = 30
 
 -- Printing temperatures limits
 extruder_temp_degree_c = 210
