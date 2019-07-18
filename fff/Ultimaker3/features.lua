@@ -23,8 +23,7 @@ filament_priming_mm_0 = filament_priming_mm
 extruder_temp_degree_c_0 = extruder_temp_degree_c
 
 -- Extruder 1
---nozzle_diameter_mm_1 = nozzle_diameter_mm
-nozzle_diameter_mm_1 = 1.0
+nozzle_diameter_mm_1 = nozzle_diameter_mm
 filament_diameter_mm_1 = filament_diameter_mm
 filament_priming_mm_1 = filament_priming_mm
 extruder_temp_degree_c_1 = extruder_temp_degree_c
