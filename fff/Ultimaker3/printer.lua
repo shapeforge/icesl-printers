@@ -46,7 +46,7 @@ function prep_extruder(extruder)
   -- first time prime
   output('G280')
   -- go to zero to wipe on bed
-  output('G0 Z' .. 0.0)
+  --output('G0 Z' .. 0.0)
   -- prime done, reset E
   output('G92 E0')
 end

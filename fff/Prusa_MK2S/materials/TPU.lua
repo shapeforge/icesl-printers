@@ -1,6 +1,6 @@
-name_en = "Cheeta"
-name_fr = "Cheeta"
-name_es = "Cheeta"
+name_en = "TPU"
+name_fr = "TPU"
+name_es = "TPU"
 
 extruder_temp_degree_c_0 = 235
 bed_temp_degree_c = 45
