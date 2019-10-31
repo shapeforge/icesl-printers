@@ -2,7 +2,7 @@ name_en = "PETG"
 name_fr = "PETG"
 name_es = "PETG"
 
-extruder_temp_degree_c_0 = 210
+extruder_temp_degree_c_0 = 240
 bed_temp_degree_c = 70
 
 filament_priming_mm_0 = 0.8

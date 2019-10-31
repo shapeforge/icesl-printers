@@ -4,7 +4,7 @@ name_es = "PETG"
 
 filament_type = 0 -- for M403 command for the MMU2
 
-extruder_temp_degree_c_0 = 210
+extruder_temp_degree_c_0 = 240
 bed_temp_degree_c = 70
 
 filament_priming_mm_0 = 0.8
