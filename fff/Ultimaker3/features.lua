@@ -38,7 +38,7 @@ extruder_offset_y[1] =   0.0
 
 -- Printing temperatures limits
 extruder_temp_degree_c_min = 150
-extruder_temp_degree_c_max = 270
+extruder_temp_degree_c_max = 300
 
 bed_temp_degree_c     = 50
 bed_temp_degree_c_min = 0
