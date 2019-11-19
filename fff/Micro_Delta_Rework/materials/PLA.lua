@@ -5,7 +5,7 @@ name_es = "PLA"
 extruder_temp_degree_c_0 = 210
 bed_temp_degree_c = 60
 
-filament_priming_mm_0 = 0.8
+filament_priming_mm_0 = 2.0
 
 enable_fan = true
 fan_speed_percent = 100

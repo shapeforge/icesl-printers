@@ -5,7 +5,7 @@ name_es = "ABS"
 extruder_temp_degree_c_0 = 230
 bed_temp_degree_c = 100
 
-filament_priming_mm_0 = 0.6
+filament_priming_mm_0 = 2.0
 
 -- enable fan only if the printer is enclosed !
 enable_fan = false
