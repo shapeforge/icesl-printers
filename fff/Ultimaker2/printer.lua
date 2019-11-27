@@ -142,7 +142,12 @@ function move_e(e)
 end
 
 function set_feedrate(feedrate)
-  current_frate = feedrate
+  if feedrate ~= current_frate then
+    current_frate = feedrate
+    changed_frate = true
+  else
+    changed_frate = false
+  end
 end
 
 function extruder_start()

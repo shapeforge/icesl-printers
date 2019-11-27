@@ -2,9 +2,9 @@
 -- Sylvain Lefebvre  2017-07-28
 
 -- Build Area dimensions
-bed_size_x_mm = 215
-bed_size_y_mm = 195
-bed_size_z_mm = 200
+bed_size_x_mm = 215 -- 233 (max build width) - extruder 1 offset (18)
+bed_size_y_mm = 215
+bed_size_z_mm = 200 -- 300 for extended
 
 -- Extruders default settings
 extruder_count = 2
@@ -60,7 +60,7 @@ end
 ----
 
 -- Purge Tower
-gen_tower = true
+gen_tower = false
 tower_side_x_mm = 10.0
 tower_side_y_mm = 5.0
 tower_brim_num_contours = 12
