@@ -10,7 +10,7 @@ bed_size_z_mm = 160
 extruder_count = 1 -- number of extruders. If you want to use the virtual extruders feature for "simple multi-material", you can change this number to comply with the number of mixs
 nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
-nb_input = 3 -- number of inputed filament in the nozzle
+nb_input = 3 -- number of inputed filament in the nozzle. Maximum supported is 5
 extruder_purge_volume_mm3 = 10 -- volume of the needed purge between each material change
 
 -- Retraction Settings
@@ -50,6 +50,14 @@ travel_speed_mm_per_sec = 80
 print_speed_microlayers_mm_per_sec = 40
 mixing_shield_speed_multiplier = 1
 
+-- Specific mixing/multi-material settings
+travel_max_length_without_retract = 1
+extruder_swap_zlift_mm = 0
+
+flow_dampener_path_length_start_mm = 1
+flow_dampener_path_length_end_mm = 1
+flow_dampener_e_length_mm = 3
+
 -- Misc default settings
 enable_fit_single_path = true
 path_width_speed_adjustement_exponent = 1
@@ -57,7 +65,7 @@ path_width_speed_adjustement_exponent = 1
 gen_shield = true
 shield_distance_to_part_mm = 2
 
--- diamond_brushes mode
+-- diamond_brushes mode (virtual extruders)
 if extruder_count > 1 then 
   gen_shield = false
 
@@ -74,31 +82,29 @@ if extruder_count > 1 then
   end
 end
 
-travel_max_length_without_retract = 1
-extruder_swap_zlift_mm = 0
-
-flow_dampener_path_length_start_mm = 1
-flow_dampener_path_length_end_mm = 1
-flow_dampener_e_length_mm = 3
-
 -- Custom checkox to enable auto_bed_leveling
 add_checkbox_setting('auto_bed_leveling', 'Auto Bed Leveling','Use G29 Auto Leveling if the machine is equipped with one (BLTouch, Pinda, capacitive sensor, etc.)')
 auto_bed_leveling = true
 
 -- Filament diameter management
 -- if enabled, custom fields will be created to specify specific diameter for each input
-filament_diameter_management = false
+filament_diameter_management = true
 --add_checkbox_setting('filament_diameter_management', 'Manage Filament Diameters','Manage the diameter of your filaments (if you use custum made filaments)')
 
+extruder_letters = {"A", "B", "C", "D", "H"} -- array to store extruder letter for the Filament diameter management settings generation
+
+  --filament_diameter = {}
 if filament_diameter_management == true then
-  add_setting('filament_diameter_A','Filament diameter extruder A',1.0,2.0)
-  filament_diameter_A = 1.75
-  
-  add_setting('filament_diameter_B','Filament diameter extruder B',1.0,2.0)
-  filament_diameter_B = 1.75
-  
-  add_setting('filament_diameter_C','Filament diameter extruder C',1.0,2.0)
-  filament_diameter_C = 1.75
+  for i = 1, nb_input do
+    -- generating a new dynamic global to store the filament diameter
+    _G['filament_diameter_' .. extruder_letters[i]] = 1.75
+    add_setting('filament_diameter_' .. extruder_letters[i], 'Filament diameter extruder ' .. extruder_letters[i], 1.0, 2.0)
+
+
+    --filament_diameter[i] = filament_diameter_mm
+    --add_setting('filament_diameter[' .. i .. ']', 'Filament diameter for extruder ' .. extruder_letters[i], 1.0, 2.0)
+    --print(filament_diameter[i])
+  end
 end
 
 --#################################################

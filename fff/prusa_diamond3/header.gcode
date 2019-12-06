@@ -9,8 +9,8 @@ G90 ; use absolute coordinates
 M82 ; use absolute distances for extrusion
 G92 E0
 G1 Z0.3
-G1 X100.0 Y0 Z0.3 E50 F600.0 A0.33 B0.33 C0.34; start purge
-G1 X190 Y0 Z0.3 E80 F1200.0 A0.33 B0.33 C0.34; finish purge line﻿
-G1 E70 F25000 A0.33 B0.33 C0.34; Retract a little
+G1 X100.0 Y0 Z0.3 E50 F600.0<PURGE_RATIOS>; start purge
+G1 X190 Y0 Z0.3 E80 F1200.0<PURGE_RATIOS>; finish purge line﻿
+G1 E70 F25000<PURGE_RATIOS>; Retract a little
 G1 X195 Y0 Z0.3 F4000 ; Quickly wipe away from the filament line
 G92 E0

@@ -28,9 +28,10 @@ last_extruder_selected = 0 -- counter to track the selected / prepared extruders
 
 current_fan_speed = -1
 
-current_A = 0.333
-current_B = 0.333
-current_C = 0.333
+current_mix_ratio = {} -- array to store the current mixing ratios, with the first number for the A ratio, etc.
+for i = 1, nb_input do
+  current_mix_ratio[i] = 1 / nb_input
+end
 
 craftware_debug = true
 
@@ -52,6 +53,13 @@ function header()
   else
     h = h:gsub( '<BEDLVL>', "G0 F6200 X0 Y0" )
   end
+
+  local purge_ratios = ""
+  for i = 1, nb_input do
+    purge_ratios = purge_ratios .. " " .. extruder_letters[i] .. f(1 / nb_input)
+  end
+
+  h = h:gsub( '<PURGE_RATIOS>', purge_ratios)
 
   output(h)
 end
@@ -86,7 +94,13 @@ function retract(extruder,e)
       extruder_e_adjusted[current_extruder] = extruder_e_adjusted[current_extruder] - len
       e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder]
     end
-    output('G1 F' .. speed .. ' E' .. ff(e_value) .. ' A0.33 B0.33 C0.34')
+
+    local retract_ratios = ""
+    for i = 1, nb_input do
+      retract_ratios = retract_ratios .. " " .. extruder_letters[i] .. f(1 / nb_input)
+    end
+    output('G1 F' .. speed .. ' E' .. ff(e_value) .. retract_ratios)
+
     extruder_e[current_extruder] = e - len
     return e - len
   end
@@ -107,7 +121,13 @@ function prime(extruder,e)
       extruder_e_adjusted[current_extruder] = extruder_e_adjusted[current_extruder] + len
       e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder] 
     end
-    output('G1 F' .. speed .. ' E' .. ff(e_value) .. ' A0.33 B0.33 C0.34')
+
+    local prime_ratios = ""
+    for i = 1, nb_input do
+      prime_ratios = prime_ratios .. " " .. extruder_letters[i] .. f(1 / nb_input)
+    end
+    output('G1 F' .. speed .. ' E' .. ff(e_value) .. prime_ratios)
+
     extruder_e[current_extruder] = e + len
     return e + len
   end
@@ -164,9 +184,9 @@ function move_xyze(x,y,z,e)
   local e_value = extruder_e[current_extruder] - extruder_e_reset[current_extruder]
 
   if path_is_raft then
-    current_A = 0.33
-    current_B = 0.33
-    current_C = 0.34
+    for i = 1, nb_input do
+      current_mix_ratio[i] = 1 / nb_input
+    end
   end
   
   if processing == false then 
@@ -194,45 +214,52 @@ function move_xyze(x,y,z,e)
     end
   end
 
-  local r_a = current_A
-  local r_b = current_B
-  local r_c = current_C
+  local r_ = {} -- local array to compute new mixing ratios
+  for i = 1, nb_input do
+    r_[i] = current_mix_ratio[i]
+  end
 
   -- adjust based on filament diameters  
   if filament_diameter_management == true then
-    r_a = current_A * (filament_diameter_mm_0 * filament_diameter_mm_0)
-          / (filament_diameter_A * filament_diameter_A)
-    r_b = current_B * (filament_diameter_mm_0 * filament_diameter_mm_0)
-          / (filament_diameter_B * filament_diameter_B)
-    r_c = current_C * (filament_diameter_mm_0 * filament_diameter_mm_0)
-          / (filament_diameter_C * filament_diameter_C)
-    local sum = (r_a + r_b + r_c)
-    r_a = r_a / sum
-    r_b = r_b / sum
-    r_c = r_c / sum
+    local sum = 0
+    for i = 1, nb_input do
+      r_[i] = r_[i] * (filament_diameter_mm_0^2) / (_G['filament_diameter_' .. extruder_letters[i]]^2)
+      sum = sum + r_[i]
+    end
+
+    for i = 1, nb_input do
+      r_[i] = r_[i] / sum
+    end
+
     local delta_e_adjusted = delta_e * sum
     extruder_e_adjusted[current_extruder] = extruder_e_adjusted[current_extruder] + delta_e_adjusted
 
     e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder]
   end
+
+  local ratios_string = ""
+  for i = 1, nb_input do
+    ratios_string = ratios_string .. " " .. extruder_letters[i] .. f(r_[i])
+  end
   -------------------------------------
 
   if z == current_z then
     if changed_frate == true then 
-      output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c))
+      output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value) .. ratios_string)
       changed_frate = false
     else
-      output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c))
+      output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value) .. ratios_string)
     end
   else
     if changed_frate == true then
-      output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' E' .. ff(e_value) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c))
+      output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' E' .. ff(e_value) .. ratios_string)
       changed_frate = false
     else
-      output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' E' .. ff(e_value) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c))
+      output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' E' .. ff(e_value) .. ratios_string)
     end
     current_z = z
   end
+
 end
 
 function move_e(e)
@@ -247,11 +274,16 @@ function move_e(e)
     e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder]
   end
 
+  local ratios_string = ""
+  for i = 1, nb_input do
+    ratios_string = ratios_string .. " " .. extruder_letters[i] .. f(r_[i])
+  end
+
   if changed_frate == true then 
-    output('G1 F' .. current_frate .. ' E' .. ff(e_value) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
+    output('G1 F' .. current_frate .. ' E' .. ff(e_value) .. ratios_string)
     changed_frate = false
   else
-    output('G1 E' .. ff(e_value) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
+    output('G1 E' .. ff(e_value) .. ratios_string)
   end
 end
 
@@ -285,20 +317,31 @@ function set_mixing_ratios(ratios)
   if skip_ratios_change then 
     skip_ratios_change = false
   else
-    local sum = ratios[0] + ratios[1] + ratios[2]
-    if sum == 0 then
-      ratios[0] = 0.33
-      ratios[1] = 0.33
-      ratios[2] = 0.34
+    local sum = 0
+    for i = 0, table.getn(ratios) do
+      sum = sum + ratios[i]
     end
-  
-    if ratios[0] ~= current_A or ratios[1] ~= current_B or ratios[2] ~= current_C then
-      current_A = ratios[0]
-      current_B = ratios[1]
-      current_C = ratios[2]
-      comment('Mixing Ratios set to A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C))
-      output('G92 E0')
-      extruder_e_reset[current_extruder] = extruder_e[current_extruder]
+
+    if sum == 0 then
+      for i = 0, table.getn(ratios) do
+        ratios[i] = 1 / nb_input
+      end
+    end
+
+    local ratios_string = ""
+    local changed = false
+    for i = 1, nb_input do
+      if ratios[i-1] ~= current_mix_ratio[i] then
+        current_mix_ratio[i] = f(ratios[i-1])
+        ratios_string = ratios_string .. " " .. extruder_letters[i] .. current_mix_ratio[i]
+        changed = true
+      end
+    end
+
+    if changed == true then
+      comment('Mixing Ratios set to' .. ratios_string)
+      --output('G92 E0')
+      --extruder_e_reset[current_extruder] = extruder_e[current_extruder]
     end
   end
 end
