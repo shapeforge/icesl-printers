@@ -38,7 +38,7 @@ end
 
 function retract(extruder,e)
   len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec * 60;
+  speed = priming_mm_per_sec[extruder] * 60;
   letter = 'E'
   output('G1 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart) .. ' A1 B1 C1')
   extruder_e = e - len
@@ -47,7 +47,7 @@ end
 
 function prime(extruder,e)
   len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec * 60;
+  speed = priming_mm_per_sec[extruder] * 60;
   output('G1 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart) .. ' A1 B1 C1')
   extruder_e = e + len
   return e + len

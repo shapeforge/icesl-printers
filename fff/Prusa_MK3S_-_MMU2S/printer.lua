@@ -56,7 +56,7 @@ function retract(extruder,e)
   else
     comment('retract')
     local len   = filament_priming_mm[extruder]
-    local speed = priming_mm_per_sec * 60
+    local speed = priming_mm_per_sec[extruder] * 60
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] - len))
     return e - len
@@ -71,7 +71,7 @@ function prime(extruder,e)
   else
     comment('prime')
     local len   = filament_priming_mm[extruder]
-    local speed = priming_mm_per_sec * 60
+    local speed = priming_mm_per_sec[extruder] * 60
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] + len))
     return e + len

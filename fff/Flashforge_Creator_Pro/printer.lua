@@ -83,7 +83,7 @@ end
 
 function retract(extruder,e)
   local len   = filament_priming_mm[extruder]
-  local speed = priming_mm_per_sec * 60;
+  local speed = priming_mm_per_sec[extruder] * 60;
   if extruder == 0 then letter = 'A' else letter = 'B' end
   output('G1 F' .. f(speed) .. ' ' .. letter .. ff(e - len))
   return e - len
@@ -91,7 +91,7 @@ end
 
 function prime(extruder,e)
   local len   = filament_priming_mm[extruder]
-  local speed = priming_mm_per_sec * 60;
+  local speed = priming_mm_per_sec[extruder] * 60;
   if extruder == 0 then letter = 'A' else letter = 'B' end
   output('G1 F' .. f(speed) .. ' ' .. letter .. ff(e + len))
   return e + len

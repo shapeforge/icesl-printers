@@ -192,13 +192,13 @@ function Qrestore(speed,len)
 end
 
 function retract(tool,e)
-  speed = priming_mm_per_sec * 60
+  speed = priming_mm_per_sec[extruder] * 60
   len = filament_priming_mm[current_tool]
   return Qretract(speed,len)
 end
 
 function prime(tool,e)
-  speed = priming_mm_per_sec * 60
+  speed = priming_mm_per_sec[extruder] * 60
   len   = filament_priming_mm[current_tool]
   return Qrestore(speed,len)
 end

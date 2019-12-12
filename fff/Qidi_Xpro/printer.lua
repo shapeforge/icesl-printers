@@ -165,14 +165,14 @@ end
 
 function retract(extruder,e)
   swapping = false
-  speed = priming_mm_per_sec * 60
+  speed = priming_mm_per_sec[extruder] * 60
   len = filament_priming_mm[current_extruder]
   return Qretract(speed,len,swapping)
 end
 
 function prime(extruder,e)
   swapping = false
-  speed = priming_mm_per_sec * 60
+  speed = priming_mm_per_sec[extruder] * 60
   len   = filament_priming_mm[current_extruder]
   return Qrestore(speed,len,swapping)
 end

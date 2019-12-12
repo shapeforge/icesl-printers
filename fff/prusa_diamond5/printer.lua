@@ -82,7 +82,7 @@ function retract(extruder,e)
   else
     comment('retract')
     local len    = filament_priming_mm[extruder] * nb_input
-    local speed  = (priming_mm_per_sec * nb_input) * 60;
+    local speed  = (priming_mm_per_sec[extruder] * nb_input) * 60;
     local e_value = e - len - extruder_e_reset[current_extruder]
     if filament_diameter_management == true then
       extruder_e_adjusted[current_extruder] = extruder_e_adjusted[current_extruder] - len
@@ -103,7 +103,7 @@ function prime(extruder,e)
   else
     comment('prime')
     local len   = filament_priming_mm[extruder] * nb_input
-    local speed = (priming_mm_per_sec * nb_input) * 60;
+    local speed = (priming_mm_per_sec[extruder] * nb_input) * 60;
     local e_value = e + len - extruder_e_reset[current_extruder]
     if filament_diameter_management == true then
       extruder_e_adjusted[current_extruder] = extruder_e_adjusted[current_extruder] + len
