@@ -4,6 +4,7 @@ M104 S<TOOLTEMP> ; set temperature
 G28 ; home all axes
 M109 S<TOOLTEMP> ; wait for temperature to be reached
 G90 ; use absolute coordinates
+<BEDLVL>
 M82 ; use absolute distances for extrusion
 G92 E0
 G1 Z1.0 F3000 ; move z up little to prevent scratching of surface
