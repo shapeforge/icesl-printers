@@ -11,5 +11,4 @@ G92 E0
 G1 X5.0 Y5.0 Z0.3
 G1 X65.0 Y5.0 E9.0  F1000.0 ; purge line
 G1 X105.0 Y5.0 E12.5  F1000.0 ; purge line
-G1 F25000 E12; Retract a little
 G92 E0
