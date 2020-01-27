@@ -2,6 +2,8 @@ name_en = "PLA"
 name_fr = "PLA"
 name_es = "PLA"
 
+filament_linear_adv_factor = 30
+
 extruder_temp_degree_c_0 = 210
 bed_temp_degree_c = 60
 

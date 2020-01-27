@@ -25,6 +25,7 @@ function header()
   local h = file('header.gcode')
   h = h:gsub('<TOOLTEMP>', extruder_temp_degree_c[extruders[0]])
   h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
+  h = h:gsub('<FILAMENT>', filament_linear_adv_factor)
   output(h)
 end
 
