@@ -1,5 +1,5 @@
 M862.3 P "MK2.5S" ; printer model check
-;M862.1 P0.4 ; nozzle diameter check
+M862.1 P<NOZZLE_DIAMETER> ; nozzle diameter check
 M115 U3.8.1 ; tell printer latest fw version
 
 <ACCELERATIONS>

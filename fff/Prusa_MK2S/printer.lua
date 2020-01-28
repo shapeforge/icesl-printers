@@ -33,6 +33,11 @@ function comment(text)
   output('; ' .. text)
 end
 
+function round(number, decimals)
+  local power = 10^decimals
+  return math.floor(number * power) / power
+end
+
 function header()
   local acc_string = ''
   acc_string = acc_string .. 'M201 X' .. x_max_acc .. ' Y' .. y_max_acc .. ' Z' .. z_max_acc .. ' E' .. e_max_acc .. ' ; sets maximum accelerations, mm/sec^2\n'
@@ -42,6 +47,7 @@ function header()
   acc_string = acc_string .. 'M205 S0 T0 ; sets the minimum extruding and travel feed rate, mm/sec'
 
   local h = file('header.gcode')
+  h = h:gsub('<NOZZLE_DIAMETER>', round(nozzle_diameter_mm_0,2))
   h = h:gsub('<ACCELERATIONS>', acc_string)
   h = h:gsub('<TOOLTEMP>', extruder_temp_degree_c[extruders[0]])
   h = h:gsub('<HBPTEMP>', bed_temp_degree_c)

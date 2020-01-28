@@ -8,7 +8,7 @@ bed_size_z_mm = 200
 
 -- Printer Extruder
 extruder_count = 1
-nozzle_diameter_mm = 0.4
+nozzle_diameter_mm = 0.4 -- 0.25, 0.4, 0.6
 filament_diameter_mm = 1.75
 filament_linear_adv_factor = 0 -- default
 
