@@ -17,14 +17,14 @@ filament_priming_mm = 0.8 -- min 0.5 - max 2
 priming_mm_per_sec = 35
 
 enable_z_lift = true
-z_liftmm = 0.6
+z_lift_mm = 0.6
 
--- Layer height limits
+-- Layer height
 z_layer_height_mm = 0.2
 z_layer_height_mm_min = nozzle_diameter_mm * 0.10
 z_layer_height_mm_max = nozzle_diameter_mm * 0.90
 
--- Printing temperatures limits
+-- Printing temperatures
 extruder_temp_degree_c = 210
 extruder_temp_degree_c_min = 150
 extruder_temp_degree_c_max = 270
@@ -33,8 +33,8 @@ bed_temp_degree_c = 55
 bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 120
 
--- Printing speed limits
-print_speed_mm_per_sec = 50
+-- Printing speeds
+print_speed_mm_per_sec = 60
 print_speed_mm_per_sec_min = 5
 print_speed_mm_per_sec_max = 120
 
@@ -63,8 +63,6 @@ e_prime_max_acc = 1500 -- mm/s²
 
 perimeter_acc = 800 -- mm/s²
 infill_acc = 2000 -- mm/s²
---bridge_acc = 1000 -- mm/s²
---first_layer_acc = 1000 -- mm/s²
 default_acc = 1000 -- mm/s²
 
 x_max_jerk = 10.00 -- mm/s
