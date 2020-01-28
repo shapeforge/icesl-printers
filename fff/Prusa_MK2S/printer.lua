@@ -13,7 +13,19 @@ current_frate = 0
 
 current_fan_speed = -1
 
-craftware_debug = true
+path_type = {
+--{ 'default',    'Craftware'}
+  { ';perimeter',  ';segType:Perimeter' },
+  { ';shell',      ';segType:HShell' },
+  { ';infill',     ';segType:Infill' },
+  { ';raft',       ';segType:Raft' },
+  { ';brim',       ';segType:Skirt' },
+  { ';shield',     ';segType:Pillar' },
+  { ';support',    ';segType:Support' },
+  { ';tower',      ';segType:Pillar'}
+}
+
+craftware_debug = true -- allow the use of Craftware paths naming convention
 
 --##################################################
 
@@ -22,7 +34,15 @@ function comment(text)
 end
 
 function header()
+  local acc_string = ''
+  acc_string = acc_string .. 'M201 X' .. x_max_acc .. ' Y' .. y_max_acc .. ' Z' .. z_max_acc .. ' E' .. e_max_acc .. ' ; sets maximum accelerations, mm/sec^2\n'
+  acc_string = acc_string .. 'M203 X' .. x_max_speed .. ' Y' .. y_max_speed .. ' Z' .. z_max_speed .. ' E' .. e_max_speed .. ' ; sets maximum feedrates, mm/sec\n'
+  acc_string = acc_string .. 'M204 P' .. ex_max_acc .. ' R' .. e_prime_max_acc .. ' T' .. ex_max_acc .. ' ; sets acceleration (P, T) and retract acceleration (R), mm/sec^2\n'
+  acc_string = acc_string .. 'M205 X' .. x_max_jerk .. ' Y' .. y_max_jerk .. ' Z' .. z_max_jerk .. ' E' .. e_max_jerk .. ' ; sets the jerk limits, mm/sec\n'
+  acc_string = acc_string .. 'M205 S0 T0 ; sets the minimum extruding and travel feed rate, mm/sec'
+
   local h = file('header.gcode')
+  h = h:gsub('<ACCELERATIONS>', acc_string)
   h = h:gsub('<TOOLTEMP>', extruder_temp_degree_c[extruders[0]])
   h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
   h = h:gsub('<FILAMENT>', filament_linear_adv_factor)
@@ -37,7 +57,7 @@ function retract(extruder,e)
   output(';retract')
   local len   = filament_priming_mm[extruder]
   local speed = priming_mm_per_sec[extruder] * 60
-  output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
+  output('G1 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
   extruder_e = e - len
   return e - len
 end
@@ -46,7 +66,7 @@ function prime(extruder,e)
   output(';prime')
   local len   = filament_priming_mm[extruder]
   local speed = priming_mm_per_sec[extruder] * 60
-  output('G0 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
+  output('G1 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
   extruder_e = e + len
   return e + len
 end
@@ -73,10 +93,10 @@ function swap_extruder(from,to,x,y,z)
 end
 
 function move_xyz(x,y,z)
-    --output(';travel')
   if processing == true then
     processing = false
-    comment('travel')
+    output(';travel')
+    output('M204 S' .. default_acc)
   end
 
   if z == current_z then
@@ -104,26 +124,16 @@ function move_xyze(x,y,z,e)
 
   if processing == false then 
     processing = true
-    if craftware_debug == true then
-      if      path_is_perimeter then output(';segType:Perimeter')
-      elseif  path_is_shell     then output(';segType:HShell')
-      elseif  path_is_infill    then output(';segType:Infill')
-      elseif  path_is_raft      then output(';segType:Raft')
-      elseif  path_is_brim      then output(';segType:Skirt')
-      elseif  path_is_shield    then output(';segType:Pillar')
-      elseif  path_is_support   then output(';segType:Support')
-      elseif  path_is_tower     then output(';segType:Pillar')
-      end
-    else
-      if      path_is_perimeter then comment('perimeter')
-      elseif  path_is_shell     then comment('shell')
-      elseif  path_is_infill    then comment('infill')
-      elseif  path_is_raft      then comment('raft')
-      elseif  path_is_brim      then comment('brim')
-      elseif  path_is_shield    then comment('shield')
-      elseif  path_is_support   then comment('support')
-      elseif  path_is_tower     then comment('tower')
-      end
+    local p_type = 1 -- default paths naming
+    if craftware_debug then p_type = 2 end
+    if      path_is_perimeter then output(path_type[1][p_type]) output('M204 S' .. perimeter_acc)
+    elseif  path_is_shell     then output(path_type[2][p_type]) output('M204 S' .. perimeter_acc)
+    elseif  path_is_infill    then output(path_type[3][p_type]) output('M204 S' .. infill_acc)
+    elseif  path_is_raft      then output(path_type[4][p_type]) output('M204 S' .. default_acc)
+    elseif  path_is_brim      then output(path_type[5][p_type]) output('M204 S' .. default_acc)
+    elseif  path_is_shield    then output(path_type[6][p_type]) output('M204 S' .. default_acc)
+    elseif  path_is_support   then output(path_type[7][p_type]) output('M204 S' .. default_acc)
+    elseif  path_is_tower     then output(path_type[8][p_type]) output('M204 S' .. default_acc)
     end
   end
 

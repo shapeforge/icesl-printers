@@ -9,11 +9,11 @@ bed_size_z_mm = 200
 -- Printer Extruder
 extruder_count = 1
 nozzle_diameter_mm = 0.4
-filament_diameter_mm_0 = 1.75
+filament_diameter_mm = 1.75
 filament_linear_adv_factor = 0 -- default
 
 -- Retraction Settings
-filament_priming_mm_0 = 0.8 -- min 0.5 - max 2
+filament_priming_mm = 0.8 -- min 0.5 - max 2
 priming_mm_per_sec = 35
 
 enable_z_lift = true
@@ -36,7 +36,7 @@ bed_temp_degree_c_max = 120
 -- Printing speed limits
 print_speed_mm_per_sec = 50
 print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 80
+print_speed_mm_per_sec_max = 120
 
 perimeter_print_speed_mm_per_sec = 45
 perimeter_print_speed_mm_per_sec_min = 5
@@ -44,17 +44,41 @@ perimeter_print_speed_mm_per_sec_max = 80
 
 first_layer_print_speed_mm_per_sec = 20
 first_layer_print_speed_mm_per_sec_min = 1
-first_layer_print_speed_mm_per_sec_max = 80
+first_layer_print_speed_mm_per_sec_max = 50
 
 travel_speed_mm_per_sec = 180
+
+-- Acceleration settings
+x_max_speed = 500 -- mm/s
+y_max_speed = 500 -- mm/s
+z_max_speed = 12 -- mm/s
+e_max_speed = 120 -- mm/s
+
+x_max_acc = 9000 -- mm/s²
+y_max_acc = 9000 -- mm/s²
+z_max_acc = 500 -- mm/s²
+e_max_acc = 10000 -- mm/s²
+ex_max_acc = 2000 -- mm/s²
+e_prime_max_acc = 1500 -- mm/s²
+
+perimeter_acc = 800 -- mm/s²
+infill_acc = 2000 -- mm/s²
+--bridge_acc = 1000 -- mm/s²
+--first_layer_acc = 1000 -- mm/s²
+default_acc = 1000 -- mm/s²
+
+x_max_jerk = 10.00 -- mm/s
+y_max_jerk = 10.00 -- mm/s
+z_max_jerk = 0.20 -- mm/s
+e_max_jerk = 2.50 -- mm/s
 
 --#################################################
 
 -- Internal procedure to fill brushes / extruder settings
 
 for i = 0, 63 ,1 do
-  _G['filament_diameter_mm_'..i] = filament_diameter_mm_0
-  _G['filament_priming_mm_'..i] = filament_priming_mm_0
+  _G['filament_diameter_mm_'..i] = filament_diameter_mm
+  _G['filament_priming_mm_'..i] = filament_priming_mm
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

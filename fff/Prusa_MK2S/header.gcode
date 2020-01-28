@@ -2,11 +2,7 @@ M862.3 P "MK2.5S" ; printer model check
 ;M862.1 P0.4 ; nozzle diameter check
 M115 U3.8.1 ; tell printer latest fw version
 
-M201 X9000 Y9000 Z500 E10000 ; sets maximum accelerations, mm/sec^2
-M203 X500 Y500 Z12 E120 ; sets maximum feedrates, mm/sec
-M204 P2000 R1500 T2000 ; sets acceleration (P, T) and retract acceleration (R), mm/sec^2
-M205 X10.00 Y10.00 Z0.20 E2.50 ; sets the jerk limits, mm/sec
-M205 S0 T0 ; sets the minimum extruding and travel feed rate, mm/sec
+<ACCELERATIONS>
 
 M104 S<TOOLTEMP> ; set extruder temp
 M140 S<HBPTEMP> ; set bed temp
