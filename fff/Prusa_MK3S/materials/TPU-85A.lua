@@ -2,6 +2,8 @@ name_en = "TPU-85A"
 name_fr = "TPU-85A"
 name_es = "TPU-85A"
 
+filament_linear_adv_factor = 0
+
 extruder_temp_degree_c_0 = 240
 bed_temp_degree_c = 40
 
