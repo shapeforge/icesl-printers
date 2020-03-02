@@ -95,8 +95,8 @@ end
 
 swap_dist_mm = 50
 
-tower_a = extruder_swap_location_x_mm - swap_dist_mm/2
-tower_b = extruder_swap_location_x_mm + swap_dist_mm/2
+tower_a = tower_location_x_mm - swap_dist_mm/2
+tower_b = tower_location_x_mm + swap_dist_mm/2
 
 -- [fr] cette fonction est appelee pour re-introduire le filament
 function load_extruder(extruder)

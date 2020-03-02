@@ -5,9 +5,9 @@ bed_size_z_mm = 200
 nozzle_diameter_mm = 0.4
 
 extruder_count = 2
-extruder_swap_at_location = true
-extruder_swap_location_x_mm = 90
-extruder_swap_location_y_mm = 140
+tower_at_location = true
+tower_location_x_mm = 90
+tower_location_y_mm = 140
 
 extruder_swap_retract_length_mm = 200.0
 extruder_swap_retract_speed_mm_per_sec = 90.0

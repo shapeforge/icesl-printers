@@ -11,9 +11,9 @@ extruder_offset_y[0] =  0.0
 extruder_offset_x[1] =  0.0
 extruder_offset_y[1] =  0.0
 
-extruder_swap_at_location = true
-extruder_swap_location_x_mm = bed_size_x_mm / 2 - 15
-extruder_swap_location_y_mm = bed_size_y_mm / 2 - 15
+tower_at_location = true
+tower_location_x_mm = bed_size_x_mm / 2 - 15
+tower_location_y_mm = bed_size_y_mm / 2 - 15
 
 gen_tower = true
 tower_side_x_mm = 10.0

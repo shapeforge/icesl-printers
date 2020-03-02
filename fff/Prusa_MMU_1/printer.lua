@@ -91,8 +91,8 @@ end
 swap_dist_mm = 60
 
 function load_extruder(extruder)
-  local tower_u = extruder_swap_location_y_mm - swap_dist_mm/2
-  local tower_d = extruder_swap_location_y_mm + swap_dist_mm/2
+  local tower_u = tower_location_y_mm - swap_dist_mm/2
+  local tower_d = tower_location_y_mm + swap_dist_mm/2
 
   -- load filament
   output(';load extruder ' .. extruder)
@@ -111,8 +111,8 @@ function load_extruder(extruder)
 end
 
 function unload_extruder(extruder)
-  local tower_u = extruder_swap_location_y_mm - swap_dist_mm/2
-  local tower_d = extruder_swap_location_y_mm + swap_dist_mm/2
+  local tower_u = tower_location_y_mm - swap_dist_mm/2
+  local tower_d = tower_location_y_mm + swap_dist_mm/2
 
   output(';unload extruder ' .. extruder)
   output('G92 E0')

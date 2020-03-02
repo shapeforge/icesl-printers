@@ -65,10 +65,10 @@ tower_side_x_mm = 10.0
 tower_side_y_mm = 5.0
 tower_brim_num_contours = 12
 
-extruder_swap_at_location = true -- Requires extruder to swap material at a given location,
+tower_at_location = true -- Requires extruder to swap material at a given location,
 -- this also forces the tower to appear at this same location.
-extruder_swap_location_x_mm = 201
-extruder_swap_location_y_mm = 179
+tower_location_x_mm = 201
+tower_location_y_mm = 179
 
 extruder_swap_retract_length_mm = 16.0
 extruder_swap_retract_speed_mm_per_sec = 30.0

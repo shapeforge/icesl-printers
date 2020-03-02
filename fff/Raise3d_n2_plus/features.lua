@@ -5,9 +5,9 @@ bed_size_z_mm = 610
 nozzle_diameter_mm = 0.4
 
 extruder_count = 2
-extruder_swap_at_location = true
-extruder_swap_location_x_mm = bed_size_x_mm
-extruder_swap_location_y_mm = bed_size_y_mm
+tower_at_location = true
+tower_location_x_mm = bed_size_x_mm
+tower_location_y_mm = bed_size_y_mm
 
 z_offset   = 0.0
 

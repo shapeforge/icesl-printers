@@ -67,9 +67,9 @@ gen_tower = false
 tower_brim_num_contours = 5
 tower_side_x_mm = 10
 tower_side_y_mm = 10
-extruder_swap_at_location = true
-extruder_swap_location_x_mm = bed_size_x_mm - 10 - tower_side_x_mm - tower_brim_num_contours * nozzle_diameter_mm
-extruder_swap_location_y_mm = bed_size_y_mm - 10 - tower_side_y_mm - tower_brim_num_contours * nozzle_diameter_mm
+tower_at_location = true
+tower_location_x_mm = bed_size_x_mm - 10 - tower_side_x_mm - tower_brim_num_contours * nozzle_diameter_mm
+tower_location_y_mm = bed_size_y_mm - 10 - tower_side_y_mm - tower_brim_num_contours * nozzle_diameter_mm
 
 -- various default option settings
 support_print_speed_mm_per_sec = 50

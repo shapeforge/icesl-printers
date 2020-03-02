@@ -41,7 +41,7 @@ bed_size_z_mm = 150
 -- nozzle & extruder settings
 nozzle_diameter_mm = 0.4
 extruder_count = 2
-extruder_swap_at_location = false
+tower_at_location = false
 extruder_swap_retract_length_mm = 3.0
 extruder_swap_retract_speed_mm_per_sec = 60.0
 extruder_offset_x = {}      --configured on the printer
