@@ -101,6 +101,10 @@ function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
+function set_and_wait_extruder_temperature(extruder,temperature)
+  output('M109 S' .. temperature .. ' T' .. extruder)
+end
+
 function set_mixing_ratios(ratios)
   current_A = ratios[0]
   current_B = ratios[1]

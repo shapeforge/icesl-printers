@@ -101,6 +101,10 @@ function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
+function set_and_wait_extruder_temperature(extruder,temperature)
+  output('M109 S' .. temperature .. ' T' .. extruder)
+end
+
 function set_mixing_ratios(ratios)
   sum = ratios[0] + ratios[1] + ratios[2]
   if sum == 0 then

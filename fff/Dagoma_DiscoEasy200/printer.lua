@@ -124,6 +124,10 @@ function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. math.floor(temperature))
 end
 
+function set_and_wait_extruder_temperature(extruder,temperature)
+  output('M109 S' .. math.floor(temperature))
+end
+
 function set_fan_speed(speed)
   output('M106 S'.. math.floor(255 * speed/100))
 end

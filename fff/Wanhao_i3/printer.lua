@@ -189,6 +189,10 @@ function set_extruder_temperature(extruder,temperature)
   output('M104 S' .. temperature .. ' T' .. extruder)
 end
 
+function set_and_wait_extruder_temperature(extruder,temperature)
+  output('M109 S' .. temperature .. ' T' .. extruder)
+end
+
 current_fan_speed = -1
 function set_fan_speed(speed)
   if not custom_fan_management then
