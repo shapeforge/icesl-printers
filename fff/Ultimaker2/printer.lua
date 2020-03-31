@@ -31,6 +31,7 @@ function prep_extruder(extruder)
   -- go slightly above plate
   output('G0 F1000 X15 Y5 Z0.0')
   output('G92 E0')
+  changed_frate = true
 end
 
 function header()
@@ -44,6 +45,7 @@ function header()
   output('M82')
   output('G92 E0')
   output('M107')
+  changed_frate = true
 end
 
 function footer()
@@ -54,6 +56,7 @@ end
 function retract(extruder,e)
   extruder_e = e
   output('G10')
+  changed_frate = true
   return e
 end
 
@@ -65,6 +68,7 @@ function prime(extruder,e)
     extruder_e_reset = extruder_e
     reset_e_on_next_prime = false
   end
+  changed_frate = true
   return e
 end
 
@@ -76,6 +80,7 @@ function layer_start(zheight)
     output('G0 F100 Z' .. ff(zheight))
   end
   current_z = zheight
+  changed_frate = true
 end
 
 function layer_stop()
@@ -145,8 +150,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate = feedrate
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 
