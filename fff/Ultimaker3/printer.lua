@@ -59,6 +59,7 @@ function prep_extruder(extruder)
   end
   -- prime done, reset E
   output('G92 E0')
+  changed_frate = true
 end
 
 function header()
@@ -139,6 +140,7 @@ function retract(extruder,e)
   local e_value = e - len - extruder_e_restart[extruder]
   output('G1 F' .. speed .. ' E' .. ff(e_value))
   extruder_e[extruder] = e - len
+  changed_frate = true
   return e - len
 end
 
@@ -149,6 +151,7 @@ function prime(extruder,e)
   local e_value = e + len - extruder_e_restart[extruder]
   output('G1 F' .. speed .. ' E' .. ff(e_value))
   extruder_e[extruder] = e + len
+  changed_frate = true
   return e + len
 end
 
@@ -160,6 +163,7 @@ function layer_start(zheight)
     output('G0 F100 Z' .. ff(zheight))
   end
   current_z = zheight
+  changed_frate = true
 end
 
 function layer_stop()
@@ -178,6 +182,7 @@ function select_extruder(extruder)
     output('G0 F' .. speed .. ' E' .. - len)
     output('G92 E0')
     extruder_stored[current_extruder] = true
+    changed_frate = true
   end
   --output('\n')
   output('T' .. extruder)
@@ -208,6 +213,7 @@ function swap_extruder(from,to,x,y,z)
   end
   -- done
   current_extruder = to
+  changed_frate = true
 end
 
 function move_xyz(x,y,z)
@@ -310,8 +316,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate = feedrate
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 
