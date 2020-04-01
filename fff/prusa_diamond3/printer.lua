@@ -62,6 +62,7 @@ function header()
   h = h:gsub( '<PURGE_RATIOS>', purge_ratios)
 
   output(h)
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function footer()
@@ -102,6 +103,7 @@ function retract(extruder,e)
     output('G1 F' .. speed .. ' E' .. ff(e_value) .. retract_ratios)
 
     extruder_e[current_extruder] = e - len
+    current_frate = speed
     return e - len
   end
 end
@@ -129,6 +131,7 @@ function prime(extruder,e)
     output('G1 F' .. speed .. ' E' .. ff(e_value) .. prime_ratios)
 
     extruder_e[current_extruder] = e + len
+    current_frate = speed
     return e + len
   end
 end
@@ -291,8 +294,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate =  math.floor(feedrate)
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 

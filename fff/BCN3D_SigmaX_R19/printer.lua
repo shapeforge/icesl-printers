@@ -72,6 +72,7 @@ function header()
   end
   h = h:gsub('<BUCKET_PURGE>', purge_string)
   output(h)
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function footer()
@@ -90,6 +91,7 @@ function retract(extruder,e)
     local speed = priming_mm_per_sec[extruder] * 60
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] - len))
+    current_frate = speed
     return e - len
   end
 end
@@ -105,18 +107,22 @@ function prime(extruder,e)
     local speed = priming_mm_per_sec[extruder] * 60
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] + len))
+    current_frate = speed
     return e + len
   end
 end
 
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
+  local frate = 100
   if layer_id == 0 then
-    output('G0 F600 Z' .. f(zheight))
+    frate = 600
+    output('G0 F' .. frate .. ' Z' .. f(zheight))
   else
-    output('G0 F100 Z' .. f(zheight))
+    output('G0 F' .. frate ..' Z' .. f(zheight))
   end
   current_z = zheight
+  current_frate = frate
 end
 
 function layer_stop()
@@ -143,6 +149,7 @@ function select_extruder(extruder)
   purge_string = purge_string .. "\nG4 P2000     ;stabilize hotend's pressure\n"
 
   current_extruder = extruder
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function swap_extruder(from,to,x,y,z)
@@ -171,6 +178,7 @@ function swap_extruder(from,to,x,y,z)
 
   current_extruder = to
   extruder_changed = true
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function move_xyz(x,y,z)
@@ -263,8 +271,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate = feedrate
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 

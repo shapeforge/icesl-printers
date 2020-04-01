@@ -17,6 +17,7 @@ traveling = false
 changed_frate = false
 
 current_z = 0
+current_frate = 0
 current_extruder = - 1
 current_fan_speed = -1
 
@@ -59,7 +60,7 @@ function prep_extruder(extruder)
   end
   -- prime done, reset E
   output('G92 E0')
-  changed_frate = true
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function header()
@@ -123,6 +124,7 @@ function header()
 
   -- End of the header
   output(';END_OF_HEADER\n')
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function footer()
@@ -140,7 +142,7 @@ function retract(extruder,e)
   local e_value = e - len - extruder_e_restart[extruder]
   output('G1 F' .. speed .. ' E' .. ff(e_value))
   extruder_e[extruder] = e - len
-  changed_frate = true
+  current_frate = speed
   return e - len
 end
 
@@ -151,19 +153,21 @@ function prime(extruder,e)
   local e_value = e + len - extruder_e_restart[extruder]
   output('G1 F' .. speed .. ' E' .. ff(e_value))
   extruder_e[extruder] = e + len
-  changed_frate = true
+  current_frate = speed
   return e + len
 end
 
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
+  local frate = 600
   if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
+    output('G0 F' .. frate .. ' Z' .. ff(zheight))
   else
-    output('G0 F100 Z' .. ff(zheight))
+    frate = 100
+    output('G0 F' .. frate .. ' Z' .. ff(zheight))
   end
   current_z = zheight
-  changed_frate = true
+  current_frate = frate
 end
 
 function layer_stop()
@@ -182,7 +186,7 @@ function select_extruder(extruder)
     output('G0 F' .. speed .. ' E' .. - len)
     output('G92 E0')
     extruder_stored[current_extruder] = true
-    changed_frate = true
+    current_frate = travel_speed_mm_per_sec * 60
   end
   --output('\n')
   output('T' .. extruder)
@@ -213,7 +217,7 @@ function swap_extruder(from,to,x,y,z)
   end
   -- done
   current_extruder = to
-  changed_frate = true
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function move_xyz(x,y,z)

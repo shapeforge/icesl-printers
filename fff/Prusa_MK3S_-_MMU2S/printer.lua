@@ -35,6 +35,7 @@ function header()
   h = h:gsub('<TOOLTEMP>', extruder_temp_degree_c[extruders[0]])
   h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
   output(h)
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function footer()
@@ -59,6 +60,7 @@ function retract(extruder,e)
     local speed = priming_mm_per_sec[extruder] * 60
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] - len))
+    current_frate = speed
     return e - len
   end
 end
@@ -74,18 +76,21 @@ function prime(extruder,e)
     local speed = priming_mm_per_sec[extruder] * 60
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] + len))
+    current_frate = speed
     return e + len
   end
 end
 
 function layer_start(zheight)
-  output('; <layer ' .. layer_id .. '>')
+  output(';(<layer ' .. layer_id .. '>)')
+  local frate = 100
   if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
+    frate = 600
+    output('G0 F' .. frate ..' Z' .. ff(zheight))
   else
-    output('G0 F100 Z' .. ff(zheight))
+    output('G0 F' .. frate ..' Z' .. ff(zheight))
   end
-  current_z = zheight
+  current_frate = frate
 end
 
 function layer_stop()
@@ -123,6 +128,7 @@ function select_extruder(extruder) -- called at the start of the print job for e
     end
     current_extruder = extruder
     output(p)
+    current_frate = travel_speed_mm_per_sec * 60
   end
 end
 
@@ -137,6 +143,7 @@ function swap_extruder(from,to,x,y,z)
   s = s:gsub('<NEW_TOOL_TEMP>', extruder_temp_degree_c[extruders[to]])
   s = s:gsub('<NEW_TOOL>', 'T' .. to)
   output(s)
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function move_xyz(x,y,z)
@@ -229,8 +236,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate = feedrate
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 

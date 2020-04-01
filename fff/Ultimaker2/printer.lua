@@ -7,7 +7,7 @@ extruder_e_reset = 0
 reset_e_on_next_prime = false
 
 current_z = 0
-current_frate = 600
+current_frate = 0
 changed_frate = false
 
 current_fan_speed = 0
@@ -31,7 +31,7 @@ function prep_extruder(extruder)
   -- go slightly above plate
   output('G0 F1000 X15 Y5 Z0.0')
   output('G92 E0')
-  changed_frate = true
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function header()
@@ -45,7 +45,7 @@ function header()
   output('M82')
   output('G92 E0')
   output('M107')
-  changed_frate = true
+  current_frate = travel_speed_mm_per_sec * 60
 end
 
 function footer()
@@ -56,7 +56,6 @@ end
 function retract(extruder,e)
   extruder_e = e
   output('G10')
-  changed_frate = true
   return e
 end
 
@@ -68,19 +67,20 @@ function prime(extruder,e)
     extruder_e_reset = extruder_e
     reset_e_on_next_prime = false
   end
-  changed_frate = true
   return e
 end
 
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
+  local frate = 600
   if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
+    output('G0 F' .. frate .. ' Z' .. ff(zheight))
   else
-    output('G0 F100 Z' .. ff(zheight))
+    frate = 100
+    output('G0 F' .. frate .. ' Z' .. ff(zheight))
   end
   current_z = zheight
-  changed_frate = true
+  current_frate = frate
 end
 
 function layer_stop()
