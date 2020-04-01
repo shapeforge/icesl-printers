@@ -32,6 +32,7 @@ function prep_extruder(extruder)
   output('G0 F1000 X15 Y5 Z0.0')
   output('G92 E0')
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function header()
@@ -46,6 +47,7 @@ function header()
   output('G92 E0')
   output('M107')
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function footer()
@@ -81,6 +83,7 @@ function layer_start(zheight)
   end
   current_z = zheight
   current_frate = frate
+  changed_frate = true
 end
 
 function layer_stop()

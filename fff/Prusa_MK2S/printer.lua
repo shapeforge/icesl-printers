@@ -27,6 +27,7 @@ function header()
   h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function footer()
@@ -40,6 +41,7 @@ function retract(extruder,e)
   output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
   extruder_e = e - len
   current_frate = speed
+  changed_frate = true
   return e - len
 end
 
@@ -50,6 +52,7 @@ function prime(extruder,e)
   output('G0 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
   extruder_e = e + len
   current_frate = speed
+  changed_frate = true
   return e + len
 end
 
@@ -63,6 +66,7 @@ function layer_start(zheight)
     output('G0 F' .. frate ..' Z' .. ff(zheight))
   end
   current_frate = frate
+  changed_frate = true
 end
 
 function layer_stop()
