@@ -38,6 +38,7 @@ function retract(extruder,e)
   local speed = priming_mm_per_sec[extruder] * 60
   output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
   extruder_e = e - len
+  changed_frate = true
   return e - len
 end
 
@@ -47,6 +48,7 @@ function prime(extruder,e)
   local speed = priming_mm_per_sec[extruder] * 60
   output('G0 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
   extruder_e = e + len
+  changed_frate = true
   return e + len
 end
 
@@ -57,6 +59,7 @@ function layer_start(zheight)
   else
     output('G0 F100 Z' .. ff(zheight))
   end
+  changed_frate = true
 end
 
 function layer_stop()
@@ -161,8 +164,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate = feedrate
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 
