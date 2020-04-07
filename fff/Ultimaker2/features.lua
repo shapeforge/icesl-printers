@@ -25,6 +25,8 @@ first_layer_print_speed_mm_per_sec = 10
 first_layer_print_speed_mm_per_sec_min = 1
 first_layer_print_speed_mm_per_sec_max = 80
 
+travel_speed_mm_per_sec = 120
+
 for i=0,63,1 do
   _G['filament_diameter_mm_'..i] = 2.85
   _G['filament_priming_mm_'..i] = 6.50

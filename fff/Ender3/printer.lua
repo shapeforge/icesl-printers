@@ -32,6 +32,8 @@ function header()
     h = h:gsub( '<BEDLVL>', "G0 F6200 X0 Y0" )
   end
   output(h)
+  current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function footer()
@@ -54,6 +56,8 @@ function retract(extruder,e)
   local len   = filament_priming_mm[extruder]
   local speed = priming_mm_per_sec[extruder] * 60;
   output('G1 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
+  current_frate = speed
+  changed_frate = true
   extruder_e = e - len
   return e - len
 end
@@ -63,6 +67,8 @@ function prime(extruder,e)
   local len   = filament_priming_mm[extruder]
   local speed = priming_mm_per_sec[extruder] * 60;
   output('G1 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
+  current_frate = speed
+  changed_frate = true
   extruder_e = e + len
   return e + len
 end
@@ -128,8 +134,6 @@ function set_feedrate(feedrate)
   if feedrate ~= current_frate then
     current_frate = feedrate
     changed_frate = true
-  else
-    changed_frate = false
   end
 end
 

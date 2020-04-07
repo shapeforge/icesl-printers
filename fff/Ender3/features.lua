@@ -49,6 +49,7 @@ travel_speed_mm_per_sec = 120
 add_brim = true
 brim_distance_to_print = 1.0
 brim_num_contours = 4
+z_lift_mm = 0.6
 
 process_thin_features = false
 
