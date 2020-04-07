@@ -57,6 +57,7 @@ function header()
 
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function footer()
@@ -92,6 +93,7 @@ function retract(extruder,e)
     output('G1 F' .. speed .. ' E' .. ff(e_value) .. ' A0.20 B0.20 C0.20 D0.20 H0.20')
     extruder_e[current_extruder] = e - len
     current_frate = speed
+    changed_frate = true
     return e - len
   end
 end
@@ -114,6 +116,7 @@ function prime(extruder,e)
     output('G1 F' .. speed .. ' E' .. ff(e_value) .. ' A0.20 B0.20 C0.20 D0.20 H0.20')
     extruder_e[current_extruder] = e + len
     current_frate = speed
+    changed_frate = true
     return e + len
   end
 end

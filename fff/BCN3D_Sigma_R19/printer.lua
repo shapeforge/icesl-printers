@@ -73,6 +73,7 @@ function header()
   h = h:gsub('<BUCKET_PURGE>', purge_string)
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function footer()
@@ -92,6 +93,7 @@ function retract(extruder,e)
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] - len))
     current_frate = speed
+    changed_frate = true
     return e - len
   end
 end
@@ -108,6 +110,7 @@ function prime(extruder,e)
     extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
     output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] + len))
     current_frate = speed
+    changed_frate = true
     return e + len
   end
 end
@@ -123,6 +126,7 @@ function layer_start(zheight)
   end
   current_z = zheight
   current_frate = frate
+  changed_frate = true
 end
 
 function layer_stop()
@@ -150,6 +154,7 @@ function select_extruder(extruder)
 
   current_extruder = extruder
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function swap_extruder(from,to,x,y,z)
@@ -179,6 +184,7 @@ function swap_extruder(from,to,x,y,z)
   current_extruder = to
   extruder_changed = true
   current_frate = travel_speed_mm_per_sec * 60
+  changed_frate = true
 end
 
 function move_xyz(x,y,z)
