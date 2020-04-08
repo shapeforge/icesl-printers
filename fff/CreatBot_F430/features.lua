@@ -20,8 +20,7 @@ extruder_offset_x = {}
 extruder_offset_y = {}
 extruder_offset_x[0] = 0.0
 extruder_offset_y[0] = 0.0
---extruder_offset_x[1] = 72.0
-extruder_offset_x[1] = 0.0
+extruder_offset_x[1] = 72.0
 extruder_offset_y[1] = 0.0
 
 -- ###################

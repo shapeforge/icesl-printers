@@ -24,7 +24,7 @@ skip_retract = false
 craftware_debug = true
 processing = false
 
-last_extruder_selected = 0 -- counter to track the selected / prepared extruders
+initialized_extruders = 0 -- track the number of initilized extruders
 
 --##################################################
 
@@ -126,16 +126,19 @@ end
 function select_extruder(extruder)
   local speed = travel_speed_mm_per_sec * 60
 
-  last_extruder_selected = last_extruder_selected + 1
-
   local purge_pos = ""
+  local park_pos = ""
   local purge_end_pos = 0
 
-  if last_extruder_selected == extruder_count then
+  initialized_extruders = initialized_extruders + 1
+
+  if initialized_extruders == extruder_count then
     purge_pos = "X30 Y0"
+    park_pos = "G0 Z5\nG0 X10 Y15"
     purge_end_pos = 10
   else
     purge_pos = "X10 Y10"
+    park_pos = "G0 Z5\nG0 Y5"
     purge_end_pos = 30
   end
 
@@ -147,6 +150,7 @@ function select_extruder(extruder)
   output("M221 T" .. extruder .. " S300 ;set flow to 300%")
   output("G1 F200 X" .. purge_end_pos .." E+8 ;extrude a purge line")
   output("M221 T" .. extruder .. " S100 ;set flow back to 100%")
+  output(park_pos)
   output("M82 ;absolute E values")
   output("G92 E0 ;reset E values\n")
 
