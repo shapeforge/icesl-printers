@@ -66,7 +66,6 @@ function footer()
 end
 
 function retract(extruder,e)
-  extruder_e[current_extruder] = e
   if skip_retract then 
     --comment('retract skipped')
     skip_retract = false
@@ -75,8 +74,9 @@ function retract(extruder,e)
     comment('retract')
     local len   = filament_priming_mm[extruder]
     local speed = priming_mm_per_sec[extruder] * 60
-    extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
-    output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] - len))
+    local e_value = (e - extruder_e_swap[current_extruder] - extruder_e_reset[current_extruder]) - len
+    output('G1 F' .. speed .. ' E' .. ff(e_value))
+    extruder_e[extruder] = e - len
     current_frate = speed
     changed_frate = true
     return e - len
@@ -84,7 +84,6 @@ function retract(extruder,e)
 end
 
 function prime(extruder,e)
-  extruder_e[current_extruder] = e
   if skip_prime then 
     --comment('prime skipped')
     skip_prime = false
@@ -93,8 +92,9 @@ function prime(extruder,e)
     comment('prime')
     local len   = filament_priming_mm[extruder]
     local speed = priming_mm_per_sec[extruder] * 60
-    extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
-    output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] + len))
+    local e_value = (e - extruder_e_swap[current_extruder] - extruder_e_reset[current_extruder]) + len
+    output('G1 F' .. speed .. ' E' .. ff(e_value))
+    extruder_e[extruder] = e + len
     current_frate = speed
     changed_frate = true
     return e + len
@@ -165,12 +165,12 @@ function swap_extruder(from,to,x,y,z)
   local len   = extruder_swap_retract_length_mm
   local speed = extruder_swap_retract_speed_mm_per_sec * 60;
 
+  extruder_e_reset[from] = extruder_e[from]
   output("G92 E0")
   extruder_e_swap[from] = extruder_e_swap[from] + extruder_e[from] - extruder_e_reset[from]
 
   -- swap extruder
   output('T' .. to)
-  output("G92 E0")
 
   current_extruder = to
   current_frate = travel_speed_mm_per_sec * 60
