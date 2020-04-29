@@ -72,7 +72,7 @@ curved_covers = false
 --#################################################
 
 -- Internal procedure to fill brushes / extruder settings
-for i=0,63,1 do
+for i = 0, max_number_extruders, 1 do
   _G['filament_diameter_mm_'..i] = filament_diameter_mm_0
   _G['filament_priming_mm_'..i] = filament_priming_mm_0
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c

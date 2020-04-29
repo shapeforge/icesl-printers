@@ -26,7 +26,7 @@ process_thin_features = false
 extruder_0 = 0
 extruder_1 = 1
 
-for i=0,63,1 do
+for i = 0, max_number_extruders, 1 do
   _G['num_shells_' .. i] = 0
   _G['cover_thickness_mm_' .. i] = 0.6
   _G['print_perimeter_' .. i] = true

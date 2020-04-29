@@ -41,7 +41,7 @@ bed_temp_degree_c = 50
 bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 110
 
-for i=0,63,1 do
+for i = 0, max_number_extruders, 1 do
   _G['filament_diameter_mm_'..i] = filament_diameter
   _G['filament_priming_mm_'..i] = filament_priming_mm
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c

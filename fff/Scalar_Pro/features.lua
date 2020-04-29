@@ -67,7 +67,7 @@ enable_vertical_lift = false
 retract_vertical_lift = 0.15
 
 
-for i=0,63,1 do
+for i = 0, max_number_extruders, 1 do
   _G['filament_diameter_mm_'..i] = 2.85
   _G['filament_priming_mm_'..i] = 1.5
   _G['extruder_temp_degree_c_' ..i] = 200

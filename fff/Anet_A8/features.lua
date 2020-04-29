@@ -42,7 +42,7 @@ bed_temp_degree_c_max = 120
 add_checkbox_setting('auto_bed_leveling', 'Auto Bed Levelling sensor','Enable this option if you have any Auto Levelling Sensor (BLTouch, Pinda, capacitive sensor, etc.)')
 auto_bed_leveling = false
 
-for i=0,63,1 do
+for i = 0, max_number_extruders, 1 do
   _G['filament_diameter_mm_'..i] = filament_diameter
   _G['filament_priming_mm_'..i] = filament_priming_mm
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c

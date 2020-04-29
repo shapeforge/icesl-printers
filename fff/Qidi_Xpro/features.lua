@@ -85,7 +85,7 @@ first_layer_print_speed_mm_per_sec = 25
 first_layer_print_speed_mm_per_sec_min = 5
 first_layer_print_speed_mm_per_sec_max = 60
 
-for i=0,63,1 do -- default parameters for newly created extruders
+for i = 0, max_number_extruders, 1 do -- default parameters for newly created extruders
   _G['filament_diameter_mm_'..i] = 1.75
   _G['filament_priming_mm_'..i] = 1.5
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c_0

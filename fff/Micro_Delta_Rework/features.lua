@@ -46,7 +46,7 @@ first_layer_print_speed_mm_per_sec = 15
 first_layer_print_speed_mm_per_sec_min = 5
 first_layer_print_speed_mm_per_sec_max = 50
 
-for i=0,63,1 do
+for i = 0, max_number_extruders, 1 do
   _G['filament_diameter_mm_'..i] = filament_diameter_mm_0
   _G['filament_priming_mm_'..i] = filament_priming_mm_0
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
