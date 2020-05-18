@@ -1,7 +1,7 @@
-bed_size_x_mm = 500
-bed_size_y_mm = 500
+bed_size_x_mm = 510
+bed_size_y_mm = 510
 bed_size_z_mm = 500
-nozzle_diameter_mm = 1.2
+nozzle_diameter_mm = 0.4
 
 extruder_count = 1
 
