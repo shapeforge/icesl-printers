@@ -45,11 +45,11 @@ Addiform_RRF is a template for you to create a profile specific to your printer 
 - `/materials/*.lua` -- print parameters for different materials
 - `*.g` or `*.gcode` -- templates for insertion into final GCode
 
->***Note: The file printer.lua is not intended to be modified by the user, unless to implement new features, fix bugs, or modify behaviour. Refer to features.lua for user-configurable printer parameters.***
+>***Note: The file `printer.lua` is not intended to be modified by the user, unless to implement new features, fix bugs, or modify behaviour. Refer to `features.lua` for user-configurable printer parameters.***
 
 #### IceSL gives priority to an assignment of print settings according to the following list:
 1. Default IceSL values -- bottom priority
-2. Printer features (features.lua)
+2. Printer features (`features.lua`)
 3. Print profile (e.g., fast print, high quality, etc.)
 4. Material profile (e.g., abs, pla, etc.)
 5. Lua script (user-made script loaded into IceSL for modelling and other purposes)
@@ -87,7 +87,7 @@ name_ch = "PLA"
 extruder_temp_degree_c = 180
 ```
 
->**Note: The user may modify settings defined in pre-made `*.lua` profiles from within the IceSL GUI, but they can not save back directly to the pre-made profiles. Instead, they can save custom settings to XML files within the IceSL GUI.<br/><br/>If no print or material profiles are present, the 'Custom' profile will be used by default, which merely inherits all defaults from IceSL and features.lua.**
+>**Note: The user may modify settings defined in pre-made `*.lua` profiles from within the IceSL GUI, but they can not save back directly to the pre-made profiles. Instead, they can save custom settings to XML files within the IceSL GUI.<br/><br/>If no print or material profiles are present, the 'Custom' profile will be used by default, which merely inherits all defaults from IceSL and `features.lua`.**
 
 ## GCode Insertion Templates: `start.g`, `wait.g`, `end.g`, ...
 These GCode files can optionally be automatically inserted into final GCode output during specific print operations. They can contain any GCode the user wishes. There are variables which can be passed through to the GCode production process, allowing for print settings to be passed to the templates.
@@ -97,9 +97,9 @@ See each `*.g` file for a list of variables which can be passed to it.
 ## Printer Features: `features.lua`
 IceSL provides default values for all of the settings of its built-in features. In `features.lua`, these defaults can be changed.
 
-Addiform_RRF’s `features.lua` template provides a list of all settings/variables that can be set through features.lua, the IceSL GUI, Lua scripts, print profiles and/or material presets. This is only for convenience. None of the native IceSL settings need to be in features.lua, unless to change the default values for your printer.
+Addiform_RRF’s `features.lua` template provides a list of all settings/variables that can be set through `features.lua`, the IceSL GUI, Lua scripts, print profiles and/or material presets. This is only for convenience. None of the native IceSL settings need to be in `features.lua`, unless to change the default values for your printer.
 
->***Note: The template features.lua also contains additional settings/variables for features added by Addiform_RRF. These variables must all remain initialized in features.lua, but can be changed to have different starting values.***
+>***Note: The template `features.lua` also contains additional settings/variables for features added by Addiform_RRF. These variables must all remain initialized in `features.lua`, but can be changed to have different starting values.***
 
 ### The features added to IceSL by the Addiform_RRF printer profile are as follows:
 | Name | Type | Description |
@@ -122,7 +122,7 @@ Addiform_RRF’s `features.lua` template provides a list of all settings/variabl
 | Suppress All Tool Selections at Start<br/>`suppress_all_tool_selection_at_start` | `bool` | Allows for manual tool selection in Start GCode. |
 | Suppress Fan Command at Start<br/>`suppress_fan_at_start` | `bool` | Allows for manual insertion of fan commands in Start GCode. |
 | Insert Swap GCode<br/>`insert_swap_gcode` | `bool` | Insert `swap.g` into GCode output after tool change commands.<br/><br/>Commands will be executed after the RRF tool change macros.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `swap.g` template for variables. |
-| Insert Pre-Swap GCode<br/>`insert_swappre_gcode` | `bool` | Insert swappre.g into GCode output immediately before tools are changed. Commands will be executed before the RRF tool change macros.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See swappre.g template for variables. |
+| Insert Pre-Swap GCode<br/>`insert_swappre_gcode` | `bool` | Insert `swappre.g` into GCode output immediately before tools are changed. Commands will be executed before the RRF tool change macros.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `swappre.g` template for variables. |
 | Suppress Temp Control at Tool Change<br/>`suppress_temp_control` | `bool` | Suppress IceSL M116 calls after a tool is selected. This is to give full control to the RRF tool change macros. |
 | Default Tool Standby Temperature<br/>`default_standby_temp` | `float` | Standby temperature for tools if active temperature control is not enabled. |
 | Material Density<br/>`material_density_g_per_cc` | `float` | Approximate material density to use in print info estimate.<br/><br/>units: g/cm^3 |
