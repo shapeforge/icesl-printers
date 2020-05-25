@@ -346,7 +346,7 @@ extruder_swap_retract_length_mm = 6
 extruder_swap_retract_speed_mm_per_sec = 20
 
 -- > Printer Settings:
-printer = "Addiform_RRF"                    -- The exact directory name of the printer profile. This seems redundant.
+--printer = "Addiform_RRF"                  -- The exact directory name of the printer profile. This seems redundant.
 bed_size_x_mm = 0                           -- IceSL default is 100. Must be left at 0 if bed origin is at center. If front-left-corner is origin, set to bed size in order to center prints.
 bed_size_y_mm = 0                           -- IceSL default is 100. Must be left at 0 if bed origin is at center. If front-left-corner is origin, set to bed size in order to center prints.
 
