@@ -1,10 +1,11 @@
 -- RepRapFirmware Configurable Printer Profile (Addiform_RRF) for IceSL
 -- created on 2020-APR-20 by Nathan Buxton for Addiform (https://addiform.com)
 
--- Version 1.0
+-- Version 1.0.1
 
 -- features.lua
 -- Last modified:
+-- Changes for 1.0.1. 2020-JUN-08 NaB
 -- File created. 2020-APR-20 NaB
 
 --     This file contains settings to be configured by the user according to their printer.
@@ -28,7 +29,7 @@
 
 -- > Custom Settings:
 s3d_debug = true
-add_checkbox_setting("s3d_debug","S3D Output Emulation","Create GCode compatible with string detections performed by\nRRF for filament usage, print time estimates, etc.\n\nAlso allows S3D toolpath visualization.")
+add_checkbox_setting("s3d_debug","S3D Compatibility","Create S3D-compatibile comments for toolpath visualization,\nas well as path and layer labeling.")
 
 craftware_debug = false
 add_checkbox_setting("craftware_debug","CraftWare Path Labeling","Create path labels similar to CraftWare's in place of IceSL\nor S3D style path labels.")
@@ -48,13 +49,13 @@ add_checkbox_setting("volumetric_extrusion","Volumetric Extrusion","Create volum
 
 
 rrf_3 = true
-add_checkbox_setting("rrf_3","RRF Version 3.1+","Generate RRF 3.1+ compatible GCode commands.\n\nCurrently this only affects M207 firmware retraction GCode.")
+add_checkbox_setting("rrf_3","RRF Version 3.01+","Generate RRF 3.01+ compatible GCode commands.\n\nCurrently this only affects M207 firmware retraction GCode.")
 
 firmware_retraction = false
-add_checkbox_setting("firmware_retraction","Firmware Retraction","Generate firmware retraction commands. Uses GUI retraction\nsettings to set initial values.\n\nNon-zero retract length must be set to produce retraction!!\n\nWhen using RRF Versions 3.1+, firmware retraction is set on\na per-extruder basis. Otherwise, the values from the lowest\nextruder indexed by IceSL will be chosen. Please verify the\nvalues are acceptable before printing.")
+add_checkbox_setting("firmware_retraction","Firmware Retraction","Generate firmware retraction G10/G11 commands. Uses retraction\nsettings from GUI to set initial values in M207 command.\n\nNon-zero 'Filament retract' must be set in GUI to produce G10/\nG11 retraction commands!\n\nWhen using RRF Version 3.01 or higher, firmware retraction is\nset on a per-extruder basis. Otherwise, in order to comply\nwith limitations of older RRF versions, only the values from\nthe first-indexed extruder will be used in M207.")
 
-z_lift_on_retract = true
-add_checkbox_setting("z_lift_on_retract","Z Lift on Retract","Lift the tool head discretely during retraction and priming\ninstead of during travel move.")
+suppress_m207_start = false
+add_checkbox_setting("suppress_m207_start","Suppress M207 at Start","Suppress M207 command at start. This allows the user to set\ntheir own M207 firmware retraction parameters elsewhere.")
 
 
 insert_start_gcode = true
@@ -90,17 +91,10 @@ add_checkbox_setting("insert_swappre_gcode","Insert Pre-Swap GCode","Insert swap
 
 
 suppress_temp_control = true
-add_checkbox_setting("suppress_temp_control","Suppress Temp Control at Tool Change","Suppress IceSL M116 calls after a tool is selected. This is\nto give full control to the RRF tool change macros.")
+add_checkbox_setting("suppress_temp_control","Suppress Temp Control at Tool Change","Suppress M116 calls after a tool is selected. This is to give\nfull control to the RRF tool change macros.")
 
 default_standby_temp = 0
 add_setting("default_standby_temp","Default Tool Standby Temperature", 0, 500,"Standby temperature for tools if active temperature control\nis not enabled.")
-
-
-material_density_g_per_cc = 1.25
-add_setting("material_density_g_per_cc","Material Density", 0.01, 99.99,"Approximate material density to use in print info estimate.\n\nunits: g/cm^3")
-
-material_cost_per_kg = 35.0
-add_setting("material_cost_per_kg","Material Cost", 0.01, 9999.99,"Average price/kg of material to use in print info estimate.")
 
 
 z_movement_speed_mm_per_sec = 7
@@ -110,35 +104,35 @@ e_movement_speed_mm_per_sec = 5
 add_setting("e_movement_speed_mm_per_sec","Extruder-Only Movement Speed", 0.001, 100,"Movement speed in mm/sec for all extruder-only moves.")
 
 
-shell_feedrate_override_mm_per_sec = 0
-add_setting("shell_feedrate_override_mm_per_sec","Shell Speed Override", 0, 500,"Movement speed in mm/sec for all shell paths.\nPath aka 'inner perimeter' in S3D.\nPath aka 'segType:HShell' in CraftWare.\n\nSet to 0 to disable override.")
+shell_max_speed_mm_per_sec = 0
+add_setting("shell_max_speed_mm_per_sec","Maximum Shell Speed", 0, 500,"Shell paths will have their print speed reduced to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-infill_feedrate_override_mm_per_sec = 0
-add_setting("infill_feedrate_override_mm_per_sec","Infill Speed Override", 0, 500,"Movement speed in mm/sec for all infill paths.\n\nSet to 0 to disable override.")
+infill_max_speed_mm_per_sec = 0
+add_setting("infill_max_speed_mm_per_sec","Maximum Infill Speed", 0, 500,"Infill paths will have their print speed reduced to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-brim_feedrate_override_mm_per_sec = 0
-add_setting("brim_feedrate_override_mm_per_sec","Brim Speed Override", 0, 500,"Movement speed in mm/sec for all brim paths.\nPath aka 'skirt' in S3D.\nPath aka 'segType:Skirt' in CraftWare.\n\nSet to 0 to disable override.")
+raft_max_speed_mm_per_sec = 0
+add_setting("raft_max_speed_mm_per_sec","Maximum Raft Speed", 0, 500,"Raft paths will have their print speed reduced to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-raft_feedrate_override_mm_per_sec = 0
-add_setting("raft_feedrate_override_mm_per_sec","Raft Speed Override", 0, 500,"Movement speed in mm/sec for all raft paths.\n\nSet to 0 to disable override.")
+shield_max_speed_mm_per_sec = 0
+add_setting("shield_max_speed_mm_per_sec","Maximum Shield Speed", 0, 500,"Shield paths will have their print speed reduced to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-shield_feedrate_override_mm_per_sec = 0
-add_setting("shield_feedrate_override_mm_per_sec","Shield Speed Override", 0, 500,"Movement speed in mm/sec for all shield paths.\n\nSet to 0 to disable override.")
+tower_max_speed_mm_per_sec = 0
+add_setting("tower_max_speed_mm_per_sec","Maximum Tower Speed", 0, 500,"Tower paths will have their print speed reduced to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-tower_feedrate_override_mm_per_sec = 0
-add_setting("tower_feedrate_override_mm_per_sec","Tower Speed Override", 0, 500,"Movement speed in mm/sec for all tower paths.\n\nSet to 0 to disable override.")
+cover_infill_max_speed_mm_per_sec = 0
+add_setting("cover_infill_max_speed_mm_per_sec","Maximum Cover Speed", 0, 500,"Cover paths will have their print speed reduced to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-bridge_feedrate_override_mm_per_sec = 0
-add_setting("bridge_feedrate_override_mm_per_sec","Bridge Speed Override", 0, 500,"Movement speed in mm/sec for all bridge paths.\n\nSet to 0 to disable override.")
+cover_shell_max_speed_mm_per_sec = 0
+add_setting("cover_shell_max_speed_mm_per_sec","Maximum Curved Cover Speed", 0, 500,"Curved cover paths will have their print speed reduced to\nthis value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-cover_shell_feedrate_override_mm_per_sec = 0
-add_setting("cover_shell_feedrate_override_mm_per_sec","Curved Cover Speed Override", 0, 500,"Movement speed in mm/sec for all curved cover paths.\nPath aka 'solid layer' in S3D.\n\nSet to 0 to disable override.")
+first_layer_speed_scale_percent = 0
+add_setting("first_layer_speed_scale_percent","First Layer Maximum Speed Scale %", 0, 100,"Percentage of the above max speeds to use for the first layer.\nAlso scales perimeter speed and support speed on first layer.\n\nDoes not scale Brim Speed Override nor the default speed for\nthe first layer: 'Print speed on first layer'.\n\nSet to 0 to disable scaling of maximum speeds for first layer.")
 
-cover_infill_feedrate_override_mm_per_sec = 0
-add_setting("cover_infill_feedrate_override_mm_per_sec","Cover Speed Override", 0, 500,"Movement speed in mm/sec for all cover paths.\nPath aka 'solid layer' in S3D.\n\nSet to 0 to disable override.")
+brim_override_speed_mm_per_sec = 0
+add_setting("brim_override_speed_mm_per_sec","Brim Speed Override", 0, 500,"Brim paths will have their print speed set to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
-first_layer_feedrate_override_scale_percent = 50
-add_setting("first_layer_feedrate_override_scale_percent","% First Layer Speed Scale Override", 0, 200,"Movement speed override reduction for paths on first layer.\nUse in addition to 'Print speed on first layer' setting.\n\nSet to 0 to disable override.")
+bridge_override_speed_mm_per_sec = 0
+add_setting("bridge_override_speed_mm_per_sec","Bridge Speed Override", 0, 500,"Bridge paths will have their print speed set to this value.\n\nSet to 0 to revert to default speed.\n\nunit: mm/sec")
 
 --
 -- ### End of Addiform_RRF Additional Settings.

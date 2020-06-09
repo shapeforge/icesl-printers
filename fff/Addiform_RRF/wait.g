@@ -1,25 +1,31 @@
 ; Replace the entire contents of wait.g with desired wait gcode.
 ;
+; This gcode file is inserted into final output when function wait()
+; is called to achieve minimum layer time.
+;
 ; The profile will replace the following variable placeholders in this file:
 ;
-; <sec>                             number of whole seconds required to wait
-; <x>                               X coordinate of the beginning and end of the wait
-; <y>                               Y coordinate of the beginning and end of the wait
-; <z>                               Z coordinate of the beginning and end of the wait
-; <retract_length>                  retraction length of the current tool
-; <retract_speed>                   retraction feedrate of the current tool, converted to mm/min
-; <extruder_swap_retract_length>    tool swap retraction length
-; <extruder_swap_retract_speed>     tool swap retraction speed, converted to mm/min
-; <z_lift>                          travel Z-lift height
-; <extruder_swap_z_lift>            tool swap Z-lift height
-; <current_layer_zheight>           absolute Z height of the current layer
-; <current_extruder>                ID number of the current tool
-; <z_movement_speed>                Z axis movement speed from custom settings, converted to mm/min
-; <e_movement_speed>                Extruder movement speed from custom settings, converted to mm/min
-; <travel_speed>                    travel speed, converted to mm/min
-; <print_x_min>                     minimum X coordinate of printed object(s)
-; <print_x_max>                     maximum X coordinate of printed object(s)
-; <print_y_min>                     minimum Y coordinate of printed object(s)
-; <print_y_max>                     maximum Y coordinate of printed object(s)
-; <print_z_max>                     maximum Z coordinate of printed object(s)
-; <fan_percent>                     current fan speed percentage represented as 0.0 to 1.0
+; number of whole seconds required to wait                              <sec>
+;
+; X coordinate at beginning and end of template                         <x>
+; Y coordinate at beginning and end of template                         <y>
+; Z coordinate at beginning and end of template                         <z>
+;
+; ID number of the current tool                                         <current_extruder>
+; retraction length of the current tool                                 <retract_length>
+; retraction speed of the current tool, converted to mm/min             <retract_speed>
+;
+; travel Z-lift height                                                  <z_lift>
+; tool swap retraction length                                           <extruder_swap_retract_length>
+; tool swap retraction speed, converted to mm/min                       <extruder_swap_retract_speed>
+; tool swap Z-lift height                                               <extruder_swap_z_lift>
+; absolute Z height of the current layer                                <current_layer_zheight>
+; current fan speed percentage represented as 0.0 to 1.0                <fan_percent>
+; extruder movement speed from custom settings, converted to mm/min     <e_movement_speed>
+; Z axis movement speed from custom settings, converted to mm/min       <z_movement_speed>
+; travel speed, converted to mm/min                                     <travel_speed>
+; minimum X coordinate of printed object(s)                             <print_x_min>
+; maximum X coordinate of printed object(s)                             <print_x_max>
+; minimum Y coordinate of printed object(s)                             <print_y_min>
+; maximum Y coordinate of printed object(s)                             <print_y_max>
+; maximum Z coordinate of printed object(s)                             <print_z_max>

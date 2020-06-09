@@ -1,5 +1,7 @@
 # RepRapFirmware Configurable Printer Profile (Addiform_RRF) for IceSL
 - [x] Created on 2020-APR-20 by Nathan Buxton for [Addiform](https://addiform.com)
+- [x] Bugs fixed and code refactored for v1.0.1 on 2020-JUN-08
+- [ ] Support for absolute extrusion coming in v1.1
 
 ### Addiform_RRF adds the following features:
 - Support for firmware retraction.
@@ -7,11 +9,14 @@
 - Support for relative extrusion.
 - Compatibility with RRF tool changes.
 - RRF-specific GCode output.
-- S3D output emulation for toolpath visualization and print info formatting.
+- RRF-compatible print info strings: object height, print time, etc.
+- Toolpath visualization compatibility for S3D and CraftWare.
 
 ## IceSL is a state of the art slicer (STL → G-code) with advanced modeling capabilities.
 ### IceSL has the following novel slicing features, and more:
 - Variable layer-height optimization.
+- Robust multi-tool support.
+- Active temperature control, which ensures tools are heated and cooled just in time for their use.
 - Geometry-based print setting modifiers.
 - Paint to specify seam locations.
 - Advanced tree-like support structures.
@@ -22,7 +27,6 @@
   - Progressive infill patterns that can smoothly vary in density along height.
   - Cubic, Tetrahedral and Hierarchical infills.
   - Ability to create [custom infill types](https://github.com/shapeforge/icesl-infillers/blob/master/README.md).
-- Active temperature control, which ensures tools are heated and cooled just in time for their use.
 - High-precision slicing with controllable simplification.
 - Minimum layer time, with customizable wait GCode.
 
@@ -36,13 +40,13 @@
 
 ## Using this printer profile:
 
-Addiform_RRF is a template for you to create a profile specific to your printer running RepRapFirmware. You should first make a copy of the `/Addiform_RRF/` directory and rename it for your printer, so that updates to the Addiform_RRF profile template do not overwrite your changes.
+Addiform_RRF is a template for you to create a profile specific to your printer running RepRapFirmware. You should first make a copy of the `../Addiform_RRF/` directory and rename it for your printer, so that updates to the Addiform_RRF profile template do not overwrite your changes.
 
 ### IceSL printer profiles are made up of several components:
 - `printer.lua` -- functions that produce GCode output
 - `features.lua` -- printer parameters and default settings
-- `/profiles/*.lua` --  print parameters for different scenarios
-- `/materials/*.lua` -- print parameters for different materials
+- `profiles/*.lua` --  optional print parameters for different scenarios
+- `materials/*.lua` -- optional print parameters for different materials
 - `*.g` or `*.gcode` -- templates for insertion into final GCode
 
 >***Note: The file `printer.lua` is not intended to be modified by the user, unless to implement new features, fix bugs, or modify behaviour. Refer to `features.lua` for user-configurable printer parameters.***
@@ -55,10 +59,10 @@ Addiform_RRF is a template for you to create a profile specific to your printer 
 5. Lua script (user-made script loaded into IceSL for modelling and other purposes)
 6. Graphical User Interface (GUI) -- top priority
 
-## Print Profiles: `/profiles/*.lua`
+## Print Profiles: `profiles/*.lua`
 Print profiles are optional, can be created for different scenarios, and can be named anything the user wishes. A profile might be created for high quality settings, fast print settings, or settings for a specific type of job like miniatures or lithophanes. These pre-made profiles are selectable by a dropdown in the IceSL GUI.
 
-They contain the name of the profile in different regional languages and the variable initializations with the desired values.
+They contain the name of the profile in different regional languages and any variable assignments to the desired values.
 
 ```lua
 -- file: /profiles/high.lua
@@ -71,10 +75,10 @@ name_ch = "高质量"
 z_layer_height_mm = 0.05
 print_speed_mm_per_sec = 30
 ```
-## Material Profiles: `/materials/*.lua`
+## Material Profiles: `materials/*.lua`
 Material profiles are optional and can be created to supplement the above-mentioned print profiles. These pre-made profiles are selectable by a dropdown in the IceSL GUI.
 
-They contain the name of the material in different regional languages and the variable initializations with the desired values.
+They contain the name of the material in different regional languages and any variable assignments to the desired values.
 
 ```lua
 -- file: /materials/pla.lua
@@ -92,7 +96,40 @@ extruder_temp_degree_c = 180
 ## GCode Insertion Templates: `start.g`, `wait.g`, `end.g`, ...
 These GCode files can optionally be automatically inserted into final GCode output during specific print operations. They can contain any GCode the user wishes. There are variables which can be passed through to the GCode production process, allowing for print settings to be passed to the templates.
 
-See each `*.g` file for a list of variables which can be passed to it.
+The file `wait.g` is inserted in order to achieve a minimum layer time when 'Enable minimum printing time for layers' is enabled and 'Function 'wait'' is selected as the method.
+
+### The following is a list of the placeholders available for replacement:
+| Placeholder | Availability | Description |
+| ---: | :---: | --- |
+| `<z_lift>` | All templates | travel Z-lift height |
+| `<extruder_swap_retract_length>` | All templates | tool swap retraction length |
+| `<extruder_swap_retract_speed>` | All templates | tool swap retraction speed, converted to mm/min |
+| `<extruder_swap_z_lift>` | All templates | tool swap Z-lift height |
+| `<current_layer_zheight>` | All templates | absolute Z height of the current layer |
+| `<fan_percent>` | All templates | current fan speed percentage represented as 0.0 to 1.0 |
+| `<e_movement_speed>` | All templates | extruder movement speed from custom settings, converted to mm/min |
+| `<z_movement_speed>` | All templates | Z axis movement speed from custom settings, converted to mm/min |
+| `<travel_speed>` | All templates | travel speed, converted to mm/min |
+| `<print_x_min>` | All templates | minimum X coordinate of printed object(s) |
+| `<print_x_max>` | All templates | maximum X coordinate of printed object(s) |
+| `<print_y_min>` | All templates | minimum Y coordinate of printed object(s) |
+| `<print_y_max>` | All templates | maximum Y coordinate of printed object(s) |
+| `<print_z_max>` | All templates | maximum Z coordinate of printed object(s) |
+| `<current_extruder>` | All except `swap*.g` | ID number of the current tool |
+| `<retract_length>` | All except `swap*.g` | retraction length of the current tool |
+| `<retract_speed>` | All except `swap*.g` | retraction speed of the current tool, converted to mm/min |
+| `<from_extruder>` | Only `swap*.g` | ID number of the tool being deselected |
+| `<to_extruder>` | Only `swap*.g` | ID number of the tool being selected |
+| `<retract_length_from>` | Only `swap*.g` | retraction length of the tool being deselected |
+| `<retract_length_to>` | Only `swap*.g` | retraction length of the tool being selected |
+| `<retract_speed_from>` | Only `swap*.g` | retraction speed of the tool being deselected, converted to mm/min |
+| `<retract_speed_to>` | Only `swap*.g` | retraction speed of the tool being selected, converted to mm/min |
+| `<x>` | Only `swap*.g` and `wait.g` | X coordinate at beginning and end of template |
+| `<y>` | Only `swap*.g` and `wait.g` | Y coordinate at beginning and end of template |
+| `<z>` | Only `swap*.g` and `wait.g` | Z coordinate at beginning and end of template |
+| `<sec>` | Only `wait.g` | number of whole seconds required to wait |
+
+>**Dev. note: Additional templates and placeholders can be added to `printer.lua` with the `get_template()` function.**
 
 ## Printer Features: `features.lua`
 IceSL provides default values for all of the settings of its built-in features. In `features.lua`, these defaults can be changed.
@@ -104,41 +141,39 @@ Addiform_RRF’s `features.lua` template provides a list of all settings/variabl
 ### The features added to IceSL by the Addiform_RRF printer profile are as follows:
 | Name | Type | Description |
 | ----: | :----: | --- |
-| S3D Output Emulation<br/>`s3d_debug` | `bool` | Create GCode compatible with string detections performed by RRF for filament usage, print time estimates, etc.<br/><br/>Also allows S3D toolpath visualization. |
-| CraftWare Path Labeling<br/>`craftware_debug` | `bool` | Create path labels similar to CraftWare`s in place of IceSL or S3D style path labels. |
+| S3D Compatibility<br/>`s3d_debug` | `bool` | Create S3D-compatibile comments for toolpath visualization, as well as path and layer labeling. |
+| CraftWare Path Labeling<br/>`craftware_debug` | `bool` | Create path labels similar to CraftWare's in place of IceSL or S3D-compatibile path labels. |
 | Movement Diagnostic<br/>`move_debug` | `bool` | Enable diagnostic output of movement in GCode comments. |
 | Function Diagnostic<br/>`function_debug` | `bool` | Enable diagnostic output of functions in GCode comments. |
 | Relative Extrusion<br/>`relative_extrusion` | `bool` | Create relative extruder movement commands in GCode output.<br/><br/>If disabled, no extrusion will be generated, since absolute extrusion is not yet implemented in this profile. |
 | Volumetric Extrusion<br/>`volumetric_extrusion` | `bool` | Create volumetric extrusion commands using the per-extruder filament diameters configured in IceSL.<br/><br/>Requires Relative Extrusion to be enabled. |
-| RRF Version 3.1+<br/>`rrf_3` | `bool` | Generate RRF 3.1+ compatible GCode commands.<br/><br/>Currently this only affects M207 firmware retraction GCode. |
-| Firmware Retraction<br/>`firmware_retraction` | `bool` | Generate firmware retraction commands. Uses GUI retraction settings to set initial values.<br/><br/>Non-zero retract length must be set to produce retraction!!<br/><br/>When using RRF Versions 3.1+, firmware retraction is set on a per-extruder basis. Otherwise, the values from the lowest extruder indexed by IceSL will be chosen. Please verify the values are acceptable before printing. |
-| Z Lift on Retract<br/>`z_lift_on_retract` | `bool` | Lift the tool head discretely during retraction and priming instead of during travel move. |
+| RRF Version 3.01+<br/>`rrf_3` | `bool` | Generate RRF 3.01+ compatible GCode commands.<br/><br/>Currently this only affects `M207` firmware retraction GCode. |
+| Firmware Retraction<br/>`firmware_retraction` | `bool` | Generate firmware retraction `G10`/`G11` commands. Uses retraction settings from GUI to set initial values in `M207` command.<br/><br/>Non-zero 'Filament retract' must be set in GUI to produce `G10`/`G11` retraction commands!<br/><br/>When using RRF Version 3.01 or higher, firmware retraction is set on a per-extruder basis. Otherwise, in order to comply with limitations of older RRF versions, only the values from the first-indexed extruder will be used in `M207`. |
+| Suppress M207 at Start<br/>`suppress_m207_start` | `bool` | Suppress `M207` command at start. This allows the user to set their own `M207` firmware retraction parameters elsewhere. |
 | Insert Start GCode<br/>`insert_start_gcode` | `bool` | Insert `start.g` into GCode output before the first layer has started.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `start.g` template for variables. |
 | Insert Pre-Start GCode<br/>`insert_startpre_gcode` | `bool` | Insert `startpre.g` into GCode output before temperatures and other options are set.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `startpre.g` template for variables. |
 | Insert End GCode<br/>`insert_end_gcode` | `bool` | Insert `end.g` into GCode output after the print is finished.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `end.g` template for variables. |
 | Set Temperatures at Start<br/>`insert_start_temp` | `bool` | Set tool and bed temperatures at print start. |
 | Wait for Temperatures at Start<br/>`wait_start_temp` | `bool` | Wait at start for temperatures to be reached. |
-| Suppress RRF Tool Macros at Start<br/>`suppress_rrf_tool_macros_at_start` | `bool` | Suppress RRF tool change macros at starting tool selection.<br/><br/>Sends T* P0. |
+| Suppress RRF Tool Macros at Start<br/>`suppress_rrf_tool_macros_at_start` | `bool` | Suppress RRF tool change macros at starting tool selection.<br/><br/>Sends `T* P0`. |
 | Suppress All Tool Selections at Start<br/>`suppress_all_tool_selection_at_start` | `bool` | Allows for manual tool selection in Start GCode. |
 | Suppress Fan Command at Start<br/>`suppress_fan_at_start` | `bool` | Allows for manual insertion of fan commands in Start GCode. |
 | Insert Swap GCode<br/>`insert_swap_gcode` | `bool` | Insert `swap.g` into GCode output after tool change commands. Commands will be executed after the RRF tool change macros.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `swap.g` template for variables. |
 | Insert Pre-Swap GCode<br/>`insert_swappre_gcode` | `bool` | Insert `swappre.g` into GCode output immediately before tools are changed. Commands will be executed before the RRF tool change macros.<br/><br/>Settings from the GUI can be passed to the script to create tailored GCode. See `swappre.g` template for variables. |
-| Suppress Temp Control at Tool Change<br/>`suppress_temp_control` | `bool` | Suppress IceSL M116 calls after a tool is selected. This is to give full control to the RRF tool change macros. |
+| Suppress Temp Control at Tool Change<br/>`suppress_temp_control` | `bool` | Suppress `M116` calls after a tool is selected. This is to give full control to the RRF tool change macros. |
 | Default Tool Standby Temperature<br/>`default_standby_temp` | `float` | Standby temperature for tools if active temperature control is not enabled. |
-| Material Density<br/>`material_density_g_per_cc` | `float` | Approximate material density to use in print info estimate.<br/><br/>units: g/cm^3 |
-| Material Cost<br/>`material_cost_per_kg` | `float` | Average price/kg of material to use in print info estimate. |
 | Z Axis Movement Speed<br/>`z_movement_speed_mm_per_sec` | `float` | Movement speed in mm/sec for all Z axis moves. |
 | Extruder-Only Movement Speed<br/>`e_movement_speed_mm_per_sec` | `float` | Movement speed in mm/sec for all extruder-only moves. |
-| Shell Speed Override<br/>`shell_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all shell paths.<br/>Path aka 'inner perimeter' in S3D.<br/>Path aka 'segType:HShell' in CraftWare.<br/><br/>Set to 0 to disable override. |
-| Infill Speed Override<br/>`infill_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all infill paths.<br/><br/>Set to 0 to disable override. |
-| Brim Speed Override<br/>`brim_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all brim paths.<br/>Path aka 'skirt' in S3D.<br/>Path aka 'segType:Skirt' in CraftWare.<br/><br/>Set to 0 to disable override. |
-| Raft Speed Override<br/>`raft_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all raft paths.<br/><br/>Set to 0 to disable override. |
-| Shield Speed Override<br/>`shield_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all shield paths.<br/><br/>Set to 0 to disable override. |
-| Tower Speed Override<br/>`tower_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all tower paths.<br/><br/>Set to 0 to disable override. |
-| Bridge Speed Override<br/>`bridge_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all bridge paths.<br/><br/>Set to 0 to disable override. |
-| Curved Cover Speed Override<br/>`cover_shell_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all curved cover paths.<br/>Path aka 'solid layer' in S3D.<br/><br/>Set to 0 to disable override. |
-| Cover Speed Override<br/>`cover_infill_feedrate_override_mm_per_sec` | `float` | Movement speed in mm/sec for all cover paths.<br/>Path aka 'solid layer' in S3D.<br/><br/>Set to 0 to disable override. |
-| % First Layer Speed Scale Override<br/>`first_layer_feedrate_override_scale_percent` | `float` | Movement speed override reduction for paths on first layer. Use in addition to 'Print speed on first layer' setting.<br/><br/>Set to 0 to disable override. |
+| Maximum Shell Speed<br/>`shell_max_speed_mm_per_sec` | `float` | Shell paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Maximum Infill Speed<br/>`infill_max_speed_mm_per_sec` | `float` | Infill paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Maximum Raft Speed<br/>`raft_max_speed_mm_per_sec` | `float` | Raft paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Maximum Shield Speed<br/>`shield_max_speed_mm_per_sec` | `float` | Shield paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Maximum Tower Speed<br/>`tower_max_speed_mm_per_sec` | `float` | Tower paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Maximum Cover Speed<br/>`cover_infill_max_speed_mm_per_sec` | `float` | Cover paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Maximum Curved Cover Speed<br/>`cover_shell_max_speed_mm_per_sec` | `float` | Curved cover paths will have their print speed reduced to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| First Layer Maximum Speed Scale %<br/>`first_layer_speed_scale_percent` | `float` | Percentage of the above max speeds to use for the first layer.<br/>Also scales perimeter speed and support speed on first layer.<br/><br/>Does not scale Brim Speed Override nor the default speed for the first layer: 'Print speed on first layer'.<br/><br/>Set to 0 to disable scaling of speeds for first layer. |
+| Brim Speed Override<br/>`brim_override_speed_mm_per_sec` | `float` | Brim paths will have their print speed set to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
+| Bridge Speed Override<br/>`bridge_override_speed_mm_per_sec` | `float` | Bridge paths will have their print speed set to this value.<br/><br/>Set to 0 to revert to default speed.<br/><br/>unit: mm/sec |
 
 For Miren :rainbow:
 

@@ -1,0 +1,24 @@
+RepRapFirmware Configurable Printer Profile (Addiform_RRF) for IceSL
+created on 2020-APR-20 by Nathan Buxton for Addiform (https://addiform.com)
+
+Change log:
+
+Version 1.0.1 2020-JUN-08:
+- Created get_template() function for GCode templates.
+- Created to_mm_cube() function to calculate volume.
+- Added ability to suppress M207 Firmware Retractuib start GCode.
+  - Refined Z-Lift behaviour to only be divereted by FW retraction.
+- Refactored header() and footer() functions.
+- Refactored functions to use string concatenation.
+- Refactored functions to use parameters when possible.
+- Refactored functions to use local variables when possible.
+- Refactored feedrate override/first layer scaling behaviour. See README.
+- Fixed bug with Volumetric Extrusion start GCode.
+- Fixed bug where move_length was sometimes calculated incorrectly for move_xyz().
+- Fixed bugs with temperature control.
+- Fixed bug where first layer height was incorrectly passed to start*.g GCode templates.
+- Fixed bug where layer height was not reported correctly in RRF-detected string.
+- Removed GCode comments from first layer inserts.
+- Refined coding style.
+
+Version 1.0 (first release)
