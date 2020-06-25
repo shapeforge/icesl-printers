@@ -2,7 +2,7 @@ name_en = "ABS"
 name_fr = "ABS"
 name_es = "ABS"
 
-filament_linear_adv_factor = 30
+filament_linear_adv_factor = 0.06
 
 extruder_temp_degree_c_0 = 230
 bed_temp_degree_c = 100

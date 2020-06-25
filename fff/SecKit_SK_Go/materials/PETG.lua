@@ -2,7 +2,7 @@ name_en = "PETG"
 name_fr = "PETG"
 name_es = "PETG"
 
-filament_linear_adv_factor = 45
+filament_linear_adv_factor = 0.06
 
 extruder_temp_degree_c_0 = 240
 bed_temp_degree_c = 70
