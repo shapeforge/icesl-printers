@@ -15,7 +15,7 @@ tower_at_location = true
 tower_location_x_mm = bed_size_x_mm / 2 - 15
 tower_location_y_mm = bed_size_y_mm / 2 - 15
 
-gen_tower = true
+gen_tower = false
 tower_side_x_mm = 10.0
 tower_side_y_mm = 5.0
 tower_brim_num_contours = 12

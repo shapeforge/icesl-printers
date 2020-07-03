@@ -8,7 +8,7 @@ tower_at_location = false
 extruder_swap_retract_length_mm = 6.0
 extruder_swap_retract_speed_mm_per_sec = 30.0
 
-gen_tower = true
+gen_tower = false
 tower_side_x_mm = 10.0
 tower_side_y_mm = 5.0
 

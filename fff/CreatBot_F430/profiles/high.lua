@@ -21,6 +21,8 @@ brim_distance_to_print = 1.0
 brim_num_contours = 4
 
 extruder_0 = 0
+infill_extruder_0 = 0
+
 num_shells_0 = 1
 cover_thickness_mm_0 = 1.2
 print_perimeter_0 = true
@@ -29,6 +31,7 @@ flow_multiplier_0 = 1.0
 speed_multiplier_0 = 1.0
 
 extruder_1 = 1
+infill_extruder_1 = 1
 num_shells_1 = 1
 cover_thickness_mm_1 = 1.2
 print_perimeter_1 = true

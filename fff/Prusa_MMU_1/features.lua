@@ -16,7 +16,7 @@ z_offset   = 0.0
 
 priming_mm_per_sec = 40
 
-gen_tower = true
+gen_tower = false
 tower_side_x_mm = 25.0
 tower_side_y_mm = 60.0
 tower_brim_num_contours = 5

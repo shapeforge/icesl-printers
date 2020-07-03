@@ -30,7 +30,7 @@ bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 120
 
 -- Purge Tower
-gen_tower = true
+gen_tower = false
 tower_side_x_mm = 10.0
 tower_side_y_mm = 25.0
 tower_brim_num_contours = 12

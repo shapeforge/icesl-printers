@@ -24,7 +24,9 @@ brim_num_contours = 4
 process_thin_features = false
 
 extruder_0 = 0
+infill_extruder_0 = 0
 extruder_1 = 1
+infill_extruder_1 = 1
 
 for i = 0, max_number_extruders, 1 do
   _G['num_shells_' .. i] = 0
