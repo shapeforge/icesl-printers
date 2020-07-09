@@ -1,27 +1,41 @@
 -- BCN3D SigmaX R19 profile
--- Bedell Pierre 30/10/2019
+-- Bedell Pierre 09/07/2020
 
 current_extruder = 0
 current_z = 0.0
 current_frate = 0
 changed_frate = false
-traveling = false
 current_fan_speed = -1
 
 extruder_e = {} -- table of extrusion values for each extruder
 extruder_e_reset = {} -- table of extrusion values for each extruder for e reset (to comply with G92 E0)
 extruder_e_swap = {} -- table of extrusion values for each extruder before to keep track of e at an extruder swap
+extruder_stored = {} -- table to store the state of the extruders after the purge procedure (to prevent additionnal retracts)
 
 for i = 0, extruder_count -1 do
   extruder_e[i] = 0.0
   extruder_e_reset[i] = 0.0
   extruder_e_swap[i] = 0.0
+  extruder_stored[i] = false
 end
 
 purge_string = ''
+n_selected_extruder = 0 -- counter to track the selected / prepared extruders
 
-skip_prime_retract = false
 extruder_changed = false
+processing = false
+
+path_type = {
+--{ 'default',    'Craftware'}
+  { ';perimeter',  ';segType:Perimeter' },
+  { ';shell',      ';segType:HShell' },
+  { ';infill',     ';segType:Infill' },
+  { ';raft',       ';segType:Raft' },
+  { ';brim',       ';segType:Skirt' },
+  { ';shield',     ';segType:Pillar' },
+  { ';support',    ';segType:Support' },
+  { ';tower',      ';segType:Pillar'}
+}
 
 craftware_debug = true
 
@@ -37,19 +51,33 @@ function round(number, decimals)
 end
 
 function header()
+  -- workaround for materials name using "custom" profile
+  if name_en == nil then 
+    if extruder_temp_degree_c[0] >= 170 and extruder_temp_degree_c[0] < 230 then 
+      name_en = 'PLA' -- PLA
+    elseif extruder_temp_degree_c[0] >= 230 and extruder_temp_degree_c[0] <= 270 then
+      name_en = 'ABS' -- ABS
+    else
+      name_en = 'PLA' -- PLA
+    end
+  end
+
   local filament_total_length = 0
   local extruders_info_string = ''
+  local materials_info_string = ''
   local tool_temp_string = ''
   -- Fetching print job informations
   if filament_tot_length_mm[0] > 0 then 
     filament_total_length = filament_total_length + filament_tot_length_mm[0]
     extruders_info_string = extruders_info_string .. ' T0 ' .. round(nozzle_diameter_mm_0,2)
-    tool_temp_string = tool_temp_string .. 'T0\nM104 T0 S' .. extruder_temp_degree_c[0] .. '\nM109 T0 S' .. extruder_temp_degree_c[0] .. ' ;Fixed T0 temperature\n'
+    materials_info_string = materials_info_string .. ' T0 ' .. name_en
+    tool_temp_string = tool_temp_string .. 'M104 T0 S' .. extruder_temp_degree_c[0] .. '\nM109 T0 S' .. extruder_temp_degree_c[0] .. ' ;Fixed T0 temperature\n'
   end
   if filament_tot_length_mm[1] > 0 then 
     filament_total_length = filament_total_length + filament_tot_length_mm[1]
     extruders_info_string = extruders_info_string .. ' T1 ' .. round(nozzle_diameter_mm_1,2)
-    tool_temp_string = tool_temp_string .. 'T1\nM104 T1 S' .. extruder_temp_degree_c[1] .. '\nM109 T1 S' .. extruder_temp_degree_c[1] .. ' ;Fixed T1 temperature\n'
+    materials_info_string = materials_info_string .. ' T1 ' .. name_en
+    tool_temp_string = tool_temp_string .. 'M104 T1 S' .. extruder_temp_degree_c[1] .. '\nM109 T1 S' .. extruder_temp_degree_c[1] .. ' ;Fixed T1 temperature\n'
   end
 
   output(';FLAVOR:Marlin')
@@ -57,8 +85,12 @@ function header()
   output(';Filament used: ' .. round(filament_total_length / 1000, 5) .. 'm')
   output(';Layer height: ' .. round(z_layer_height_mm,2))
   output(';Extruders used:' .. extruders_info_string)
+  output(';Materials used:' .. materials_info_string)
+  --output(';BCN3D_FIXES') -- doesn't seems to be mandatory
   output(';Generated with ' .. slicer_name .. ' ' .. slicer_version)
 
+  output('M141 S' .. 50 .. ' ;chamber temperature')
+  --output('T0')
   output('M190 S' .. bed_temp_degree_c .. ' ;bed temperature')
   output(tool_temp_string)
 
@@ -70,6 +102,8 @@ function header()
   else
     h = h:gsub('<PRINT_MODE>', '')
   end
+  h = h:gsub('<ACC>', default_acc)
+  h = h:gsub('<JERK>', 'X' .. default_jerk .. ' Y' .. default_jerk)
   h = h:gsub('<BUCKET_PURGE>', purge_string)
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
@@ -77,42 +111,42 @@ function header()
 end
 
 function footer()
-  output(file('footer.gcode'))
+  local f = file('footer.gcode')
+  f = h:gsub('<ACC>', default_acc)
+  f = h:gsub('<JERK>', 'X' .. default_jerk .. ' Y' .. default_jerk)
+  output(f)
 end
 
 function retract(extruder,e)
-  extruder_e[current_extruder] = e
-  if skip_prime_retract then 
-    --comment('retract skipped')
-    skip_prime_retract = false
-    return e
+  local len   = filament_priming_mm[extruder]
+  local speed = priming_mm_per_sec[extruder] * 60
+  local e_value = e - extruder_e_swap[current_extruder]
+  if extruder_stored[extruder] then 
+    comment('retract on extruder ' .. extruder .. ' skipped')
   else
-    comment('retract')
-    local len   = filament_priming_mm[extruder]
-    local speed = priming_mm_per_sec[extruder] * 60
-    extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
-    output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] - len))
+    comment('retract')    
+    output('G1 F' .. speed .. ' E' .. ff(e_value - extruder_e_reset[current_extruder] - len))
+    extruder_e[current_extruder] = e_value - len
     current_frate = speed
     changed_frate = true
-    return e - len
-  end
+  end  
+  return e - len
 end
 
 function prime(extruder,e)
-  if skip_prime_retract then 
-    --comment('prime skipped')
-    skip_prime_retract = false
-    return e
+  local len   = filament_priming_mm[extruder]
+  local speed = priming_mm_per_sec[extruder] * 60
+  local e_value = e - extruder_e_swap[current_extruder]
+  if extruder_stored[extruder] then 
+    comment('prime on extruder ' .. extruder .. ' skipped')
   else
-    comment('prime')
-    local len   = filament_priming_mm[extruder]
-    local speed = priming_mm_per_sec[extruder] * 60
-    extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
-    output('G1 F' .. speed .. ' E' .. ff(extruder_e[current_extruder] - extruder_e_reset[current_extruder] + len))
+    comment('prime')    
+    output('G1 F' .. speed .. ' E' .. ff(e_value - extruder_e_reset[current_extruder] + len))
+    extruder_e[current_extruder] = e_value + len
     current_frate = speed
     changed_frate = true
-    return e + len
-  end
+  end  
+  return e + len
 end
 
 function layer_start(zheight)
@@ -137,8 +171,6 @@ end
 
 -- this is called once for each used extruder at startup
 function select_extruder(extruder)
-  skip_prime_retract = true
-
   extruder_side = ''
   if extruder == 0 then 
     extruder_side = 'left'
@@ -146,11 +178,24 @@ function select_extruder(extruder)
     extruder_side = 'right'
   end
 
+  n_selected_extruder = n_selected_extruder + 1
+
   purge_string = purge_string .. "\nT" .. extruder .. "           ;switch to the " .. extruder_side ..  " extruder"
   purge_string = purge_string .. "\nG92 E0       ;zero the extruded length"
-  purge_string = purge_string .. "\nG1 F47.4 E15 ;extrude 15mm of feed stock"
-  purge_string = purge_string .. "\nG92 E0  "
-  purge_string = purge_string .. "\nG4 P2000     ;stabilize hotend's pressure\n"
+  purge_string = purge_string .. "\nG1 E10 F35   ;extrude 10mm of filament"
+  purge_string = purge_string .. "\nG92 E0       ;zero the extruded length"
+
+  -- number_of_extruders is an IceSL internal Lua global variable 
+  -- which is used to know how many extruders will be used for a print job
+  if n_selected_extruder == number_of_extruders then
+    purge_string = purge_string .. "\nG4 S2        ;stabilize hotend's pressure"
+    --purge_string = purge_string .. "\nG1 E-0.5\n"
+    extruder_stored[extruder] = false
+  else
+    purge_string = purge_string .. "\nG1 E-" .. filament_priming_mm[extruder] .. " F1000 ;store filament"
+    purge_string = purge_string .. "\nG92 E0       ;zero the extruded length\n"
+    extruder_stored[extruder] = true
+  end
 
   current_extruder = extruder
   current_frate = travel_speed_mm_per_sec * 60
@@ -163,23 +208,17 @@ function swap_extruder(from,to,x,y,z)
 
   -- swap extruder
   output('T' .. to)
-  -- temp ?
-  output('G92 E0')
   output('G91')
-  output('G1 F12000 Z' .. f(extruder_swap_zlift_mm) .. ' ;z_lift')
+  output('G1 F12000 Z2')
   output('G90')
   output('G92 E0')
-  output('G1 F600 E6.5')
+  output('G1 E'.. filament_priming_mm[to] .. ' F1000 ;release stored filament')
+  output('G1 E1.0 F100 ;default purge')
   output('G92 E0')
-  if smart_purge == true then
-    output('M800 F47.4 S0.0002 E20.0 P0.0 ;smartpurge')
-  else
-    output('G1 F47.4 E2.5 ;defaultpurge')
-  end
-  output('G92 E0')
-  output('G1 F2400 E-6.5')
-  output('G92 E0')
-  output('G4 P2000\n')
+  output('G4 S3')
+  output('G1 E-'.. filament_priming_mm[to] .. ' F1000\n')
+
+  extruder_stored[to] = false
 
   current_extruder = to
   extruder_changed = true
@@ -190,7 +229,8 @@ end
 function move_xyz(x,y,z)
   if processing == true then
     processing = false
-    comment('travel')
+    output(';travel')
+    output('M204 S' .. travel_acc .. '\nM205 X' .. travel_jerk .. ' Y' .. travel_jerk)
   end
 
   if z ~= current_z or extruder_changed == true then
@@ -219,26 +259,16 @@ function move_xyze(x,y,z,e)
 
   if processing == false then 
     processing = true
-    if craftware_debug == true then
-      if      path_is_perimeter then output(';segType:Perimeter')
-      elseif  path_is_shell     then output(';segType:HShell')
-      elseif  path_is_infill    then output(';segType:Infill')
-      elseif  path_is_raft      then output(';segType:Raft')
-      elseif  path_is_brim      then output(';segType:Skirt')
-      elseif  path_is_shield    then output(';segType:Pillar')
-      elseif  path_is_support   then output(';segType:Support')
-      elseif  path_is_tower     then output(';segType:Pillar')
-      end
-    else
-      if      path_is_perimeter then comment('perimeter')
-      elseif  path_is_shell     then comment('shell')
-      elseif  path_is_infill    then comment('infill')
-      elseif  path_is_raft      then comment('raft')
-      elseif  path_is_brim      then comment('brim')
-      elseif  path_is_shield    then comment('shield')
-      elseif  path_is_support   then comment('support')
-      elseif  path_is_tower     then comment('tower')
-      end
+    local p_type = 1 -- default paths naming
+    if craftware_debug then p_type = 2 end
+    if      path_is_perimeter then output(path_type[1][p_type]) output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
+    elseif  path_is_shell     then output(path_type[2][p_type]) output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
+    elseif  path_is_infill    then output(path_type[3][p_type]) output('M204 S' .. infill_acc .. '\nM205 X' .. infill_jerk .. ' Y' .. infill_jerk)
+    elseif  path_is_raft      then output(path_type[4][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_brim      then output(path_type[5][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_shield    then output(path_type[6][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_support   then output(path_type[7][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_tower     then output(path_type[8][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
     end
   end
 

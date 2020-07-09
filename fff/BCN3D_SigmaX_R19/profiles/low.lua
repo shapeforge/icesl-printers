@@ -3,41 +3,24 @@ name_es = "Impresión rápida"
 name_fr = "Impression rapide"
 name_ch = "快速打印"
 
-z_layer_height_mm = 0.3
+z_layer_height_mm = 0.2
 
-print_speed_mm_per_sec = 40
+print_speed_mm_per_sec = 50
 first_layer_print_speed_mm_per_sec = 10
-perimeter_print_speed_mm_per_sec = 40
+perimeter_print_speed_mm_per_sec = 30
 travel_speed_mm_per_sec = 80
 
-add_raft = false
-raft_spacing = 1.0
+for i = 0, max_number_brushes, 1 do
+  _G['extruder_'..i] = i
+  _G['infill_extruder_'..i] = i
+  _G['num_shells_' ..i] = 0
+  _G['cover_thickness_mm_'..i] = 0.6
+  _G['print_perimeter_'..i] = true
+  _G['infill_percentage_'..i] = 20
+  _G['flow_multiplier_'..i] = 1.0
+  _G['speed_multiplier_'..i] = 1.0
+end
 
-gen_supports = false
-support_extruder = 0
-
-add_brim = true
-brim_distance_to_print = 1.0
-brim_num_contours = 4
-
-extruder_0 = 0
-infill_extruder_0 = 0
-
-num_shells_0 = 0
-cover_thickness_mm_0 = 0.6
-print_perimeter_0 = true
-infill_percentage_0 = 15
-flow_multiplier_0 = 1.0
-speed_multiplier_0 = 1.0
-
-extruder_1 = 1
-infill_extruder_1 = 1
-
-num_shells_1 = 0
-cover_thickness_mm_1 = 0.6
-print_perimeter_1 = true
-infill_percentage_1 = 15
-flow_multiplier_1 = 1.0
-speed_multiplier_1 = 1.0
-
-process_thin_features = false
+if mirror_mode == true or duplicate_mode == true then
+  apply_restrictions()
+end

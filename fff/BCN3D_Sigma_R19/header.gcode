@@ -2,8 +2,8 @@ M82 		 ;absolute extrusion mode
 
 G21          ;metric values
 G90          ;absolute positioning
-M204 S600 ;set default acceleration
-M205 X12.5 Y12.5 ;set default jerk
+M204 S<ACC> ;set default acceleration
+M205 <JERK> ;set default jerk
 M107         ;start with the fan off
 G28 X0 Y0    ;move X/Y to min endstops
 G28 Z0       ;move Z to min endstops
