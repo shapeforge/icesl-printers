@@ -5,14 +5,14 @@
 -- Sigma special modes management
 -- ##############################
 mirror_mode = false
-duplicate_mode = false
+duplication_mode = false
 
 -- Custom checkoxes to enable special modes
 --add_checkbox_setting('mirror_mode', 'Mirror Printing mode', 'Enable the Mirror Printing mode')
---add_checkbox_setting('duplicate_mode', 'Duplicate Printing mode', 'Enable the Duplicate Printing mode')
+--add_checkbox_setting('duplication_mode', 'Duplicate Printing mode', 'Enable the Duplicate Printing mode')
 
-if mirror_mode == true then duplicate_mode = false end
-if duplicate_mode == true then mirror_mode = false end
+if mirror_mode == true then duplication_mode = false end
+if duplication_mode == true then mirror_mode = false end
 
 -- function to force every brush to have only one extruder (for mirror & duplication mode)
 function apply_restrictions()
@@ -115,7 +115,7 @@ brim_num_contours = 4
 -- misc
 process_thin_features = false
 
-if mirror_mode == true or duplicate_mode == true then
+if mirror_mode == true or duplication_mode == true then
   bed_size_x_mm = bed_size_x_mm / 2
   apply_restrictions()
 end

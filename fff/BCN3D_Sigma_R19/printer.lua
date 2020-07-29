@@ -73,7 +73,7 @@ function header()
     materials_info_string = materials_info_string .. ' T0 ' .. name_en
     tool_temp_string = tool_temp_string .. 'M104 T0 S' .. extruder_temp_degree_c[0] .. '\nM109 T0 S' .. extruder_temp_degree_c[0] .. ' ;Fixed T0 temperature\n'
   end
-  if filament_tot_length_mm[1] > 0 then 
+  if filament_tot_length_mm[1] > 0 or (mirror_mode == true or duplication_mode == true) then 
     filament_total_length = filament_total_length + filament_tot_length_mm[1]
     extruders_info_string = extruders_info_string .. ' T1 ' .. round(nozzle_diameter_mm_1,2)
     materials_info_string = materials_info_string .. ' T1 ' .. name_en
