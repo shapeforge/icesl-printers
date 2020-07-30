@@ -1,5 +1,5 @@
 bed_size_x_mm = 310
-bed_size_y_mm = 310
+bed_size_y_mm = 320
 bed_size_z_mm = 400
 nozzle_diameter_mm = 0.4
 
