@@ -65,15 +65,15 @@ travel_speed_mm_per_sec_max = 200
 -- #####################
 -- Acceleration settings
 -- #####################
-default_acc = 600 -- mm/s²
-perimeter_acc = 600 -- mm/s²
-infill_acc = 600 -- mm/s²
-travel_acc = 800 -- mm/s²
+default_acc = 1500 -- mm/s²
+perimeter_acc = 1000 -- mm/s²
+infill_acc = 1500 -- mm/s²
+travel_acc = 1500 -- mm/s²
 
-default_jerk = 12.50 -- mm/s
-perimeter_jerk = 9.375 -- mm/s
-infill_jerk = 12.50 -- mm/s
-travel_jerk = 12.50 -- mm/s
+default_jerk = 25.0 -- mm/s
+perimeter_jerk = 10.0 -- mm/s
+infill_jerk = 25.0 -- mm/s
+travel_jerk = 30.0 -- mm/s
 
 -- #############
 -- Misc settings
