@@ -11,6 +11,7 @@ bed_size_z_mm = 495
 -- #################
 -- Printer Extruders
 -- #################
+-- Note: Extruder 0 is on the right, Extruder 1 is on the left
 extruder_count = 2
 nozzle_diameter_mm = 0.6
 filament_diameter_mm = 1.75
@@ -19,7 +20,7 @@ filament_diameter_mm = 1.75
 -- Retraction Settings
 -- ###################
 filament_priming_mm = 1.50
-priming_mm_per_sec = 25
+priming_mm_per_sec = 20
 
 -- ###################
 -- Layer height limits
@@ -31,11 +32,11 @@ z_layer_height_mm_max = nozzle_diameter_mm * 0.8
 -- ############################
 -- Printing temperatures limits
 -- ############################
-extruder_temp_degree_c = 210
+extruder_temp_degree_c = 200
 extruder_temp_degree_c_min = 150
 extruder_temp_degree_c_max = 270
 
-bed_temp_degree_c = 60
+bed_temp_degree_c = 50
 bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 110
 
@@ -46,25 +47,37 @@ chamber_temp_degree_c_max = 110
 -- #####################
 -- Printing speed limits
 -- #####################
-print_speed_mm_per_sec = 55
+print_speed_mm_per_sec = 40
 print_speed_mm_per_sec_min = 5
 print_speed_mm_per_sec_max = 100
 
-perimeter_print_speed_mm_per_sec = 35
+perimeter_print_speed_mm_per_sec = 30
 perimeter_print_speed_mm_per_sec_min = 5
 perimeter_print_speed_mm_per_sec_max = 80
 
-first_layer_print_speed_mm_per_sec = 30
+first_layer_print_speed_mm_per_sec = 25
 first_layer_print_speed_mm_per_sec_min = 5
 first_layer_print_speed_mm_per_sec_max = 30
 
-travel_speed_mm_per_sec = 150
+travel_speed_mm_per_sec = 100
 travel_speed_mm_per_sec_min = 60
 travel_speed_mm_per_sec_max = 200
 
 -- #####################
 -- Acceleration settings
 -- #####################
+-- Use with caution ! IceSL doesn't manage acceleations by itself !
+-- The accelerations/jerk will only be managed in a simple/restricted way directly by the profile 
+-- (depending on the path type) .  
+--add_checkbox_setting(internal_name, description, tooltip, default)
+acc_tooltip = 'Enable Acceleration & Jerk Control\n\n'
+acc_tooltip = acc_tooltip .. 'Use with caution!\n'
+acc_tooltip = acc_tooltip .. 'IceSL doesn\'t manage accelerations and jerk by itself!\n\n'
+acc_tooltip = acc_tooltip .. 'The accelerations/jerk will only be managed\n'
+acc_tooltip = acc_tooltip .. 'in a simple/restricted way directly by the profile\n'
+acc_tooltip = acc_tooltip .. '(depending on the path type).'
+add_checkbox_setting('enable_acc', 'Enable Acceleration Control', acc_tooltip, false)
+
 default_acc = 1500 -- mm/s²
 perimeter_acc = 1000 -- mm/s²
 infill_acc = 1500 -- mm/s²
@@ -88,12 +101,12 @@ tower_brim_num_contours = 12
 enable_active_temperature_control = true
 extruder_swap_zlift_mm = 0.2
 extruder_swap_retract_length_mm = 6.5
-extruder_swap_retract_speed_mm_per_sec = 30.0
+extruder_swap_retract_speed_mm_per_sec = 25.0
 
 -- brim
 add_brim = true
 brim_distance_to_print = 1.0
-brim_num_contours = 4
+brim_num_contours = 3
 
 -- misc
 process_thin_features = false

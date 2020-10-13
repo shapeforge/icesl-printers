@@ -19,8 +19,8 @@ for i = 0, max_number_brushes, 1 do
 end
 
 bed_temp_degree_c = 40
-chamber_temp_degree_c = 40
+chamber_temp_degree_c = 0
 
 enable_fan = true
-fan_speed_percent = 100
+fan_speed_percent = 50
 fan_speed_percent_on_bridges = 100

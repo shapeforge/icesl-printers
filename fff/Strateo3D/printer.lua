@@ -46,24 +46,32 @@ function round(number, decimals)
   return math.floor(number * power) / power
 end
 
+function e_from_dep(dep_length, dep_width, dep_height, extruder) -- get the E value (for G1 move) from a specified deposition move
+  local r1 = dep_width / 2
+  local r2 = filament_diameter_mm[extruder] / 2
+  local extruded_vol = dep_length * math.pi * r1 * dep_height
+  return extruded_vol / (math.pi * r2^2)
+end
+
 function header()
-  local tool_temp_string = ''
+  local preheat_temp_string = '; set extruder(s) temperature\n'
+  local wait_temp_string = '; wait for extruder(s) temperature to stabilize\n'
 
   if filament_tot_length_mm[0] > 0 then 
-    tool_temp_string = tool_temp_string .. 'M104 T0 S' .. extruder_temp_degree_c[0] .. '\n'
-    tool_temp_string = tool_temp_string .. 'M105\n'
-    tool_temp_string = tool_temp_string .. 'M109 T0 S' .. extruder_temp_degree_c[0] .. '\n'
-    tool_temp_string = tool_temp_string .. 'M105\n'
+    preheat_temp_string = preheat_temp_string .. 'M104 T0 S' .. extruder_temp_degree_c[0] .. '\n'
+    preheat_temp_string = preheat_temp_string .. 'M150\n'
+    wait_temp_string = wait_temp_string .. 'M109 T0 S' .. extruder_temp_degree_c[0] .. '\n'
+    wait_temp_string = wait_temp_string .. 'M150\n'
   end
   if filament_tot_length_mm[1] > 0 or (mirror_mode == true or duplication_mode == true) then 
-    tool_temp_string = tool_temp_string .. 'M104 T1 S' .. extruder_temp_degree_c[1] .. '\n'
-    tool_temp_string = tool_temp_string .. 'M105\n'
-    tool_temp_string = tool_temp_string .. 'M109 T1 S' .. extruder_temp_degree_c[1] .. '\n'
-    tool_temp_string = tool_temp_string .. 'M105\n'
+    preheat_temp_string = preheat_temp_string .. 'M104 T1 S' .. extruder_temp_degree_c[1] .. '\n'
+    preheat_temp_string = preheat_temp_string .. 'M150\n'
+    wait_temp_string = wait_temp_string .. 'M109 T1 S' .. extruder_temp_degree_c[1] .. '\n'
+    wait_temp_string = wait_temp_string .. 'M150\n'
   end
 
   local h = file('header.gcode')
-  h = h:gsub('<TOOL_TEMP>', tool_temp_string)
+  h = h:gsub('<TOOL_TEMP>', preheat_temp_string .. wait_temp_string)
   h = h:gsub('<BED_TEMP>', bed_temp_degree_c)
   h = h:gsub('<CHAMBER_TEMP>', chamber_temp_degree_c)
   output(h)
@@ -128,19 +136,42 @@ function layer_stop()
   output('; </layer>')
 end
 
+-- Note: Extruder 0 is on the right, Extruder 1 is on the left
+
 -- this is called once for each used extruder at startup
 function select_extruder(extruder)
-  local x_pos = 0
-  local y_pos = 0.5 + (extruder*2)
+  local n = nozzle_diameter_mm -- should be changed to nozzle_diameter_mm[extruder] when available
+  -- hack to work around not beeing a lua global
+  if extruder == 0 then
+    n = nozzle_diameter_mm_0 
+  elseif extruder == 1 then 
+    n = nozzle_diameter_mm_1
+  end
 
+  local x_pos = 0.0
+  local y_pos = 0.5 + (extruder*4*n)
+
+  local l1 = 60 -- length of the purge start
+  local l2 = 40 -- length of the purge end
+
+  local w1 = n * 1.2 -- width of the purge start
+  local w2 = n * 3.0 -- width of the purge end
+  
+  local e_value = 0.0
+
+  output('\n; purge extruder ' .. extruder)
   output('T' .. extruder)
   output('G0 F6000 X' .. x_pos .. ' Y' .. y_pos ..' Z0.3')
   output('G92 E0.0')
-  x_pos = x_pos + 60.0
-  output('G1 F1000 X' .. x_pos .. ' E9.0   ; purge line') -- purge line
-  x_pos = x_pos + 40.0
-  output('G1 F1000 X' .. x_pos .. ' E21.5  ; purge line') -- purge line
-  output('G92 E0.0')
+
+  x_pos = x_pos + l1
+  e_value = round(e_from_dep(l1, w1, 0.3, extruder),2)
+  output('G1 F1000 X' .. x_pos .. ' E' .. e_value .. '   ; purge line start') -- purge start
+
+  x_pos = x_pos + l2
+  e_value = e_value + round(e_from_dep(l2, w2, 0.3, extruder),2)
+  output('G1 F1000 X' .. x_pos .. ' E' .. e_value .. '  ; purge line end') -- purge end
+  output('G92 E0.0\n')
 
   current_extruder = extruder
   current_frate = travel_speed_mm_per_sec * 60
@@ -166,7 +197,9 @@ function move_xyz(x,y,z)
   if processing == true then
     processing = false
     output(';travel')
-    output('M204 S' .. travel_acc .. '\nM205 X' .. travel_jerk .. ' Y' .. travel_jerk)
+    if enable_acc then
+      output('M204 S' .. travel_acc .. '\nM205 X' .. travel_jerk .. ' Y' .. travel_jerk)
+    end
   end
 
   if z ~= current_z then
@@ -189,25 +222,40 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
-  extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
-
-  local e_value = extruder_e[current_extruder] - extruder_e_reset[current_extruder]
-
+  -- path type management
   if processing == false then 
     processing = true
     local p_type = 1 -- default paths naming
     if craftware_debug then p_type = 2 end
-    if      path_is_perimeter then output(path_type[1][p_type]) output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
-    elseif  path_is_shell     then output(path_type[2][p_type]) output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
-    elseif  path_is_infill    then output(path_type[3][p_type]) output('M204 S' .. infill_acc .. '\nM205 X' .. infill_jerk .. ' Y' .. infill_jerk)
-    elseif  path_is_raft      then output(path_type[4][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_brim      then output(path_type[5][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_shield    then output(path_type[6][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_support   then output(path_type[7][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_tower     then output(path_type[8][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    if      path_is_perimeter then output(path_type[1][p_type])
+    elseif  path_is_shell     then output(path_type[2][p_type])
+    elseif  path_is_infill    then output(path_type[3][p_type])
+    elseif  path_is_raft      then output(path_type[4][p_type])
+    elseif  path_is_brim      then output(path_type[5][p_type])
+    elseif  path_is_shield    then output(path_type[6][p_type])
+    elseif  path_is_support   then output(path_type[7][p_type])
+    elseif  path_is_tower     then output(path_type[8][p_type])
     end
   end
 
+  -- acceleration & jerk management
+  if enable_acc then
+    if      path_is_perimeter then  output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
+    elseif  path_is_shell     then  output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
+    elseif  path_is_infill    then  output('M204 S' .. infill_acc .. '\nM205 X' .. infill_jerk .. ' Y' .. infill_jerk)
+    elseif  path_is_raft      then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_brim      then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_shield    then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_support   then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    elseif  path_is_tower     then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    end
+  end
+
+  -- extrusion value management
+  extruder_e[current_extruder] = e - extruder_e_swap[current_extruder]
+  local e_value = extruder_e[current_extruder] - extruder_e_reset[current_extruder]
+
+  -- gcode generation
   if z == current_z then
     if changed_frate == true then 
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
