@@ -22,6 +22,6 @@ G1 X60.0 E9.0  F1000.0 ; intro line
 G1 X100.0 E12.5  F1000.0 ; intro line
 G92 E0.0
 M82  ; extruder absolute mode
-G221 S<FLOW>
+M221 S<FLOW>
 M900 K<FILAMENT> ; Filament gcode
 G92 E0.0
