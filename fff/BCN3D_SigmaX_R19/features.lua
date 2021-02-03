@@ -82,6 +82,8 @@ travel_speed_mm_per_sec_max = 120
 -- #####################
 -- Acceleration settings
 -- #####################
+use_acc_jerk_settings = true
+
 default_acc = 600 -- mm/s²
 perimeter_acc = 600 -- mm/s²
 infill_acc = 600 -- mm/s²

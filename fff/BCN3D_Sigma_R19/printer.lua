@@ -62,22 +62,31 @@ function header()
     end
   end
 
+  if mirror_mode or duplication_mode then
+    filament_tot_length_mm[1] = filament_tot_length_mm[0]
+    number_of_extruders = 2
+    purge_string = prepare_extruder(1,false) .. purge_string
+  end
+
   local filament_total_length = 0
   local extruders_info_string = ''
   local materials_info_string = ''
-  local tool_temp_string = ''
+  local preheat_temp_string = ''
+  local wait_temp_string =  ''
   -- Fetching print job informations
   if filament_tot_length_mm[0] > 0 then 
     filament_total_length = filament_total_length + filament_tot_length_mm[0]
     extruders_info_string = extruders_info_string .. ' T0 ' .. round(nozzle_diameter_mm_0,2)
     materials_info_string = materials_info_string .. ' T0 ' .. name_en
-    tool_temp_string = tool_temp_string .. 'M104 T0 S' .. extruder_temp_degree_c[0] .. '\nM109 T0 S' .. extruder_temp_degree_c[0] .. ' ;Fixed T0 temperature\n'
+    preheat_temp_string = preheat_temp_string .. '\nM104 T0 S' .. extruder_temp_degree_c[0]
+    wait_temp_string = wait_temp_string .. '\nM109 T0 S' .. extruder_temp_degree_c[0] .. ' ;Fixed T0 temperature'
   end
-  if filament_tot_length_mm[1] > 0 or (mirror_mode == true or duplication_mode == true) then 
+  if filament_tot_length_mm[1] > 0 then
     filament_total_length = filament_total_length + filament_tot_length_mm[1]
     extruders_info_string = extruders_info_string .. ' T1 ' .. round(nozzle_diameter_mm_1,2)
     materials_info_string = materials_info_string .. ' T1 ' .. name_en
-    tool_temp_string = tool_temp_string .. 'M104 T1 S' .. extruder_temp_degree_c[1] .. '\nM109 T1 S' .. extruder_temp_degree_c[1] .. ' ;Fixed T1 temperature\n'
+    preheat_temp_string = preheat_temp_string .. '\nM104 T1 S' .. extruder_temp_degree_c[1]
+    wait_temp_string = wait_temp_string .. '\nM109 T1 S' .. extruder_temp_degree_c[1] .. ' ;Fixed T1 temperature'
   end
 
   output(';FLAVOR:Marlin')
@@ -87,34 +96,56 @@ function header()
   output(';Extruders used:' .. extruders_info_string)
   output(';Materials used:' .. materials_info_string)
   --output(';BCN3D_FIXES') -- doesn't seems to be mandatory
-  output(';Generated with ' .. slicer_name .. ' ' .. slicer_version)
+  output(';Generated with ' .. slicer_name .. ' ' .. slicer_version .. '\n')
 
   output('M141 S' .. 50 .. ' ;chamber temperature')
   --output('T0')
   output('M190 S' .. bed_temp_degree_c .. ' ;bed temperature')
-  output(tool_temp_string)
+  output(preheat_temp_string)
+  output(wait_temp_string)
 
-  local h = file('header.gcode')
-  if mirror_mode == true then
-    h = h:gsub('<PRINT_MODE>', 'M605 S6      ;enable mirror mode\n')
-  elseif duplication_mode == true then
-    h = h:gsub('<PRINT_MODE>', 'M605 S5      ;enable duplication mode\n')
-  else
-    h = h:gsub('<PRINT_MODE>', '')
+  output('\nM82          ;absolute extrusion mode')
+  output('G21          ;metric values')
+  output('G90          ;absolute positioning')
+  if use_acc_jerk_settings then
+    output('M204 S' .. default_acc .. '   ;set default acceleration')
+    output('M205 X' .. default_jerk .. ' Y' .. default_jerk ..'   ;set default jerk')
   end
-  h = h:gsub('<ACC>', default_acc)
-  h = h:gsub('<JERK>', 'X' .. default_jerk .. ' Y' .. default_jerk)
-  h = h:gsub('<BUCKET_PURGE>', purge_string)
-  output(h)
+  output('M107         ;start with the fan off')
+  output('G28 X0 Y0    ;move X/Y to min endstops')
+  output('G28 Z0       ;move Z to min endstops')
+  output('G1 Z5 F200   ;safety Z axis movement')
+  
+  output(purge_string)
+
+  if mirror_mode == true then
+    output('M605 S6      ;enable mirror mode')
+  elseif duplication_mode == true then
+    output('M605 S5      ;enable duplication mode\n')
+  end
+
+  output('G4 P1')
+  output('G4 P2')
+  output('G4 P3\n')
+
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
 end
 
 function footer()
-  local f = file('footer.gcode')
-  f = h:gsub('<ACC>', default_acc)
-  f = h:gsub('<JERK>', 'X' .. default_jerk .. ' Y' .. default_jerk)
-  output(f)
+  output('\n')
+  output('M104 S0 T0               ;left extruder heater off')
+  output('M104 S0 T1               ;right extruder heater off')
+  output('M140 S0                  ;heated bed heater off')
+  if use_acc_jerk_settings then
+    output('M204 S' .. default_acc ..'        ;set default acceleration')
+    output('M205 X' .. default_jerk .. ' Y' .. default_jerk .. '      ;set default jerk')
+  end
+  output('G91                      ;relative positioning')
+  output('G1 Z+0.5 E-5 Y+10 F12000 ;move Z up a bit and retract filament')
+  output('G28 X0 Y0                ;move X/Y to min endstops so the head is out of the way')
+  output('M84                      ;steppers off')
+  output('G90                      ;absolute positioning')
 end
 
 function retract(extruder,e)
@@ -169,32 +200,44 @@ function layer_stop()
   output('; </layer>')
 end
 
--- this is called once for each used extruder at startup
-function select_extruder(extruder)
-  extruder_side = ''
+function prepare_extruder(extruder,last_extruder)
+  local extruder_side = ''
   if extruder == 0 then 
     extruder_side = 'left'
   elseif extruder == 1 then 
     extruder_side = 'right'
   end
 
-  n_selected_extruder = n_selected_extruder + 1
+  local purge = ''
+  purge = purge .. '\nT' .. extruder .. '           ;switch to the ' .. extruder_side .. ' extruder\n'
+  purge = purge .. 'G92 E0       ;zero the extruded length\n'
+  purge = purge .. 'G1 E10 F35   ;extrude 10mm of filament\n'
+  purge = purge .. 'G92 E0       ;zero the extruded length\n'
 
-  purge_string = purge_string .. "\nT" .. extruder .. "           ;switch to the " .. extruder_side ..  " extruder"
-  purge_string = purge_string .. "\nG92 E0       ;zero the extruded length"
-  purge_string = purge_string .. "\nG1 E10 F35   ;extrude 10mm of filament"
-  purge_string = purge_string .. "\nG92 E0       ;zero the extruded length"
+  if last_extruder then
+    purge = purge .. "G4 S2        ;stabilize hotend's pressure\n"
+    extruder_stored[extruder] = false
+  else
+    if not (mirror_mode or duplication_mode) then
+      purge = purge .. 'G1 E-' .. filament_priming_mm[extruder] .. ' F1000 ;store filament\n'
+      purge = purge .. 'G92 E0       ;zero the extruded length\n'
+      extruder_stored[extruder] = true
+    end
+  end
+
+  return purge
+end
+
+-- this is called once for each used extruder at startup
+function select_extruder(extruder)
+  n_selected_extruder = n_selected_extruder + 1
 
   -- number_of_extruders is an IceSL internal Lua global variable 
   -- which is used to know how many extruders will be used for a print job
   if n_selected_extruder == number_of_extruders then
-    purge_string = purge_string .. "\nG4 S2        ;stabilize hotend's pressure"
-    --purge_string = purge_string .. "\nG1 E-0.5\n"
-    extruder_stored[extruder] = false
+    purge_string = prepare_extruder(extruder,true)
   else
-    purge_string = purge_string .. "\nG1 E-" .. filament_priming_mm[extruder] .. " F1000 ;store filament"
-    purge_string = purge_string .. "\nG92 E0       ;zero the extruded length\n"
-    extruder_stored[extruder] = true
+    purge_string = prepare_extruder(extruder,false)
   end
 
   current_extruder = extruder
@@ -230,7 +273,9 @@ function move_xyz(x,y,z)
   if processing == true then
     processing = false
     output(';travel')
-    output('M204 S' .. travel_acc .. '\nM205 X' .. travel_jerk .. ' Y' .. travel_jerk)
+    if use_acc_jerk_settings then
+      output('M204 S' .. travel_acc .. '\nM205 X' .. travel_jerk .. ' Y' .. travel_jerk)
+    end
   end
 
   if z ~= current_z or extruder_changed == true then
@@ -261,14 +306,14 @@ function move_xyze(x,y,z,e)
     processing = true
     local p_type = 1 -- default paths naming
     if craftware_debug then p_type = 2 end
-    if      path_is_perimeter then output(path_type[1][p_type]) output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
-    elseif  path_is_shell     then output(path_type[2][p_type]) output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
-    elseif  path_is_infill    then output(path_type[3][p_type]) output('M204 S' .. infill_acc .. '\nM205 X' .. infill_jerk .. ' Y' .. infill_jerk)
-    elseif  path_is_raft      then output(path_type[4][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_brim      then output(path_type[5][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_shield    then output(path_type[6][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_support   then output(path_type[7][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_tower     then output(path_type[8][p_type]) output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    if      path_is_perimeter then output(path_type[1][p_type]) if use_acc_jerk_settings then output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk) end
+    elseif  path_is_shell     then output(path_type[2][p_type]) if use_acc_jerk_settings then output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk) end
+    elseif  path_is_infill    then output(path_type[3][p_type]) if use_acc_jerk_settings then output('M204 S' .. infill_acc .. '\nM205 X' .. infill_jerk .. ' Y' .. infill_jerk) end
+    elseif  path_is_raft      then output(path_type[4][p_type]) if use_acc_jerk_settings then output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk) end
+    elseif  path_is_brim      then output(path_type[5][p_type]) if use_acc_jerk_settings then output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk) end
+    elseif  path_is_shield    then output(path_type[6][p_type]) if use_acc_jerk_settings then output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk) end
+    elseif  path_is_support   then output(path_type[7][p_type]) if use_acc_jerk_settings then output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk) end
+    elseif  path_is_tower     then output(path_type[8][p_type]) if use_acc_jerk_settings then output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk) end
     end
   end
 
