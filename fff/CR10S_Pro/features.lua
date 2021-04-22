@@ -12,7 +12,7 @@ nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 
 -- Retraction Settings
-filament_priming_mm = 0.4 -- min 0.5 - max 2
+filament_priming_mm = 4.5 -- between 0.5 and 0.8 for direct-drive setup, between 3 and 6 for bowden (stock) setup
 priming_mm_per_sec = 45
 
 -- Layer height
