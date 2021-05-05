@@ -131,3 +131,8 @@ end
 function set_fan_speed(speed)
   output('M106 S'.. math.floor(255 * speed/100))
 end
+
+function wait(sec,x,y,z)
+  output("; WAIT --" .. sec .. "s remaining" )
+  output("G4 S" .. sec .. "; wait for " .. sec .. "s")
+end

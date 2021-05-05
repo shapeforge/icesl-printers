@@ -226,3 +226,8 @@ function set_fan_speed(speed)
     current_fan_speed = speed
   end
 end
+
+function wait(sec,x,y,z)
+  output("; WAIT --" .. sec .. "s remaining" )e
+  output("G4 S" .. sec .. "; wait for " .. sec .. "s")
+end
