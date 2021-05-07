@@ -9,24 +9,8 @@ bed_size_z_mm = 200 -- 300 for extended
 -- Extruders default settings
 extruder_count = 2
 filament_diameter_mm = 2.85
-extruder_temp_degree_c = 210
-nozzle_diameter_mm = 0.4
-
--- Retraction settings
-filament_priming_mm = 6.50
-priming_mm_per_sec = 40
-
--- Extruder 0
-nozzle_diameter_mm_0 = nozzle_diameter_mm
-filament_diameter_mm_0 = filament_diameter_mm
-filament_priming_mm_0 = filament_priming_mm
-extruder_temp_degree_c_0 = extruder_temp_degree_c
-
--- Extruder 1
-nozzle_diameter_mm_1 = nozzle_diameter_mm
-filament_diameter_mm_1 = filament_diameter_mm
-filament_priming_mm_1 = filament_priming_mm
-extruder_temp_degree_c_1 = extruder_temp_degree_c
+nozzle_diameter_mm_0 = 0.4
+nozzle_diameter_mm_1 = 0.4
 
 -- Extruders offset
 extruder_offset_x = {}
@@ -36,13 +20,10 @@ extruder_offset_y[0] =   0.0
 extruder_offset_x[1] = -18.0
 extruder_offset_y[1] =   0.0
 
--- Printing temperatures limits
-extruder_temp_degree_c_min = 150
-extruder_temp_degree_c_max = 300
-
-bed_temp_degree_c     = 50
-bed_temp_degree_c_min = 0
-bed_temp_degree_c_max = 120
+-- Retraction settings
+filament_priming_mm = 6.50
+priming_mm_per_sec = 40
+retract_mm_per_sec = 40
 
 -- Layer height limits
 z_layer_height_mm = 0.2
@@ -57,7 +38,31 @@ else
   z_layer_height_mm_min = nozzle_diameter_mm * 0.15
   z_layer_height_mm_max = nozzle_diameter_mm * 0.80
 end
+
+-- Printing temperatures limits
+extruder_temp_degree_c = 210
+extruder_temp_degree_c_min = 150
+extruder_temp_degree_c_max = 300
+
+bed_temp_degree_c     = 50
+bed_temp_degree_c_min = 0
+bed_temp_degree_c_max = 120
 ----
+
+-- Printing speed limits
+print_speed_mm_per_sec = 40
+print_speed_mm_per_sec_min = 5
+print_speed_mm_per_sec_max = 80
+
+perimeter_print_speed_mm_per_sec = 30
+perimeter_print_speed_mm_per_sec_min = 5
+perimeter_print_speed_mm_per_sec_max = 80
+
+first_layer_print_speed_mm_per_sec = 20
+first_layer_print_speed_mm_per_sec_min = 1
+first_layer_print_speed_mm_per_sec_max = 50
+
+travel_speed_mm_per_sec = 120
 
 -- Purge Tower
 gen_tower = false
@@ -75,24 +80,12 @@ extruder_swap_retract_speed_mm_per_sec = 30.0
 
 enable_active_temperature_control = true
 
--- Printing speed limits
-print_speed_mm_per_sec = 40
-print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 80
-
-perimeter_print_speed_mm_per_sec = 30
-perimeter_print_speed_mm_per_sec_min = 5
-perimeter_print_speed_mm_per_sec_max = 80
-
-first_layer_print_speed_mm_per_sec = 20
-first_layer_print_speed_mm_per_sec_min = 1
-first_layer_print_speed_mm_per_sec_max = 50
-
-travel_speed_mm_per_sec = 120
-
 for i = 0, max_number_extruders, 1 do
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
   _G['filament_diameter_mm_'..i] = filament_diameter_mm
   _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

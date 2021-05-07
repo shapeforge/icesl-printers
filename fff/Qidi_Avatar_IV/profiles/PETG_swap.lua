@@ -31,6 +31,7 @@ speed_multiplier_0=1.0
 --Extruder 0
 filament_priming_mm=3.0
 priming_mm_per_sec=120   --retraction/priming after retraction speed
+retract_mm_per_sec=120
 
 --Supports
 gen_supports=false

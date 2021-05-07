@@ -28,6 +28,7 @@ extruder_offset_y[1] = 0.0
 -- ###################
 filament_priming_mm = 1.2
 priming_mm_per_sec = 30
+retract_mm_per_sec = 30
 
 -- ###################
 -- Layer height limits
@@ -70,20 +71,6 @@ travel_speed_mm_per_sec = 70
 travel_speed_mm_per_sec_min = 50
 travel_speed_mm_per_sec_max = 180
 
--- ######################################
--- Settings affectation for each extruder
--- ######################################
--- Extruder 0
-nozzle_diameter_mm_0 = nozzle_diameter_mm
-filament_diameter_mm_0 = filament_diameter_mm
-filament_priming_mm_0 = filament_priming_mm
-extruder_temp_degree_c_0 = extruder_temp_degree_c
--- Extruder 1
-nozzle_diameter_mm_1 = nozzle_diameter_mm
-filament_diameter_mm_1 = filament_diameter_mm
-filament_priming_mm_1 = filament_priming_mm
-extruder_temp_degree_c_1 = extruder_temp_degree_c
-
 -- #############
 -- Misc settings
 -- #############
@@ -111,8 +98,11 @@ add_setting("chamber_temp_degree_c", "Temperature of the printing chamber",chamb
 -- Internal procedure to fill brushes / extruder settings
 -- ######################################################
 for i = 0, max_number_extruders, 1 do
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
   _G['filament_diameter_mm_'..i] = filament_diameter_mm
   _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

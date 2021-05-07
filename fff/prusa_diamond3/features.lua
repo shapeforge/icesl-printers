@@ -16,6 +16,7 @@ extruder_purge_volume_mm3 = 10 -- volume of the needed purge between each materi
 -- Retraction Settings
 filament_priming_mm = 3.0 -- between 2 and 5mm
 priming_mm_per_sec = 100
+retract_mm_per_sec = 100
 extruder_swap_retract_mm = filament_priming_mm
 
 -- Layer height limits
@@ -111,8 +112,11 @@ end
 
 -- Internal procedure to fill brushes / extruder settings
 for i = 0, max_number_extruders, 1 do
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
   _G['filament_diameter_mm_'..i] = filament_diameter_mm
   _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

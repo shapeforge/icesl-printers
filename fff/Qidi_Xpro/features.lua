@@ -28,11 +28,6 @@ qidi_retract_after_z = 0.0  -- retract only after this height
 extruder_e_restart = 0.0 -- extra restart distance to fix eventual blobs or voids due to retraction
                           -- can be positive or negative: positive useful to fix voids, negative to fix blobs
 
--- slicing algorithm settings
-xy_mm_per_pixels = 0.05
-xy_max_deviation_mm = 0.05
-tile_size_mm = 30
-
 -- geometric settings for printer
 bed_size_x_mm = 230
 bed_size_y_mm = 145
@@ -41,20 +36,53 @@ bed_size_z_mm = 150
 -- nozzle & extruder settings
 nozzle_diameter_mm = 0.4
 extruder_count = 2
-tower_at_location = false
-extruder_swap_retract_length_mm = 3.0
-extruder_swap_retract_speed_mm_per_sec = 60.0
-extruder_offset_x = {}      --configured on the printer
+filament_diameter_mm = 1.75
+
+extruder_offset_x = {} --configured on the printer
 extruder_offset_y = {}
 extruder_offset_x[0] =   0.0
 extruder_offset_y[0] =   0.0
 -- extruder_offset_x[1] =  34.0
 -- extruder_offset_y[1] =   0.0
 
+filament_priming_mm = 1.5
+priming_mm_per_sec = 120
+retract_mm_per_sec = 120
+
+z_layer_height_mm = 0.1
+z_layer_height_mm_min = 0.1
+z_layer_height_mm_max = nozzle_diameter_mm * 0.75
+
+extruder_temp_degree_c = 200
+extruder_temp_degree_c_min = 150
+extruder_temp_degree_c_max = 270
+
+bed_temp_degree_c = 50
+bed_temp_degree_c_min = 0
+bed_temp_degree_c_max = 120
+
+print_speed_mm_per_sec = 60
+print_speed_mm_per_sec_min = 5
+print_speed_mm_per_sec_max = 80
+
+perimeter_print_speed_mm_per_sec = 40
+perimeter_print_speed_mm_per_sec_min = 5
+perimeter_print_speed_mm_per_sec_max = 80
+
+first_layer_print_speed_mm_per_sec = 25
+first_layer_print_speed_mm_per_sec_min = 5
+first_layer_print_speed_mm_per_sec_max = 60
+
+travel_speed_mm_per_sec = 120
+
 -- prime tower setting
 gen_tower = false
 tower_side_x_mm = 10.0
 tower_side_y_mm = 5.0
+
+tower_at_location = false
+extruder_swap_retract_length_mm = 3.0
+extruder_swap_retract_speed_mm_per_sec = 60.0
 
 -- calibration settings
 calibre_x = 0.0 
@@ -65,31 +93,20 @@ enable_curved_covers_0 = false
 enable_curved_covers_1 = false
 enable_curved_covers_2 = false
 enable_curved_covers_3 = false
-priming_mm_per_sec = 120
 
+-- slicing algorithm settings
+xy_mm_per_pixels = 0.05
+xy_max_deviation_mm = 0.05
+tile_size_mm = 30
 
-z_layer_height_mm = 0.1
-z_layer_height_mm_min = 0.1
-z_layer_height_mm_max = nozzle_diameter_mm * 0.75
-
-print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 80
-
-bed_temp_degree_c_min = 0
-bed_temp_degree_c_max = 120
-
-perimeter_print_speed_mm_per_sec_min = 5
-perimeter_print_speed_mm_per_sec_max = 80
-
-first_layer_print_speed_mm_per_sec = 25
-first_layer_print_speed_mm_per_sec_min = 5
-first_layer_print_speed_mm_per_sec_max = 60
-
-for i = 0, max_number_extruders, 1 do -- default parameters for newly created extruders
-  _G['filament_diameter_mm_'..i] = 1.75
-  _G['filament_priming_mm_'..i] = 1.5
-  _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c_0
-  _G['extruder_temp_degree_c_'..i..'_min'] = 150
-  _G['extruder_temp_degree_c_'..i..'_max'] = 270
+for i = 0, max_number_extruders, 1 do
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
+  _G['filament_diameter_mm_'..i] = filament_diameter_mm
+  _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
+  _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
+  _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
+  _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
   _G['extruder_mix_count_'..i] = 1
 end

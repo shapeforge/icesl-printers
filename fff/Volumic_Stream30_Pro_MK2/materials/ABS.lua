@@ -7,6 +7,7 @@ bed_temp_degree_c = 75
 
 filament_priming_mm_0 = 1.20
 priming_mm_per_sec = 30
+retract_mm_per_sec = 30
 
 -- enable fan only if the printer is enclosed !
 enable_fan = false

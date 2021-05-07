@@ -2,16 +2,12 @@ name_en = "TPU-85A"
 name_fr = "TPU-85A"
 name_es = "TPU-85A"
 
-extruder_temp_degree_c = 240
-bed_temp_degree_c = 40
-
-filament_priming_mm_0 = 0.0
-
-extruder_temp_degree_c_0 = extruder_temp_degree_c
-filament_priming_mm_0 = filament_priming_mm
-
-extruder_temp_degree_c_1 = extruder_temp_degree_c
-filament_priming_mm_1 = filament_priming_mm
+for i = 0, extruder_count-1, 1 do
+  _G['extruder_temp_degree_c_'..i] = 240
+  _G['filament_priming_mm_'..i] = 0
+  _G['priming_mm_per_sec_'..i] = 30
+  _G['retract_mm_per_sec_'..i] = 30
+end
 
 enable_fan = true
 fan_speed_percent = 100

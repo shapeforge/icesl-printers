@@ -9,7 +9,7 @@ bed_size_z_mm = 210
 -- Printer Extruder
 extruder_count = 5
 nozzle_diameter_mm = 0.4
-filament_diameter_mm_0 = 1.75
+filament_diameter_mm = 1.75
 
 -- Layer height limits
 z_layer_height_mm = 0.2
@@ -19,6 +19,7 @@ z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 -- Retraction Settings
 filament_priming_mm = 0.8 -- min 0.5 - max 2
 priming_mm_per_sec = 35
+retract_mm_per_sec = 35
 
 -- Printing temperatures limits
 extruder_temp_degree_c = 210
@@ -73,12 +74,13 @@ curved_covers = false
 
 -- Internal procedure to fill brushes / extruder settings
 for i = 0, max_number_extruders, 1 do
-  _G['filament_diameter_mm_'..i] = filament_diameter_mm_0
-  _G['filament_priming_mm_'..i] = filament_priming_mm_0
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
+  _G['filament_diameter_mm_'..i] = filament_diameter_mm
+  _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
   _G['extruder_mix_count_'..i] = 1
-  _G['enable_curved_covers_'..i] = curved_covers
-  _G['filament_priming_mm_'..i] = filament_priming_mm
 end

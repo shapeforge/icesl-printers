@@ -3,15 +3,12 @@ name_es = "PLA"
 name_fr = "PLA"
 name_ch = "PLA"
 
-extruder_temp_degree_c = 210
-filament_priming_mm = 1.20
-priming_mm_per_sec = 30
-
-extruder_temp_degree_c_0 = extruder_temp_degree_c
-filament_priming_mm_0 = filament_priming_mm
-
-extruder_temp_degree_c_1 = extruder_temp_degree_c
-filament_priming_mm_1 = filament_priming_mm
+for i = 0, extruder_count-1, 1 do
+  _G['extruder_temp_degree_c_'..i] = 210
+  _G['filament_priming_mm_'..i] = 1.2
+  _G['priming_mm_per_sec_'..i] = 30
+  _G['retract_mm_per_sec_'..i] = 30
+end
 
 bed_temp_degree_c = 50
 

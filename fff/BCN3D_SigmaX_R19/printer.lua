@@ -150,7 +150,7 @@ end
 
 function retract(extruder,e)
   local len   = filament_priming_mm[extruder]
-  local speed = priming_mm_per_sec[extruder] * 60
+  local speed = retract_mm_per_sec[extruder] * 60
   local e_value = e - extruder_e_swap[current_extruder]
   if extruder_stored[extruder] then 
     comment('retract on extruder ' .. extruder .. ' skipped')

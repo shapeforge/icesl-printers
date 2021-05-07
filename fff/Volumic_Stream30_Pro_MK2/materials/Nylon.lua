@@ -7,6 +7,7 @@ bed_temp_degree_c = 75
 
 filament_priming_mm_0 = 2.0
 priming_mm_per_sec = 25
+retract_mm_per_sec = 25
 
 enable_fan = true
 fan_speed_percent = 0

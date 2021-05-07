@@ -1,72 +1,46 @@
 bed_size_x_mm = 284.2
 bed_size_y_mm = 301.88
 bed_size_z_mm = 200
+
+extruder_count = 5
 nozzle_diameter_mm = 0.35
+filament_diameter_mm = 1.75
 
-extruder_count = 1
-
-z_offset   = 0.0
-
-tool0_offset_x = -10.0
-tool0_offset_y = -10.0
-
-tool1_offset_x = -72.95
-tool1_offset_y = -12.05
-
-tool2_offset_x = -29.35
-tool2_offset_y = -37.7
-
-tool3_offset_x = -52.18
-tool3_offset_y = -38.35
-
-tool4_offset_x = -41.6
-tool4_offset_y = -37.66
-
--- add these offsets to recenter on plate
-offset_x = -60.0
-offset_y = 0.0
+x_offset = -60.0
+y_offset = 0.0
+z_offset = 0.0
 
 -- http://support.ordsolutions.com/support/discussions/topics/1000023841
+extruder_offsets = {
+  --{extruder_x_offset,extruder_y_offset}
+  {-10,-10},        -- E0
+  {-72.95,-12.05},  -- E1
+  {-29.35,-37.7},   -- E2
+  {-52.18,-38.35},  -- E3
+  {-41.6,-37.66},   -- E4
+}
 
--- Bed size
--- X: 284.2
--- Y: 301.88
 
--- Print Center
--- X: 142.1
--- Y: 150.94
-
--- Extruder 1 Offset
--- X: 10
--- Y: 10
-
--- Extruder 2 Offset
--- X: 72.95
--- Y: 12.05
-
--- Extruder 3 Offset
--- X: 29.35
--- Y: 37.7
-
--- Extruder 4 Offset
--- X: 52.18
--- Y: 38.35
-
--- Extruder 5 Offset
--- X: 41.6
--- Y: 37.66
-
+filament_priming_mm = 3.0
 priming_mm_per_sec = 40
+retract_mm_per_sec = 40
 
 z_layer_height_mm_min = 0.05
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 
-print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 80
+extruder_temp_degree_c = 210
+extruder_temp_degree_c_min = 150
+extruder_temp_degree_c_max = 270
 
+bed_temp_degree_c = 50
 bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 120
 
+print_speed_mm_per_sec = 40
+print_speed_mm_per_sec_min = 5
+print_speed_mm_per_sec_max = 80
+
+perimeter_print_speed_mm_per_sec = 30
 perimeter_print_speed_mm_per_sec_min = 5
 perimeter_print_speed_mm_per_sec_max = 80
 
@@ -75,10 +49,13 @@ first_layer_print_speed_mm_per_sec_min = 1
 first_layer_print_speed_mm_per_sec_max = 80
 
 for i = 0, max_number_extruders, 1 do
-  _G['filament_diameter_mm_'..i] = 1.75
-  _G['filament_priming_mm_'..i] = 3.0
-  _G['extruder_temp_degree_c_' ..i] = 210
-  _G['extruder_temp_degree_c_'..i..'_min'] = 150
-  _G['extruder_temp_degree_c_'..i..'_max'] = 270
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
+  _G['filament_diameter_mm_'..i] = filament_diameter_mm
+  _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
+  _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
+  _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
+  _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
   _G['extruder_mix_count_'..i] = 1
 end

@@ -165,7 +165,7 @@ end
 
 function retract(extruder,e)
   swapping = false
-  speed = priming_mm_per_sec[extruder] * 60
+  speed = retract_mm_per_sec[extruder] * 60
   len = filament_priming_mm[current_extruder]
   return Qretract(speed,len,swapping)
 end

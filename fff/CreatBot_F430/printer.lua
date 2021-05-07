@@ -73,7 +73,7 @@ function retract(extruder,e)
   else
     comment('retract')
     local len   = filament_priming_mm[extruder]
-    local speed = priming_mm_per_sec[extruder] * 60
+    local speed = retract_mm_per_sec[extruder] * 60
     local e_value = (e - extruder_e_swap[current_extruder] - extruder_e_reset[current_extruder]) - len
     output('G1 F' .. speed .. ' E' .. ff(e_value))
     extruder_e[extruder] = e - len

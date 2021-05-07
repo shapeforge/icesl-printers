@@ -10,7 +10,6 @@ bed_size_z_mm = 205
 extruder_count = 1
 filament_diameter = 1.75
 nozzle_diameter_mm = 0.4
-
 z_offset = 0.0
 
 -- Printing temperatures limits
@@ -23,6 +22,7 @@ bed_temp_degree_c = 0
 -- Retraction Settings
 filament_priming_mm = 3.5 -- for e3dv6 in bowden, retraction length should be between 2 and 5mm
 priming_mm_per_sec = 50
+retract_mm_per_sec = 50
 
 -- Layer height limits
 z_layer_height_mm_min = 0.05
@@ -56,8 +56,11 @@ enable_curved_covers_0 = false
 
 -- Internal procedure to fill brushes / extruder settings
 for i = 0, max_number_extruders, 1 do
-  _G['filament_diameter_mm_'..i] = filament_diameter
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
+  _G['filament_diameter_mm_'..i] = filament_diameter_mm
   _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

@@ -12,17 +12,17 @@ bed_size_z_mm = 200
 -- Printer Extruder
 extruder_count = 1
 nozzle_diameter_mm = 0.4
-filament_diameter_mm_0 = 1.75
-
-z_offset   = 0.0
+filament_diameter_mm = 1.75
+z_offset = 0.0
 
 -- Layer height limits
 z_layer_height_mm_min = nozzle_diameter_mm * 0.15
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 
 -- Retraction Settings
-filament_priming_mm_0 = 2.0 -- min 0.5 - max 4
+filament_priming_mm = 2.0 -- min 0.5 - max 4
 priming_mm_per_sec = 30
+retract_mm_per_sec = 30
 
 -- Printing temperatures limits
 extruder_temp_degree_c = 210
@@ -46,9 +46,14 @@ first_layer_print_speed_mm_per_sec = 15
 first_layer_print_speed_mm_per_sec_min = 5
 first_layer_print_speed_mm_per_sec_max = 50
 
+travel_speed_mm_per_sec = 100
+
 for i = 0, max_number_extruders, 1 do
-  _G['filament_diameter_mm_'..i] = filament_diameter_mm_0
-  _G['filament_priming_mm_'..i] = filament_priming_mm_0
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
+  _G['filament_diameter_mm_'..i] = filament_diameter_mm
+  _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

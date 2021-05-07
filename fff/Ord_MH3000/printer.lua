@@ -1,19 +1,16 @@
 -- ORD
 
 current_extruder = 0
+
 current_frate = 0
+
 extruder_e = {}
 extruder_e_restart = {}
-extruder_e[0] = 0
-extruder_e[1] = 0
-extruder_e[2] = 0
-extruder_e[3] = 0
-extruder_e[4] = 0
-extruder_e_restart[0] = 0
-extruder_e_restart[1] = 0
-extruder_e_restart[2] = 0
-extruder_e_restart[3] = 0
-extruder_e_restart[4] = 0
+
+for i = 0, extruder_count -1 do
+  extruder_e[i] = 0
+  extruder_e_restart[i] = 0
+end
 
 function comment(text)
   output('; ' .. text)
@@ -58,52 +55,52 @@ end
 
 function retract(extruder,e)
   len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec[extruder] * 60;
-  letter = 'E'
-  output('G1 F' .. f(speed) .. ' ' .. letter .. ff(e - len - extruder_e_restart[extruder]))
+  speed = retract_mm_per_sec[extruder] * 60
+  output('G1 F' .. f(speed) .. ' E' .. ff(e - len - extruder_e_restart[extruder]))
   extruder_e[extruder] = e - len
   return e - len
 end
 
 function prime(extruder,e,pathtype)
   len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec[extruder] * 60;
-  letter = 'E'
-  output('G1 F' .. f(speed) .. ' ' .. letter .. ff(e + len - extruder_e_restart[extruder]))
+  speed = priming_mm_per_sec[extruder] * 60
+  output('G1 F' .. f(speed) .. ' E' .. ff(e + len - extruder_e_restart[extruder]))
   extruder_e[extruder] = e + len
   return e + len
 end
 
 function select_extruder(extruder)
-comment('<selectextruder>')
-output('T' .. extruder)
-current_extruder = extruder
-comment('</selectextruder>')
+  comment('<selectextruder>')
+  output('T' .. extruder)
+  current_extruder = extruder
+  comment('</selectextruder>')
 end
 
 function swap_extruder(from,to,x,y,z)
-comment('<swapextruder>')
-extruder_e_restart[from] = extruder_e[from]
-output('G92 E0')
-output('T' .. to)
-current_extruder = to
-comment('</swapextruder>')
+  comment('<swapextruder>')
+  extruder_e_restart[from] = extruder_e[from]
+  output('G92 E0')
+  output('T' .. to)
+  current_extruder = to
+  comment('</swapextruder>')
 end
 
 function move_xyz(x,y,z)
-  output('G1 X' .. f(x+offset_x) .. ' Y' .. f(y+offset_y) .. ' Z' .. f(z+z_offset))
+  x = x + x_offset + extruder_offsets[current_extruder+1][1]
+  y = y + y_offset + extruder_offsets[current_extruder+1][2]
+  output('G0 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset))
 end
 
 function move_xyze(x,y,z,e)
+  x = x + x_offset + extruder_offsets[current_extruder+1][1]
+  y = y + y_offset + extruder_offsets[current_extruder+1][2]
   extruder_e[current_extruder] = e
-  letter = 'E'
-  output('G1 X' .. f(x+offset_x) .. ' Y' .. f(y+offset_y) .. ' Z' .. f(z+z_offset) .. ' F' .. f(current_frate) .. ' ' .. letter .. ff(e-extruder_e_restart[current_extruder]))
+  output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. f(z+z_offset) .. ' F' .. f(current_frate) .. ' E' .. ff(e-extruder_e_restart[current_extruder]))
 end
 
 function move_e(e)
   extruder_e[current_extruder] = e
-  letter = 'E'
-  output('G1 ' .. letter .. ff(e-extruder_e_restart[current_extruder]))
+  output('G1 E' .. ff(e-extruder_e_restart[current_extruder]))
 end
 
 function set_feedrate(feedrate)

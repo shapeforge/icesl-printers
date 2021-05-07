@@ -15,6 +15,7 @@ filament_linear_adv_factor = 0 -- default
 -- Retraction Settings
 filament_priming_mm = 3.2
 priming_mm_per_sec = 50
+retract_mm_per_sec = 50
 
 enable_z_lift = true
 z_lift_mm = 0.2
@@ -73,10 +74,12 @@ e_max_jerk = 10.00 -- mm/s
 --#################################################
 
 -- Internal procedure to fill brushes / extruder settings
-
 for i = 0, max_number_extruders, 1 do
+  _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
   _G['filament_diameter_mm_'..i] = filament_diameter_mm
   _G['filament_priming_mm_'..i] = filament_priming_mm
+  _G['priming_mm_per_sec_'..i] = priming_mm_per_sec
+  _G['retract_mm_per_sec_'..i] = retract_mm_per_sec
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max

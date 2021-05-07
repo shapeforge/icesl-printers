@@ -322,7 +322,7 @@ function retract(extruder,e)
                 e_string = " E-" .. ff(filament_priming_mm[extruder])
             end
 
-            set_feedrate(priming_mm_per_sec[extruder] * 60)
+            set_feedrate(retract_mm_per_sec[extruder] * 60)
             f_string = " F" .. round(current_feedrate,0)
         end
 

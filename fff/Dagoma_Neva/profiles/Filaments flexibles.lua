@@ -9,6 +9,7 @@ first_layer_print_speed_mm_per_sec=12
 perimeter_print_speed_mm_per_sec=20
 travel_speed_mm_per_sec=50
 priming_mm_per_sec=20
+retract_mm_per_sec=20
 
 add_raft=false
 raft_spacing=1.0

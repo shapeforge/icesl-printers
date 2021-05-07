@@ -118,7 +118,7 @@ end
 function retract(extruder,e)
 --  debug('retract')
   length = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec[extruder] * 60
+  speed = retract_mm_per_sec[extruder] * 60
   if speed ~= current_frate then
     changed_frate = true
   end

@@ -73,7 +73,7 @@ end
 function retract(extruder,e)
   output(';retract')
   len   = filament_priming_mm[extruder]
-  speed = priming_mm_per_sec[extruder] * 60
+  speed = retract_mm_per_sec[extruder] * 60
   output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart[extruder]))
   extruder_e[extruder] = e - len
   return e - len
@@ -228,6 +228,6 @@ function set_fan_speed(speed)
 end
 
 function wait(sec,x,y,z)
-  output("; WAIT --" .. sec .. "s remaining" )e
+  output("; WAIT --" .. sec .. "s remaining" )
   output("G4 S" .. sec .. "; wait for " .. sec .. "s")
 end

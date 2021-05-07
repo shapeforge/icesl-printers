@@ -6,6 +6,7 @@ nozzle_diameter_mm = 0.8
 extruder_count = 2
 z_offset   = 0.0
 priming_mm_per_sec = 30
+retract_mm_per_sec = 30
 
 z_layer_height_mm_min = 0.05
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75

@@ -270,6 +270,7 @@ nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 filament_priming_mm = 0
 priming_mm_per_sec = 40
+retract_mm_per_sec = 40
 extruder_temp_degree_c = 205
 
 extruder_degrees_per_sec = 2                -- Visible if enable_active_temperature_control == true.

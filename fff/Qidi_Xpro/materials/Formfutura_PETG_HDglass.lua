@@ -28,6 +28,7 @@ speed_multiplier_0 = 1.0
 -- retraction settings
 filament_priming_mm_0 = 1.5
 priming_mm_per_sec = 60
+retract_mm_per_sec = 60
 extruder_e_restart = -0.1
 
 -- fan settings

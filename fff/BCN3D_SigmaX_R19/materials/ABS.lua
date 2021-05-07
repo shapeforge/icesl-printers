@@ -8,6 +8,7 @@ for i = 0, extruder_count-1, 1 do
   _G['extruder_temp_degree_c_'..i] = 250
   _G['filament_priming_mm_'..i] = 6.0
   _G['priming_mm_per_sec_'..i] = 25
+  _G['retract_mm_per_sec_'..i] = 25
 end
 
 bed_temp_degree_c = 95

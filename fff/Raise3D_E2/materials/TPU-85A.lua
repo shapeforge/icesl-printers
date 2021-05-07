@@ -11,6 +11,7 @@ for i = 0, extruder_count-1, 1 do
   _G['extruder_temp_degree_c_'..i] = 240
   _G['filament_priming_mm_'..i] = 0.45
   _G['priming_mm_per_sec_'..i] = 40
+  _G['retract_mm_per_sec_'..i] = 40
 end
 for i = 0, max_number_brushes, 1 do
   _G['flow_multiplier_'..i] = 1.40

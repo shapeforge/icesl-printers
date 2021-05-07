@@ -32,7 +32,7 @@ function layer_stop()
 end
 
 function retract(extruder,e)
-  len   = filament_priming_mm[extruder]
+  len   = retract_mm_per_sec[extruder]
   speed = priming_mm_per_sec[extruder] * 60;
   letter = 'E'
   output('G1 F' .. speed .. ' ' .. letter .. ff(e - len - extruder_e_restart))

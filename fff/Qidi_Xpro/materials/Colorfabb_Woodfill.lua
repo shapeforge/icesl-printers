@@ -28,6 +28,7 @@ speed_multiplier_0 = 1.0
 -- retraction settings
 filament_priming_mm_0 = 1.5
 priming_mm_per_sec = 30
+retract_mm_per_sec = 30
 
 -- fan settings
 enable_fan = false

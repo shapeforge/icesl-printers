@@ -187,7 +187,7 @@ function retract(extruder,e)
       comment('retract')
       retractlen[extruder] = filament_priming_mm[extruder]
     end
-    speed = priming_mm_per_sec[extruder] * 60
+    speed = retract_mm_per_sec[extruder] * 60
   end
   extruder_e[extruder] = e - retractlen[extruder]
   output('G0 F' .. speed .. ' E' .. ff(extruder_e[extruder] - extruder_e_restart[extruder]))
