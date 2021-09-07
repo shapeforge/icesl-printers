@@ -16,9 +16,9 @@ z_layer_height_mm_min = nozzle_diameter_mm * 0.10
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 
 -- Retraction Settings
-filament_priming_mm = 6.0
-priming_mm_per_sec = 25
-retract_mm_per_sec = 25
+filament_priming_mm = 6.0 -- 3.5 for full metal hotend (MicroSwiss or Phaetus Dragonfly)
+priming_mm_per_sec = 25 -- 50
+retract_mm_per_sec = 25 -- 50
 
 -- Printing temperatures limits
 extruder_temp_degree_c = 200
