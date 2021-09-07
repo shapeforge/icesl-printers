@@ -8,6 +8,7 @@ z_layer_height_mm = 0.4
 print_speed_mm_per_sec = 40
 first_layer_print_speed_mm_per_sec = 25
 perimeter_print_speed_mm_per_sec = 35
+cover_print_speed_mm_per_sec = 35
 travel_speed_mm_per_sec = 150
 
 for i = 0, max_number_brushes, 1 do

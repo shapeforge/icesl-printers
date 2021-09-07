@@ -19,6 +19,7 @@ bed_temp_degree_c = 55
 -- speeds and multipliers
 print_speed_mm_per_sec = 50
 perimeter_print_speed_mm_per_sec = 40
+cover_print_speed_mm_per_sec = 40
 first_layer_print_speed_mm_per_sec = 25
 travel_speed_mm_per_sec = 80
 flow_multiplier_0 = 1.0

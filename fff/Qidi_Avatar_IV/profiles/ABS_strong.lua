@@ -14,6 +14,7 @@ use_different_thickness_first_layer=false
 z_layer_heigth_first_layer_mm=0.2
 print_speed_mm_per_sec=40
 perimeter_print_speed_mm_per_sec=30
+cover_print_speed_mm_per_sec=30
 first_layer_print_speed_mm_per_sec=30
 process_thin_features=false
 enable_fit_single_path=false

@@ -8,6 +8,7 @@ z_layer_height_mm = 0.3
 print_speed_mm_per_sec = 40
 first_layer_print_speed_mm_per_sec = 10
 perimeter_print_speed_mm_per_sec = 40
+cover_print_speed_mm_per_sec = 40
 travel_speed_mm_per_sec = 80
 
 add_raft = false

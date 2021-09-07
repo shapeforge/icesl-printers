@@ -7,6 +7,7 @@ z_layer_height_mm = 0.15
 print_speed_mm_per_sec=35
 first_layer_print_speed_mm_per_sec=10
 perimeter_print_speed_mm_per_sec=35
+cover_print_speed_mm_per_sec=35
 travel_speed_mm_per_sec=100
 priming_mm_per_sec=30
 retract_mm_per_sec=30

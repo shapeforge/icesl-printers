@@ -156,6 +156,7 @@ first_layer_saved = 0                       -- Visible if save_layer_subset == t
 number_layers_saved = 1                     -- Visible if save_layer_subset == true.
 
 perimeter_print_speed_mm_per_sec = 30
+cover_print_speed_mm_per_sec = 30
 print_speed_mm_per_sec = 40
 first_layer_print_speed_mm_per_sec = 20
 
@@ -367,6 +368,8 @@ z_layer_height_mm_min = 0.005
 z_layer_height_mm_max = 5
 perimeter_print_speed_mm_per_sec_min = 1
 perimeter_print_speed_mm_per_sec_max = 200
+cover_print_speed_mm_per_sec_min = 1
+cover_print_speed_mm_per_sec_max = 200
 print_speed_mm_per_sec_min = 1
 print_speed_mm_per_sec_max = 200
 first_layer_print_speed_mm_per_sec_min = 1

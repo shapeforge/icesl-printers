@@ -15,6 +15,7 @@ infill_percentage_0 = 25
 -- Speed
 print_speed_mm_per_sec = 60
 perimeter_print_speed_mm_per_sec = 30
+cover_print_speed_mm_per_sec = 30
 first_layer_print_speed_mm_per_sec = 15
 
 travel_speed_mm_per_sec = 100

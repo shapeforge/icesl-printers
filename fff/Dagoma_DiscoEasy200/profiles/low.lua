@@ -6,6 +6,7 @@ z_layer_height_mm = 0.2
 
 --print_speed_mm_per_sec = 60
 --perimeter_print_speed_mm_per_sec = 60
+--cover_print_speed_mm_per_sec = 60
 --first_layer_print_speed_mm_per_sec = 15
 
 --travel_speed_mm_per_sec = 120

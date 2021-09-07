@@ -40,6 +40,8 @@ print_speed_mm_per_sec_max = 80
 
 perimeter_print_speed_mm_per_sec_min = 5
 perimeter_print_speed_mm_per_sec_max = 80
+cover_print_speed_mm_per_sec_min = 5
+cover_print_speed_mm_per_sec_max = 80
 
 first_layer_print_speed_mm_per_sec = 10
 first_layer_print_speed_mm_per_sec_min = 1

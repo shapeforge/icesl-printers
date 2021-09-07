@@ -32,6 +32,10 @@ perimeter_print_speed_mm_per_sec = 30
 perimeter_print_speed_mm_per_sec_min = 5
 perimeter_print_speed_mm_per_sec_max = 120
 
+cover_print_speed_mm_per_sec = 30
+cover_print_speed_mm_per_sec_min = 5
+cover_print_speed_mm_per_sec_max = 120
+
 first_layer_print_speed_mm_per_sec = 15
 first_layer_print_speed_mm_per_sec_min = 5
 first_layer_print_speed_mm_per_sec_max = 80

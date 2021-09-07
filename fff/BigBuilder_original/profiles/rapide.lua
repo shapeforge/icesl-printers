@@ -8,6 +8,7 @@ nozzle_diameter_mm=0.8
 print_speed_mm_per_sec=60
 first_layer_print_speed_mm_per_sec=20
 perimeter_print_speed_mm_per_sec=50
+cover_print_speed_mm_per_sec=50
 travel_speed_mm_per_sec=80
 priming_mm_per_sec=50
 retract_mm_per_sec=50

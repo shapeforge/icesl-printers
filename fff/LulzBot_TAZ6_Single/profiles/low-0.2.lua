@@ -12,6 +12,7 @@ z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 print_speed_mm_per_sec=40
 first_layer_print_speed_mm_per_sec=10
 perimeter_print_speed_mm_per_sec=40
+cover_print_speed_mm_per_sec=40
 travel_speed_mm_per_sec=80
 priming_mm_per_sec=30
 retract_mm_per_sec=30
