@@ -49,7 +49,7 @@ travel_speed_mm_per_sec = 120
 
 -- Misc default settings
 add_brim = true
-brim_distance_to_print = 1.0
+brim_distance_to_print_mm = 1.0
 brim_num_contours = 4
 
 process_thin_features = false

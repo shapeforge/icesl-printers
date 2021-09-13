@@ -22,7 +22,7 @@ gen_supports=false
 support_extruder=0
 
 add_brim=true
-brim_distance_to_print=5.0
+brim_distance_to_print_mm=5.0
 brim_num_contours=2
 
 extruder_0=0

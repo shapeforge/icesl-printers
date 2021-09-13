@@ -110,7 +110,7 @@ extruder_swap_retract_speed_mm_per_sec = 25.0
 
 -- brim
 add_brim = true
-brim_distance_to_print = 1.0
+brim_distance_to_print_mm = 1.0
 brim_num_contours = 3
 
 -- misc

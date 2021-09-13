@@ -52,7 +52,7 @@ travel_speed_mm_per_sec_max = 500
 
 -- Misc default settings
 add_brim = true
-brim_distance_to_print = 2.0
+brim_distance_to_print_mm = 2.0
 brim_num_contours = 3
 z_lift_mm = 0.4
 

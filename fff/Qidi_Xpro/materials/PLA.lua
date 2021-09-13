@@ -42,6 +42,6 @@ raft_spacing = 1.0
 gen_supports = false
 support_extruder = 0
 add_brim = true
-brim_distance_to_print = 2.0
+brim_distance_to_print_mm = 2.0
 brim_num_contours = 2
 process_thin_features = false
