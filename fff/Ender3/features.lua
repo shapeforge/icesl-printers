@@ -8,12 +8,12 @@ bed_size_z_mm = 250
 
 -- Printer Extruder
 extruder_count = 1
-nozzle_diameter_mm = 0.4
+nozzle_diameter_mm = 0.5
 filament_diameter_mm = 1.75
 
 -- Layer height limits
 z_layer_height_mm_min = nozzle_diameter_mm * 0.10
-z_layer_height_mm_max = nozzle_diameter_mm * 0.75
+z_layer_height_mm_max = nozzle_diameter_mm * 0.80
 
 -- Retraction Settings
 filament_priming_mm = 6.0 -- 3.5 for full metal hotend (MicroSwiss or Phaetus Dragonfly)
