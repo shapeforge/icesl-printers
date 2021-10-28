@@ -8,7 +8,7 @@ bed_size_z_mm = 250
 
 -- Printer Extruder
 extruder_count = 1
-nozzle_diameter_mm = 0.5
+nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 
 -- Layer height limits
