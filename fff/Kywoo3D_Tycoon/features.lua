@@ -1,6 +1,6 @@
 bed_size_x_mm = 240
 bed_size_y_mm = 240
-bed_size_z_mm = 230
+bed_size_z_mm = 228 -- not 230; see footer.gcode, lift noozle 2mm after print
 
 extruder_count = 1
 nozzle_diameter_mm = 0.4
@@ -50,4 +50,9 @@ for i = 0, max_number_extruders, 1 do
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
   _G['extruder_mix_count_'..i] = 1
 end
+
+-- custom settings
+max_speed = 6000 -- mm/min
+elephant_foot_z_height = 2.5
+elephant_foot_temp_percent = 20
 
