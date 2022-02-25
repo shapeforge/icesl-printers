@@ -2,8 +2,8 @@
 -- Bedell Pierre 27/10/2018
 
 -- Build Area dimensions
-bed_size_x_mm = 220
-bed_size_y_mm = 220
+bed_size_x_mm = 235
+bed_size_y_mm = 235
 bed_size_z_mm = 250
 
 -- Printer Extruder

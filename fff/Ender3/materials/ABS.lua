@@ -1,9 +1,9 @@
-name_en = "ABS"
-name_es = "ABS"
-name_fr = "ABS"
+name_en = "ABS-ASA"
+name_es = "ABS-ASA"
+name_fr = "ABS-ASA"
 
 extruder_temp_degree_c_0 = 240
-bed_temp_degree_c = 100
+bed_temp_degree_c = 110
 
 flow_multiplier_0 = 1.0
 speed_multiplier_0 = 1.0
