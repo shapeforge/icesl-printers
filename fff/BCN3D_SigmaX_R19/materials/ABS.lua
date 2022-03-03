@@ -6,12 +6,12 @@ name_ch = "ABS"
 -- affecting settings to each extruder
 for i = 0, extruder_count-1, 1 do
   _G['extruder_temp_degree_c_'..i] = 250
-  _G['filament_priming_mm_'..i] = 6.0
+  _G['filament_priming_mm_'..i] = 5.5
   _G['priming_mm_per_sec_'..i] = 25
   _G['retract_mm_per_sec_'..i] = 25
 end
 
-bed_temp_degree_c = 95
+bed_temp_degree_c = 100
 
 enable_fan = true
 fan_speed_percent = 10

@@ -19,7 +19,7 @@ for i = 0, max_number_brushes, 1 do
   _G['speed_multiplier_'..i] = 1.40
 end
 
-bed_temp_degree_c = 40
+bed_temp_degree_c = 60
 
 enable_fan = true
 fan_speed_percent = 100

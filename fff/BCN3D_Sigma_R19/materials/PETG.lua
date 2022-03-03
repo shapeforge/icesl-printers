@@ -5,8 +5,8 @@ name_ch = "PETG"
 
 -- affecting settings to each extruder
 for i = 0, extruder_count-1, 1 do
-  _G['extruder_temp_degree_c_'..i] = 225
-  _G['filament_priming_mm_'..i] = 5.0
+  _G['extruder_temp_degree_c_'..i] = 240
+  _G['filament_priming_mm_'..i] = 5.5
   _G['priming_mm_per_sec_'..i] = 25
   _G['retract_mm_per_sec_'..i] = 25
 end
