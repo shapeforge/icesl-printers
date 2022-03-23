@@ -33,10 +33,21 @@ function comment(text)
 end
 
 function header()
-  h = file('header.gcode')
+  local h = file('header.gcode')
+
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
+
+  if auto_bed_leveling == true and reload_bed_mesh == false then
+    h = h:gsub( '<BEDLVL>', 'G29 ; auto bed leveling\nG0 F6200 X0 Y0 ; back to the origin to begin the purge')
+  elseif reload_bed_mesh == true then
+    h = h:gsub( '<BEDLVL>', 'M420 S1 ; enable bed leveling (was disabled y G28)\nM420 L ; load previous mesh / bed level' )
+  else
+    h = h:gsub( '<BEDLVL>', "G0 F6200 X0 Y0" )
+  end
+
   output(h)
+
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
 end

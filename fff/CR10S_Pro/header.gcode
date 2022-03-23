@@ -1,10 +1,13 @@
 G21 ; set units to millimeters
+G90 ; use absolute coordinates
+M82 ; use absolute distances for extrusion
+
 M190 S<HBPTEMP> ; wait for bed temperature to be reached
 M104 S<TOOLTEMP> ; set temperature
 G28 ; home all axes
-M109 S<TOOLTEMP> ; wait for temperature to be reached
-G90 ; use absolute coordinates
-M82 ; use absolute distances for extrusion
+<BEDLVL>
+M109 S<TOOLTEMP> ; wait for extruder temperature to be reached
+
 G92 E0
 G1 Z1.0 F3000 ; move z up little to prevent scratching of surface
 G1 X0.1 Y20 Z0.3 F5000.0 ; move to start-line position

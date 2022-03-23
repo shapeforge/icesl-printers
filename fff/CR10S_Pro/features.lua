@@ -1,9 +1,23 @@
 -- Creality CR10S pro
 -- 30/07/2020
 
+-- Custom checkox to enable auto_bed_leveling
+add_checkbox_setting('auto_bed_leveling', 'Auto Bed Leveling','Use G29 Auto Leveling if the machine is equipped with one (BLTouch, Pinda, capacitive sensor, etc.)')
+auto_bed_leveling = false
+
+-- Custom checkox to enable auto_bed_leveling
+add_checkbox_setting('reload_bed_mesh', 'Reload the last bed-mesh','Reload the last saved bed-mesh if available')
+reload_bed_mesh = false
+
+-- Custom checkox to use a driect-drive extruder (ie: E3D's Hemera)
+--add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (ie E3D's Hemera)")
+direct_drive = false
+
+--#################################################
+
 -- Build Area dimensions
-bed_size_x_mm = 300
-bed_size_y_mm = 300
+bed_size_x_mm = 310
+bed_size_y_mm = 310
 bed_size_z_mm = 400
 
 -- Printer Extruder
@@ -12,7 +26,12 @@ nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 
 -- Retraction Settings
-filament_priming_mm = 4.5 -- between 0.5 and 0.8 for direct-drive setup, between 3 and 6 for bowden (stock) setup
+-- between 0.5mm and 0.8mm of retract/prime for direct-drive setup, between 3mm and 6mm for bowden (stock) setup
+if direct_drive then
+  filament_priming_mm = 0.4 
+else
+  filament_priming_mm = 5.0
+end
 priming_mm_per_sec = 45
 retract_mm_per_sec = 45
 
@@ -33,22 +52,27 @@ bed_temp_degree_c_max = 120
 -- Printing speeds
 print_speed_mm_per_sec = 60
 print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 120
+print_speed_mm_per_sec_max = 200
 
 perimeter_print_speed_mm_per_sec = 45
 perimeter_print_speed_mm_per_sec_min = 5
-perimeter_print_speed_mm_per_sec_max = 80
+perimeter_print_speed_mm_per_sec_max = 150
 
 cover_print_speed_mm_per_sec = 45
 cover_print_speed_mm_per_sec_min = 5
-cover_print_speed_mm_per_sec_max = 80
+cover_print_speed_mm_per_sec_max = 200
 
 first_layer_print_speed_mm_per_sec = 10
 first_layer_print_speed_mm_per_sec_min = 5
-first_layer_print_speed_mm_per_sec_max = 30
+first_layer_print_speed_mm_per_sec_max = 60
 
 travel_speed_mm_per_sec = 180
+travel_speed_mm_per_sec_min = 5
+travel_speed_mm_per_sec_max = 200
 
+--#################################################
+
+-- Internal procedure to fill brushes / extruder settings
 for i = 0, max_number_extruders, 1 do
   _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
   _G['filament_diameter_mm_'..i] = filament_diameter_mm
