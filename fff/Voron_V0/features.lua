@@ -1,5 +1,10 @@
 -- Voron V0 Profile
 -- Hugron Pierre-Alexandre 29/06/2021
+-- Updated by Bedell Pierre 04/05/2022
+
+-- Klipper macros names for start/stop
+macro_start = "START_PRINT"
+macro_stop = "END_PRINT"
 
 -- Build Area dimensions
 bed_size_x_mm = 120
@@ -11,14 +16,14 @@ extruder_count = 1
 nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 
--- Retraction Settings
-filament_priming_mm = 3.0
-priming_mm_per_sec = 30
-retract_mm_per_sec = 30
-
 -- Layer height limits
 z_layer_height_mm_min = nozzle_diameter_mm * 0.10
 z_layer_height_mm_max = nozzle_diameter_mm * 0.80
+
+-- Retraction Settings
+filament_priming_mm = 2.0
+priming_mm_per_sec = 30
+retract_mm_per_sec = 50
 
 -- Printing temperatures limits
 extruder_temp_degree_c = 210
@@ -32,15 +37,15 @@ bed_temp_degree_c_max = 120
 -- Printing speed limits
 print_speed_mm_per_sec = 80
 print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 300
+print_speed_mm_per_sec_max = 400
 
-perimeter_print_speed_mm_per_sec = 40
+perimeter_print_speed_mm_per_sec = 60
 perimeter_print_speed_mm_per_sec_min = 5
-perimeter_print_speed_mm_per_sec_max = 300
+perimeter_print_speed_mm_per_sec_max = 400
 
-cover_print_speed_mm_per_sec = 40
+cover_print_speed_mm_per_sec = 60
 cover_print_speed_mm_per_sec_min = 5
-cover_print_speed_mm_per_sec_max = 300
+cover_print_speed_mm_per_sec_max = 400
 
 first_layer_print_speed_mm_per_sec = 25
 first_layer_print_speed_mm_per_sec_min = 5
@@ -54,7 +59,17 @@ travel_speed_mm_per_sec_max = 500
 add_brim = true
 brim_distance_to_print_mm = 2.0
 brim_num_contours = 3
+
+enable_z_lift = true
 z_lift_mm = 0.4
+
+-- default filament infos (when using "custom" profile)
+name_en = "PLA"
+filament_density = 1.25 --g/cm3 PLA
+
+-- Custom checkbox to use Klipper's strat/stop macros
+add_checkbox_setting('use_klipper_start_stop_macros', "Use Klipper's start/stop macros", "Use Klipper's macros to start/stop the print instead of the classic gcode header/footer")
+use_klipper_start_stop_macros = false
 
 --#################################################
 
