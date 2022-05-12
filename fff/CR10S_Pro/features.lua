@@ -70,6 +70,18 @@ travel_speed_mm_per_sec = 180
 travel_speed_mm_per_sec_min = 5
 travel_speed_mm_per_sec_max = 200
 
+-- Misc default settings
+add_brim = true
+brim_distance_to_print_mm = 2.0
+brim_num_contours = 3
+
+enable_z_lift = true
+z_lift_mm = 0.4
+
+-- default filament infos (when using "custom" profile)
+name_en = "PLA"
+filament_density = 1.25 --g/cm3 PLA
+
 --#################################################
 
 -- Internal procedure to fill brushes / extruder settings

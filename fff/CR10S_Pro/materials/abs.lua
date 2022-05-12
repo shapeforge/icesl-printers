@@ -2,6 +2,8 @@ name_en = "ABS-ASA"
 name_es = "ABS-ASA"
 name_fr = "ABS-ASA"
 
+filament_density = 1.04 --g/cm3
+
 bed_temp_degree_c = 110
 
 if direct_drive then

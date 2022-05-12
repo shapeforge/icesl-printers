@@ -2,6 +2,8 @@ name_en = "TPU"
 name_es = "TPU"
 name_fr = "TPU"
 
+filament_density = 1.21 --g/cm3
+
 bed_temp_degree_c = 55
 
 if direct_drive then

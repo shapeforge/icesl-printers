@@ -2,6 +2,8 @@ name_en = "PLA"
 name_es = "PLA"
 name_fr = "PLA"
 
+filament_density = 1.25 --g/cm3
+
 bed_temp_degree_c = 55
 
 if direct_drive then
