@@ -9,3 +9,6 @@ G28
 M801.0 
 M84 
 M192
+M82 ;absolute extrusion mode
+M104 S0
+;End of Gcode

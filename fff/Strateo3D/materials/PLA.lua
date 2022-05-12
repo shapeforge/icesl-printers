@@ -5,10 +5,10 @@ name_ch = "PLA"
 
 -- affecting settings to each extruder
 for i = 0, extruder_count-1, 1 do
-  _G['extruder_temp_degree_c_'..i] = 200
-  _G['filament_priming_mm_'..i] = 1.4
-  _G['priming_mm_per_sec_'..i] = 25
+  _G['extruder_temp_degree_c_'..i] = 210
+  _G['filament_priming_mm_'..i] = 0.8
   _G['retract_mm_per_sec_'..i] = 25
+  _G['priming_mm_per_sec_'..i] = 20
 end
 
 bed_temp_degree_c = 50

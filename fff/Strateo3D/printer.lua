@@ -59,15 +59,15 @@ function header()
 
   if filament_tot_length_mm[0] > 0 then 
     preheat_temp_string = preheat_temp_string .. 'M104 T0 S' .. extruder_temp_degree_c[0] .. '\n'
-    preheat_temp_string = preheat_temp_string .. 'M150\n'
+    preheat_temp_string = preheat_temp_string .. 'M105\n'
     wait_temp_string = wait_temp_string .. 'M109 T0 S' .. extruder_temp_degree_c[0] .. '\n'
-    wait_temp_string = wait_temp_string .. 'M150\n'
+    wait_temp_string = wait_temp_string .. 'M105\n'
   end
   if filament_tot_length_mm[1] > 0 or (mirror_mode == true or duplication_mode == true) then 
     preheat_temp_string = preheat_temp_string .. 'M104 T1 S' .. extruder_temp_degree_c[1] .. '\n'
-    preheat_temp_string = preheat_temp_string .. 'M150\n'
+    preheat_temp_string = preheat_temp_string .. 'M105\n'
     wait_temp_string = wait_temp_string .. 'M109 T1 S' .. extruder_temp_degree_c[1] .. '\n'
-    wait_temp_string = wait_temp_string .. 'M150\n'
+    wait_temp_string = wait_temp_string .. 'M105\n'
   end
 
   local h = file('header.gcode')
@@ -198,7 +198,7 @@ function move_xyz(x,y,z)
     processing = false
     output(';travel')
     if enable_acc then
-      output('M204 S' .. travel_acc .. '\nM205 X' .. travel_jerk .. ' Y' .. travel_jerk)
+      output('M204 S' .. travel_acc .. '\nM205 J' .. travel_junction_deviation)
     end
   end
 
@@ -238,16 +238,16 @@ function move_xyze(x,y,z,e)
     end
   end
 
-  -- acceleration & jerk management
+  -- acceleration & junction deviation management
   if enable_acc then
-    if      path_is_perimeter then  output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
-    elseif  path_is_shell     then  output('M204 S' .. perimeter_acc .. '\nM205 X' .. perimeter_jerk .. ' Y' .. perimeter_jerk)
-    elseif  path_is_infill    then  output('M204 S' .. infill_acc .. '\nM205 X' .. infill_jerk .. ' Y' .. infill_jerk)
-    elseif  path_is_raft      then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_brim      then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_shield    then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_support   then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
-    elseif  path_is_tower     then  output('M204 S' .. default_acc .. '\nM205 X' .. default_jerk .. ' Y' .. default_jerk)
+    if      path_is_perimeter then  output('M204 S' .. perimeter_acc .. '\nM205 J' .. perimeter_junction_deviation)
+    elseif  path_is_shell     then  output('M204 S' .. perimeter_acc .. '\nM205 J' .. perimeter_junction_deviation)
+    elseif  path_is_infill    then  output('M204 S' .. infill_acc .. '\nM205 J' .. infill_junction_deviation)
+    elseif  path_is_raft      then  output('M204 S' .. default_acc .. '\nM205 J' .. default_junction_deviation)
+    elseif  path_is_brim      then  output('M204 S' .. default_acc .. '\nM205 J' .. default_junction_deviation)
+    elseif  path_is_shield    then  output('M204 S' .. default_acc .. '\nM205 J' .. default_junction_deviation)
+    elseif  path_is_support   then  output('M204 S' .. default_acc .. '\nM205 J' .. default_junction_deviation)
+    elseif  path_is_tower     then  output('M204 S' .. default_acc .. '\nM205 J' .. default_junction_deviation)
     end
   end
 

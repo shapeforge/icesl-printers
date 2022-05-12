@@ -19,9 +19,9 @@ filament_diameter_mm = 1.75
 -- ###################
 -- Retraction Settings
 -- ###################
-filament_priming_mm = 1.50
+filament_priming_mm = 0.8
+retract_mm_per_sec = 25
 priming_mm_per_sec = 20
-retract_mm_per_sec = 20
 
 -- ###################
 -- Layer height limits
@@ -71,16 +71,11 @@ travel_speed_mm_per_sec_max = 200
 -- #####################
 -- Acceleration settings
 -- #####################
--- Use with caution ! IceSL doesn't manage acceleations by itself !
--- The accelerations/jerk will only be managed in a simple/restricted way directly by the profile 
--- (depending on the path type) .  
---add_checkbox_setting(internal_name, description, tooltip, default)
-acc_tooltip = 'Enable Acceleration & Jerk Control\n\n'
+acc_tooltip = 'Enable Acceleration & Junction Deviation Control\n\n'
 acc_tooltip = acc_tooltip .. 'Use with caution!\n'
-acc_tooltip = acc_tooltip .. 'IceSL doesn\'t manage accelerations and jerk by itself!\n\n'
-acc_tooltip = acc_tooltip .. 'The accelerations/jerk will only be managed\n'
-acc_tooltip = acc_tooltip .. 'in a simple/restricted way directly by the profile\n'
-acc_tooltip = acc_tooltip .. '(depending on the path type).'
+acc_tooltip = acc_tooltip .. 'IceSL doesn\'t manage Accelerations and Junction Deviation by itself!\n\n'
+acc_tooltip = acc_tooltip .. 'The Accelerations and Junction Deviation will only be managed\n'
+acc_tooltip = acc_tooltip .. 'in a simple way (depending on the path type), directly by the profile.'
 add_checkbox_setting('enable_acc', 'Enable Acceleration Control', acc_tooltip, false)
 
 default_acc = 1500 -- mm/s²
@@ -88,10 +83,10 @@ perimeter_acc = 1000 -- mm/s²
 infill_acc = 1500 -- mm/s²
 travel_acc = 1500 -- mm/s²
 
-default_jerk = 25.0 -- mm/s
-perimeter_jerk = 10.0 -- mm/s
-infill_jerk = 25.0 -- mm/s
-travel_jerk = 30.0 -- mm/s
+default_junction_deviation = 0.01 -- mm/s
+perimeter_junction_deviation = 0.001 -- mm/s
+infill_junction_deviation = 0.01 -- mm/s
+travel_junction_deviation = 0.01 -- mm/s
 
 -- #############
 -- Misc settings
@@ -112,6 +107,10 @@ extruder_swap_retract_speed_mm_per_sec = 25.0
 add_brim = true
 brim_distance_to_print_mm = 1.0
 brim_num_contours = 3
+
+-- z-hop
+enable_z_lift = true
+z_lift_mm = 0.4
 
 -- misc
 process_thin_features = false
