@@ -1,6 +1,9 @@
 -- EmotionTech Strateo3D profile
 -- Bedell Pierre 21/07/2020
 
+-- Machine runing on Smoothieware
+-- for specific Gcodes to use, refer to the documentation here: https://smoothieware.org/supported-g-codes
+
 -- #####################
 -- Build Area dimensions
 -- #####################
