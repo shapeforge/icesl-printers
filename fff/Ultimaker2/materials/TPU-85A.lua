@@ -21,5 +21,5 @@ print_speed_mm_per_sec = 25
 perimeter_print_speed_mm_per_sec = 25
 first_layer_print_speed_mm_per_sec = 15
 
-flow_multiplier_0 = 1.40
-speed_multiplier_0 = 1.40
+flow_multiplier_0 = 1.25
+speed_multiplier_0 = 1.25

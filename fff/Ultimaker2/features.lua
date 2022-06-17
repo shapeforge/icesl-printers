@@ -39,7 +39,7 @@ first_layer_print_speed_mm_per_sec = 10
 first_layer_print_speed_mm_per_sec_min = 1
 first_layer_print_speed_mm_per_sec_max = 80
 
-travel_speed_mm_per_sec = 120
+travel_speed_mm_per_sec = 150
 
 for i = 0, max_number_extruders, 1 do
   _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm

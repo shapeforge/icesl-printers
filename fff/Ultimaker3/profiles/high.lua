@@ -5,11 +5,11 @@ name_ch = "高质量"
 
 z_layer_height_mm = 0.1
 
-print_speed_mm_per_sec = 20
+print_speed_mm_per_sec = 30
 first_layer_print_speed_mm_per_sec = 10
-perimeter_print_speed_mm_per_sec = 15
-cover_print_speed_mm_per_sec = 15
-travel_speed_mm_per_sec = 80
+perimeter_print_speed_mm_per_sec = 20
+cover_print_speed_mm_per_sec = 20
+travel_speed_mm_per_sec = 100
 
 for i = 0, max_number_brushes, 1 do
   _G['extruder_'..i] = i
