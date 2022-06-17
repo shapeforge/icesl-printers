@@ -8,3 +8,5 @@ filament_diameter_mm_0 = 2.85
 filament_priming_mm_0 = 1.0
 
 bed_temp_degree_c = 110
+
+flow_multiplier_0 = 0.95

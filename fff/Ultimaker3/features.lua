@@ -46,7 +46,7 @@ bed_temp_degree_c_max = 120
 -- Printing speed limits
 print_speed_mm_per_sec = 40
 print_speed_mm_per_sec_min = 5
-print_speed_mm_per_sec_max = 80
+print_speed_mm_per_sec_max = 150
 
 perimeter_print_speed_mm_per_sec = 30
 perimeter_print_speed_mm_per_sec_min = 5
@@ -60,7 +60,7 @@ first_layer_print_speed_mm_per_sec = 20
 first_layer_print_speed_mm_per_sec_min = 1
 first_layer_print_speed_mm_per_sec_max = 50
 
-travel_speed_mm_per_sec = 120
+travel_speed_mm_per_sec = 150
 
 -- Purge Tower
 gen_tower = false
@@ -102,7 +102,7 @@ for i = 0, max_number_extruders, 1 do
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
-  _G['extruder_mix_count_'..i] = 1
+  _G['extruder_mix_count_'..i] = 2
 end
 
 -- Defaults nozzle_diameter for extruder_count > 2 

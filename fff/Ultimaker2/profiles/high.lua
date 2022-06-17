@@ -5,10 +5,10 @@ name_ch = "高质量"
 
 z_layer_height_mm = 0.1
 
-print_speed_mm_per_sec=20
+print_speed_mm_per_sec=30
 first_layer_print_speed_mm_per_sec=10
-perimeter_print_speed_mm_per_sec=15
-cover_print_speed_mm_per_sec=15
+perimeter_print_speed_mm_per_sec=20
+cover_print_speed_mm_per_sec=30
 travel_speed_mm_per_sec=80
 priming_mm_per_sec=30
 retract_mm_per_sec=30
