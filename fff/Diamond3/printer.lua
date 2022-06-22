@@ -154,6 +154,7 @@ end
 
 function swap_extruder(from,to,x,y,z)
   output('; Extruder change from vE' .. from .. ' to vE' .. to)
+  output('G92 E0')
 
   extruder_e_swap[from] = extruder_e_swap[from] + extruder_e[from] - extruder_e_reset[from]
   current_extruder = to
