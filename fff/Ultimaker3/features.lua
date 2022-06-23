@@ -80,8 +80,8 @@ enable_active_temperature_control = true
 
 -- Misc Settings
 add_brim = true
-brim_distance_to_print_mm = 1.0
-brim_num_contours = 4
+brim_distance_to_print_mm = 2.0
+brim_num_contours = 2
 
 add_raft = false
 raft_spacing = 1.0
@@ -89,7 +89,8 @@ raft_spacing = 1.0
 gen_supports = false
 support_extruder = 0
 
-z_lift_mm = 0.6
+enable_z_lift = true
+z_lift_mm = 0.4
 
 --#################################################
 

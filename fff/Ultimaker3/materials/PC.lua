@@ -5,6 +5,8 @@ name_ch = "PC"
 
 material_guid = '98c05714-bf4e-4455-ba27-57d74fe331e4'
 
+bed_temp_degree_c = 110
+
 -- affecting settings to each extruder
 for i = 0, extruder_count-1, 1 do
   _G['extruder_temp_degree_c_'..i] = 290
@@ -13,7 +15,11 @@ for i = 0, extruder_count-1, 1 do
   _G['retract_mm_per_sec_'..i] = 40
 end
 
-bed_temp_degree_c = 110
+-- affecting settings to all brushes
+for i = 0, max_number_brushes, 1 do
+	_G['flow_multiplier_'..i] = 1.0
+	_G['speed_multiplier_'..i] = 1.0
+end
 
 enable_fan = false
 fan_speed_percent = 10

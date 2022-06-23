@@ -6,7 +6,7 @@ name_ch = "快速打印"
 z_layer_height_mm = 0.3
 
 print_speed_mm_per_sec = 60
-first_layer_print_speed_mm_per_sec = 10
+first_layer_print_speed_mm_per_sec = 20
 perimeter_print_speed_mm_per_sec = 45
 cover_print_speed_mm_per_sec = 60
 travel_speed_mm_per_sec = 150

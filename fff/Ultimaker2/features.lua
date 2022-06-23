@@ -35,12 +35,23 @@ cover_print_speed_mm_per_sec = 30
 cover_print_speed_mm_per_sec_min = 5
 cover_print_speed_mm_per_sec_max = 80
 
-first_layer_print_speed_mm_per_sec = 10
+first_layer_print_speed_mm_per_sec = 20
 first_layer_print_speed_mm_per_sec_min = 1
 first_layer_print_speed_mm_per_sec_max = 80
 
 travel_speed_mm_per_sec = 150
 
+-- Misc Settings
+add_brim = true
+brim_distance_to_print_mm = 2.0
+brim_num_contours = 2
+
+enable_z_lift = true
+z_lift_mm = 0.4
+
+--#################################################
+
+-- Internal procedure to fill brushes / extruder settings
 for i = 0, max_number_extruders, 1 do
   _G['nozzle_diameter_mm_'..i] = nozzle_diameter_mm
   _G['filament_diameter_mm_'..i] = filament_diameter_mm
