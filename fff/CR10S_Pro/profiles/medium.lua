@@ -4,11 +4,11 @@ name_fr = "Qualité standard"
 
 z_layer_height_mm = 0.2
 
-print_speed_mm_per_sec = 40
-perimeter_print_speed_mm_per_sec = 25
-cover_print_speed_mm_per_sec = 25
+print_speed_mm_per_sec = 60
+perimeter_print_speed_mm_per_sec = 35
+cover_print_speed_mm_per_sec = 35
 first_layer_print_speed_mm_per_sec = 20
-travel_speed_mm_per_sec = 120
+travel_speed_mm_per_sec = 150
 
 -- affecting settings to all brushes
 for i = 0, max_number_brushes, 1 do

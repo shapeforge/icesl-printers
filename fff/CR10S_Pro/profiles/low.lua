@@ -5,10 +5,10 @@ name_fr = "Impression rapide"
 z_layer_height_mm = 0.28
 
 print_speed_mm_per_sec = 60
-perimeter_print_speed_mm_per_sec = 35
-cover_print_speed_mm_per_sec = 35
+perimeter_print_speed_mm_per_sec = 40
+cover_print_speed_mm_per_sec = 60
 first_layer_print_speed_mm_per_sec = 20
-travel_speed_mm_per_sec = 120
+travel_speed_mm_per_sec = 150
 
 -- affecting settings to all brushes
 for i = 0, max_number_brushes, 1 do
