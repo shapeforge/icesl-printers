@@ -21,7 +21,7 @@ bed_size_y_mm = 310
 bed_size_z_mm = 400
 
 -- Printer Extruder
-extruder_count = 1
+extruder_count = 1 -- number of extruders. Change this value if you want to use the virtual extruders feature for "simple multi-material" (using firmware's filament swap)
 nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 
