@@ -1,16 +1,24 @@
 -- Creality CR10S pro
 -- 30/07/2020
 
-extruder_e = 0
-extruder_e_restart = 0
-current_z = 0.0
+current_extruder = 0
+last_extruder_selected = 0 -- counter to track the selected / prepared extruders
+
+current_frate = 0
+current_fan_speed = -1
+
+extruder_e = {} -- table of extrusion values for each extruder
+extruder_e_restart = {} -- table of extrusion values for each extruder for e reset (to comply with G92 E0)
+extruder_e_swap = {} -- table of extrusion values for each extruder before an extruder swap to keep track of each e values
+
+for i = 0, extruder_count -1 do
+  extruder_e[i] = 0.0
+  extruder_e_restart[i] = 0.0
+  extruder_e_swap[i] = 0.0
+end
 
 processing = false
-
-current_extruder = 0
-current_frate = 0
-
-current_fan_speed = -1
+skip_prime_retract = false
 
 path_type = {
 --{ 'default',    'Craftware'}
@@ -24,7 +32,8 @@ path_type = {
   { ';tower',      ';segType:Pillar'}
 }
 
-craftware_debug = true -- allow the use of Craftware paths naming convention
+craftware = true -- allow the use of Craftware paths naming convention
+debug = false -- output T commands for gcode debugging
 
 --##################################################
 
@@ -82,13 +91,13 @@ end
 function layer_start(zheight)
   local frate = 600
   comment('<layer ' .. layer_id ..'>')
-  output('G1 F' .. frate .. ' Z' .. f(zheight))
+  output('G0 F' .. frate .. ' Z' .. f(zheight))
   current_frate = frate
   changed_frate = true
 end
 
 function layer_stop()
-  extruder_e_restart = extruder_e
+  extruder_e_restart[current_extruder] = extruder_e[current_extruder]
   output('G92 E0')
   comment('<layer ' .. layer_id ..'>')
   -- Klipper macro for DSLR timelapses
@@ -96,48 +105,84 @@ function layer_stop()
 end
 
 function retract(extruder,e)
-  output(';retract')
-  local len   = filament_priming_mm[extruder]
-  local speed = priming_mm_per_sec[extruder] * 60
-  output('G1 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
-  extruder_e = e - len
-  current_frate = speed
-  return e - len
+  if skip_prime_retract then
+    output('; retract skipped')
+    extruder_e[current_extruder] = e
+    skip_prime_retract = false
+    return e
+  else
+    output(';retract')
+    local len   = filament_priming_mm[extruder]
+    local speed = priming_mm_per_sec[extruder] * 60
+    local e_value = e - len - extruder_e_restart[current_extruder]
+    output('G1 F' .. speed .. ' E' .. ff(e_value))
+    extruder_e[current_extruder] = e - len
+    current_frate = speed
+    changed_frate = true
+    return e - len
+  end
 end
 
 function prime(extruder,e)
-  output(';prime')
-  local len   = filament_priming_mm[extruder]
-  local speed = priming_mm_per_sec[extruder] * 60
-  output('G1 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
-  extruder_e = e + len
-  current_frate = speed
-  return e + len
+  if skip_prime_retract then
+    output('; prime skipped')
+    extruder_e[current_extruder] = e
+    skip_prime_retract = false
+    return e
+  else
+    output(';prime')
+    local len   = filament_priming_mm[extruder]
+    local speed = priming_mm_per_sec[extruder] * 60
+    local e_value = e + len - extruder_e_restart[current_extruder]
+    output('G1 F' .. speed .. ' E' .. ff(e_value))
+    extruder_e[current_extruder] = e + len
+    current_frate = speed
+    changed_frate = true
+    return e + len
+  end
 end
 
 function select_extruder(extruder)
+  last_extruder_selected = last_extruder_selected + 1
+  -- skip unnecessary prime/retract and ratios setup
+  skip_prime_retract = true
+
+  -- number_of_extruders is an IceSL internal Lua global variable which is used to know how many extruders will be used for a print job
+  if last_extruder_selected == number_of_extruders then
+    skip_prime_retract = false
+    current_extruder = extruder
+    if debug then output('T' .. extruder) end
+  end
 end
 
 function swap_extruder(from,to,x,y,z)
+  output('G92 E0')
+  output('; Filament change')
+  output('; Extruder change from vE' .. from .. ' to vE' .. to)
+  output('M600') -- call filament swap
+  if debug then output('T' .. to) end
+  output('G92 E0')
+
+  extruder_e_swap[from] = extruder_e_swap[from] + extruder_e[from] - extruder_e_restart[from]
+  current_extruder = to
+  skip_prime_retract = true
 end
 
 function move_xyz(x,y,z)
   if processing == true then
+    output(';travel')
     processing = false
   end
-  output(';travel')
-  output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z))
-  current_z = z
+  output('G0 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z))
 end
 
 function move_xyze(x,y,z,e)
-  extruder_e = e
-  local e_value = extruder_e - extruder_e_restart
+  extruder_e[current_extruder] = e
+  local e_value = extruder_e[current_extruder] - extruder_e_restart[current_extruder]
 
   if processing == false then 
     processing = true
-    local p_type = 1 -- default paths naming
-    if craftware_debug then p_type = 2 end
+    p_type = craftware and 2 or 1 -- select path type
     if      path_is_perimeter then output(path_type[1][p_type])
     elseif  path_is_shell     then output(path_type[2][p_type])
     elseif  path_is_infill    then output(path_type[3][p_type])
@@ -149,14 +194,13 @@ function move_xyze(x,y,z,e)
     end
   end
 
-  output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' E' .. ff(e_value))
-  current_z = z
+  output('G1 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' E' .. ff(e_value))
 end
 
 function move_e(e)
-  extruder_e = e
-  local e_value =  extruder_e - extruder_e_restart
-  output('G1 F' .. current_frate .. ' E' .. ff(e_value))
+  extruder_e[current_extruder] = e
+  local e_value = extruder_e[current_extruder] - extruder_e_restart[current_extruder]
+  output('G1 F' .. f(current_frate) .. ' E' .. ff(e_value))
 end
 
 function set_feedrate(feedrate)
