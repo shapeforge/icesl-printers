@@ -91,6 +91,8 @@ function layer_stop()
   extruder_e_restart = extruder_e
   output('G92 E0')
   comment('<layer ' .. layer_id ..'>')
+  -- Klipper macro for DSLR timelapses
+  --output('TAKE_SNAPSHOT')
 end
 
 function retract(extruder,e)
