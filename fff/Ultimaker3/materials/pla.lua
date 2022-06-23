@@ -5,6 +5,8 @@ name_ch = "PLA"
 
 material_guid = '506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9'
 
+bed_temp_degree_c = 55
+
 -- affecting settings to each extruder
 for i = 0, extruder_count-1, 1 do
   _G['extruder_temp_degree_c_'..i] = 210
@@ -13,7 +15,11 @@ for i = 0, extruder_count-1, 1 do
   _G['retract_mm_per_sec_'..i] = 40
 end
 
-bed_temp_degree_c = 50
+-- affecting settings to all brushes
+for i = 0, max_number_brushes, 1 do
+	_G['flow_multiplier_'..i] = 1.0
+	_G['speed_multiplier_'..i] = 1.0
+end
 
 enable_fan = true
 fan_speed_percent = 100
