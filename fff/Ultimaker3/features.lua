@@ -103,7 +103,7 @@ for i = 0, max_number_extruders, 1 do
   _G['extruder_temp_degree_c_' ..i] = extruder_temp_degree_c
   _G['extruder_temp_degree_c_'..i..'_min'] = extruder_temp_degree_c_min
   _G['extruder_temp_degree_c_'..i..'_max'] = extruder_temp_degree_c_max
-  _G['extruder_mix_count_'..i] = 2
+  _G['extruder_mix_count_'..i] = 1
 end
 
 -- Defaults nozzle_diameter for extruder_count > 2 
