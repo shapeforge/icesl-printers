@@ -9,12 +9,10 @@ current_fan_speed = -1
 
 extruder_e = {} -- table of extrusion values for each extruder
 extruder_e_restart = {} -- table of extrusion values for each extruder for e reset (to comply with G92 E0)
-extruder_e_swap = {} -- table of extrusion values for each extruder before an extruder swap to keep track of each e values
 
 for i = 0, extruder_count -1 do
   extruder_e[i] = 0.0
   extruder_e_restart[i] = 0.0
-  extruder_e_swap[i] = 0.0
 end
 
 processing = false
@@ -161,10 +159,8 @@ function swap_extruder(from,to,x,y,z)
   output('; Extruder change from vE' .. from .. ' to vE' .. to)
   output('M600') -- call filament swap
   if debug then output('T' .. to) end
-  output('G92 E0')
-
-  extruder_e_swap[from] = extruder_e_swap[from] + extruder_e[from] - extruder_e_restart[from]
   current_extruder = to
+  output('G92 E'..extruder_e[current_extruder] - extruder_e_restart[current_extruder])
   skip_prime_retract = true
 end
 
