@@ -1,8 +1,9 @@
 -- Original Prusa MK3S 
 -- 2019-05-01
 
-extruder_e = 0
-extruder_e_restart = 0
+current_extruder = 0
+extruder_e = {}
+extruder_e_restart = {}
 current_z = 0.0
 
 changed_frate = false
@@ -12,6 +13,11 @@ current_extruder = 0
 current_frate = 0
 
 current_fan_speed = -1
+
+for e=0,extruder_count-1 do
+  extruder_e[e] = 0
+  extruder_e_restart[e] = 0
+end
 
 path_type = {
 --{ 'default',    'Craftware'}
@@ -72,8 +78,8 @@ function retract(extruder,e)
   output(';retract')
   local len   = filament_priming_mm[extruder]
   local speed = retract_mm_per_sec[extruder] * 60
-  output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
-  extruder_e = e - len
+  output('G0 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart[current_extruder]))
+  extruder_e[current_extruder] = e - len
   current_frate = speed
   changed_frate = true
   return e - len
@@ -83,8 +89,8 @@ function prime(extruder,e)
   output(';prime')
   local len   = filament_priming_mm[extruder]
   local speed = priming_mm_per_sec[extruder] * 60
-  output('G0 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart))
-  extruder_e = e + len
+  output('G0 F' .. speed .. ' E' .. ff(e + len - extruder_e_restart[current_extruder]))
+  extruder_e[current_extruder] = e + len
   current_frate = speed
   changed_frate = true
   return e + len
@@ -104,15 +110,27 @@ function layer_start(zheight)
 end
 
 function layer_stop()
-  extruder_e_restart = extruder_e
+  extruder_e_restart[current_extruder] = extruder_e[current_extruder]
   output('G92 E0')
   output(';(</layer>)')
 end
 
 function select_extruder(extruder)
+  current_extruder = extruder
 end
 
 function swap_extruder(from,to,x,y,z)
+  if extruder_count > 1 then
+    -- IceSL behaves as if each of the extruders had a different E value,
+    -- however there is in reality a single one since we are using virtual
+    -- extruders. So we restart the E value for all extruders.
+    for e,_ in ipairs(extruder_e) do
+      extruder_e_restart[e] = extruder_e[e]
+    end
+    output('G92 E0')
+    output('M600')
+  end
+  current_extruder = to
 end
 
 function move_xyz(x,y,z)
@@ -141,9 +159,10 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
-  extruder_e = e
+  extruder_e[current_extruder] = e
 
-  local e_value = extruder_e - extruder_e_restart
+  local e_value = extruder_e[current_extruder]
+                - extruder_e_restart[current_extruder]
 
   if processing == false then 
     processing = true
@@ -179,9 +198,9 @@ function move_xyze(x,y,z,e)
 end
 
 function move_e(e)
-  extruder_e = e
+  extruder_e[current_extruder] = e
 
-  local e_value =  extruder_e - extruder_e_restart
+  local e_value =  extruder_e[current_extruder] - extruder_e_restart[current_extruder]
 
   if changed_frate == true then 
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
