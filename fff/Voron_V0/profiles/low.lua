@@ -10,8 +10,10 @@ perimeter_print_speed_mm_per_sec = 50
 cover_print_speed_mm_per_sec = 50
 travel_speed_mm_per_sec = 200
 
-print_perimeter_0 = true
-num_shells_0 = 1
-cover_thickness_mm_0 = 0.8
-infill_type_0 = "Gyroid"
-infill_percentage_0 = 10
+-- affecting settings to all brushes
+for i = 0, max_number_brushes, 1 do
+  _G['print_perimeter_'..i] = true
+  _G['num_shells_' ..i] = 1
+  _G['cover_thickness_mm_'..i] = 0.9
+  _G['infill_percentage_'..i] = 10
+end

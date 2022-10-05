@@ -1,6 +1,6 @@
 -- Voron V0 Profile
 -- Hugron Pierre-Alexandre 29/06/2021
--- Updated by Bedell Pierre 04/05/2022
+-- Updated by Bedell Pierre 05/10/2022
 
 -- Klipper macros names for start/stop
 macro_start = "START_PRINT"
