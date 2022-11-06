@@ -6,20 +6,24 @@ filament_density = 1.04 --g/cm3
 
 -- temperatures
 extruder_temp_degree_c = 245
-bed_temp_degree_c = 110
+bed_temp_degree_c = 100
 
 -- prime/retracts
-filament_priming_mm = 2.0
+if direct_drive then
+  filament_priming_mm = 0.4 
+else
+  filament_priming_mm = 2.0
+end
 priming_mm_per_sec = 30
 retract_mm_per_sec = 50
 
 -- flow
-flow_multiplier = 1.0
+flow_multiplier = 0.9
 speed_multiplier = 1.0
 
 -- cooling
 enable_fan = true
-fan_speed_percent = 20
+fan_speed_percent = 35
 fan_speed_percent_on_bridges = 50
 
 --#################################################
