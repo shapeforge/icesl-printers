@@ -7,7 +7,7 @@ z_layer_height_mm = 0.3
 print_speed_mm_per_sec = 140
 first_layer_print_speed_mm_per_sec = 50
 perimeter_print_speed_mm_per_sec = 70
-cover_print_speed_mm_per_sec = 70
+cover_print_speed_mm_per_sec = 120
 travel_speed_mm_per_sec = 200
 
 -- affecting settings to all brushes
