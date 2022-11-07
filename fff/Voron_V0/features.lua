@@ -59,7 +59,7 @@ perimeter_print_speed_mm_per_sec = 60
 perimeter_print_speed_mm_per_sec_min = 5
 perimeter_print_speed_mm_per_sec_max = 400
 
-cover_print_speed_mm_per_sec = 60
+cover_print_speed_mm_per_sec = 120
 cover_print_speed_mm_per_sec_min = 5
 cover_print_speed_mm_per_sec_max = 400
 
