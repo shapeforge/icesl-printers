@@ -7,3 +7,5 @@ filament_diameter_mm_0 = 1.75
 filament_priming_mm_0 = 3.0
 
 bed_temp_degree_c = 100
+
+elephant_foot_temp_percent = 0
