@@ -236,15 +236,15 @@ function swap_extruder(from,to,x,y,z)
   output('G0 F600 Z' .. f(z + z_lift_mm) .. '; z-lift for extruder swap')
   output('G92 E0')
   output('T' .. to)
-  output('G92 E0\n')
+  output('G92 E0')
   output('; purging extruder')
   output('G1 F600 E' .. e_value)
-  e_value = e_value - filament_priming_mm
-  output('G1 F' .. f(retract_mm_per_sec*60) .. ' E' .. ff(e_value ) .. ' ; retract before moving back to position')
-  output('G92 E0\n')
+  e_value = e_value - filament_priming_mm[to]
+  output('G1 F' .. f(retract_mm_per_sec[to]*60) .. ' E' .. ff(e_value ) .. ' ; retract before moving back to position')
+  output('G92 E0')
   output('; travel back to position before resuming')
   output('G0 F' .. f(travel_speed_mm_per_sec*60) .. ' X' .. f(x) .. ' Y' .. f(y))
-  output('\n')
+  output('')
 
   current_extruder = to
   current_frate = travel_speed_mm_per_sec * 60
