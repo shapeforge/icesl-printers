@@ -81,7 +81,7 @@ end
 
 function layer_start(zheight)
   output(';<layer ' .. layer_id .. '>')
-  output('G0 Z' .. f(zheight))
+  output('G0 F600 Z' .. f(zheight))
 end
 
 function layer_stop()
