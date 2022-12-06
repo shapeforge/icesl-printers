@@ -1,6 +1,5 @@
 G21 ; set units to millimeters
 G28 X0 Y0 ; home X and Y
-M104 S<TOOLTEMP> ; set temperature
 M190 S<HBPTEMP> ; wait for bed temperature to be reached
 M109 S<TOOLTEMP> ; wait for temperature to be reached
 G28 ;home all axes
