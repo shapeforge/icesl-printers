@@ -48,18 +48,23 @@ function prime(extruder,e)
 end
 
 function layer_start(zheight)
-  output(';(<layer ' .. layer_id .. '>)')
-  if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
-  else
-    output('G0 F100 Z' .. ff(zheight))
+  output(';<layer ' .. layer_id .. '>')
+  if not layer_spiralized then
+    local speed = 100
+    if layer_id == 0 then
+      speed = 600
+    end
+    output('G0 F' .. f(speed) ..' Z' .. ff(zheight))
+    current_frate = speed
   end
 end
 
 function layer_stop()
-  extruder_e_restart = extruder_e
-  output('G92 E0')
-  output(';(</layer>)')
+  if not layer_spiralized then
+    extruder_e_restart = extruder_e
+    output('G92 E0')
+  end
+  output(';</layer>')
 end
 
 function select_extruder(extruder)
@@ -72,12 +77,7 @@ function move_xyz(x,y,z)
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
   output(';travel')
-  if z == current_z then
-    output('G0 F' .. f(current_frate) .. ' X' .. f(x_value) .. ' Y' .. f(y_value))
-  else
-    output('G0 F' .. f(current_frate) .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z))
-    current_z = z
-  end
+  output('G0 F' .. f(current_frate) .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z))
 end
 
 function move_xyze(x,y,z,e)
@@ -109,12 +109,8 @@ function move_xyze(x,y,z,e)
   local e_value = extruder_e - extruder_e_restart
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
-  if z == current_z then 
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z) .. ' E' .. ff(e_value) .. _print_type)
-  else
-    output('G1 F' .. f(current_frate) .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value) .. _print_type)
-    current_z = z
-  end
+  
+  output('G1 F' .. f(current_frate) .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z) .. ' E' .. ff(e_value) .. _print_type)
 end
 
 function move_e(e)
