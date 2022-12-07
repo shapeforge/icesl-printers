@@ -15,7 +15,7 @@ bed_size_z_mm = 300
 -- If you want to use the virtual extruders feature for "simple multi-material", you can change this number to comply with the number of mixs
 extruder_count = 1
 -- number of inputed filament in the nozzle. Set to 2 if using the mixing nozzle.
-nb_input = 1
+nb_input = 2
 -- array to store extruder letter for ratios generation
 extruder_letters = {"A", "B"} 
 
