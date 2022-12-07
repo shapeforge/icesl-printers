@@ -4,6 +4,7 @@
 
 -- Build Area dimensions
 bed_radius = 132
+bed_circular = true
 
 bed_size_x_mm = bed_radius * 2
 bed_size_y_mm = bed_radius * 2
