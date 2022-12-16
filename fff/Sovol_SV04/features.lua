@@ -1,37 +1,29 @@
--- Creality CR10S pro
--- 30/07/2020
+-- Sovol SV04 profile (IDEX)
+-- Bedell Pierre 30/11/2022
 
 -- Custom checkox to enable auto_bed_leveling
 add_checkbox_setting('auto_bed_leveling', 'Auto Bed Leveling','Use G29 Auto Leveling if the machine is equipped with one (BLTouch, Pinda, capacitive sensor, etc.)')
 auto_bed_leveling = false
 
--- Custom checkox to enable auto_bed_leveling
+-- Custom checkox to reload the last bed mesh
 add_checkbox_setting('reload_bed_mesh', 'Reload the last bed-mesh','Reload the last saved bed-mesh if available')
 reload_bed_mesh = false
-
--- Custom checkox to use a driect-drive extruder (ie: E3D's Hemera)
---add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (ie E3D's Hemera)")
-direct_drive = false
 
 --#################################################
 
 -- Build Area dimensions
-bed_size_x_mm = 310
-bed_size_y_mm = 310
+bed_size_x_mm = 302
+bed_size_y_mm = 302
 bed_size_z_mm = 400
 
 -- Printer Extruder
-extruder_count = 1 -- number of extruders. Change this value if you want to use the virtual extruders feature for "simple multi-material" (using firmware's filament swap)
+extruder_count = 2
 nozzle_diameter_mm = 0.4
 filament_diameter_mm = 1.75
 
 -- Retraction Settings
--- between 0.5mm and 0.8mm of retract/prime for direct-drive setup, between 3mm and 6mm for bowden (stock) setup
-if direct_drive then
-  filament_priming_mm = 0.4 
-else
-  filament_priming_mm = 5.0
-end
+-- between 0.5mm and 0.8mm of retract/prime for direct-drive setup
+filament_priming_mm = 0.4 
 priming_mm_per_sec = 45
 retract_mm_per_sec = 45
 
@@ -75,7 +67,6 @@ add_brim = true
 brim_distance_to_print_mm = 2.0
 brim_num_contours = 3
 
-travel_straight = true
 enable_z_lift = true
 z_lift_mm = 0.4
 

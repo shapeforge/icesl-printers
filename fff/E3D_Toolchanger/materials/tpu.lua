@@ -6,13 +6,9 @@ filament_density = 1.21 --g/cm3
 
 bed_temp_degree_c = 55
 
-if direct_drive then
-  filament_priming_mm = 2.0
-else
-  filament_priming_mm = 0.0
-end
+filament_priming_mm = 2.2
 
- -- special speeds for TPU
+--Special speeds for TPU
 print_speed_mm_per_sec = 25
 perimeter_print_speed_mm_per_sec = 25
 cover_print_speed_mm_per_sec = 25

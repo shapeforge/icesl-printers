@@ -2,9 +2,19 @@
 -- Hugron Pierre-Alexandre 29/06/2021
 -- Updated by Bedell Pierre 05/10/2022
 
+-- Custom checkbox to use Klipper's strat/stop macros
+add_checkbox_setting('use_klipper_start_stop_macros', "Use Klipper's start/stop macros", "Use Klipper's macros to start/stop the print instead of the classic gcode header/footer")
+use_klipper_start_stop_macros = false
+
 -- Klipper macros names for start/stop
 macro_start = "START_PRINT"
 macro_stop = "END_PRINT"
+
+-- Custom checkox to use a direct-drive extruder (for most V0.1)
+--add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (for most V0.1)")
+direct_drive = false
+
+--#################################################
 
 -- Build Area dimensions
 bed_size_x_mm = 120
@@ -21,7 +31,13 @@ z_layer_height_mm_min = nozzle_diameter_mm * 0.10
 z_layer_height_mm_max = nozzle_diameter_mm * 0.80
 
 -- Retraction Settings
-filament_priming_mm = 2.0
+-- between 0.5mm and 0.8mm of retract/prime for direct-drive setup (V0.1), 
+-- between 1mm and 3mm for bowden (V0) setup
+if direct_drive then
+  filament_priming_mm = 0.4 
+else
+  filament_priming_mm = 2.0
+end
 priming_mm_per_sec = 30
 retract_mm_per_sec = 50
 
@@ -35,7 +51,7 @@ bed_temp_degree_c_min = 0
 bed_temp_degree_c_max = 120
 
 -- Printing speed limits
-print_speed_mm_per_sec = 80
+print_speed_mm_per_sec = 120
 print_speed_mm_per_sec_min = 5
 print_speed_mm_per_sec_max = 400
 
@@ -43,11 +59,11 @@ perimeter_print_speed_mm_per_sec = 60
 perimeter_print_speed_mm_per_sec_min = 5
 perimeter_print_speed_mm_per_sec_max = 400
 
-cover_print_speed_mm_per_sec = 60
+cover_print_speed_mm_per_sec = 120
 cover_print_speed_mm_per_sec_min = 5
 cover_print_speed_mm_per_sec_max = 400
 
-first_layer_print_speed_mm_per_sec = 25
+first_layer_print_speed_mm_per_sec = 40
 first_layer_print_speed_mm_per_sec_min = 5
 first_layer_print_speed_mm_per_sec_max = 100
 
@@ -66,10 +82,6 @@ z_lift_mm = 0.4
 -- default filament infos (when using "custom" profile)
 name_en = "PLA"
 filament_density = 1.25 --g/cm3 PLA
-
--- Custom checkbox to use Klipper's strat/stop macros
-add_checkbox_setting('use_klipper_start_stop_macros', "Use Klipper's start/stop macros", "Use Klipper's macros to start/stop the print instead of the classic gcode header/footer")
-use_klipper_start_stop_macros = false
 
 --#################################################
 

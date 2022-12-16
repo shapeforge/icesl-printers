@@ -6,6 +6,7 @@ M190 S<HBPTEMP> ; wait for bed temperature to be reached
 M104 S<TOOLTEMP> ; set temperature
 G28 ; home all axes
 <BEDLVL>
+BED_MESH_PROFILE LOAD="default"
 M109 S<TOOLTEMP> ; wait for extruder temperature to be reached
 
 G92 E0
