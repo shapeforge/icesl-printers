@@ -1,14 +1,6 @@
 -- Cosmyx Nova Profile
 -- Bedell Pierre 13/12/2022
 
--- Custom checkbox to use Klipper's strat/stop macros
-add_checkbox_setting('use_klipper_start_stop_macros', "Use Klipper's start/stop macros", "Use Klipper's macros to start/stop the print instead of the classic gcode header/footer")
-use_klipper_start_stop_macros = false
-
--- Klipper macros names for start/stop
-macro_start = "START_PRINT"
-macro_stop = "END_PRINT"
-
 --#################################################
 
 -- Build Area dimensions
