@@ -254,6 +254,11 @@ function move_e(e)
 
   local e_value = extruder_e[current_extruder] - extruder_e_reset[current_extruder]
 
+  local r_ = {} -- local array to compute new mixing ratios
+  for i = 1, nb_input do
+    r_[i] = current_mix_ratio[i]
+  end 
+
   local ratios_string = ""
   if nb_input ~= 1 then
     for i = 1, nb_input do
