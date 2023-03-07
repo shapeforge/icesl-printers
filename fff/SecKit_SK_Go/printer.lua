@@ -213,7 +213,8 @@ function footer()
   output('M104 S0 ; turn off temperature')
   output('M140 S0 ; turn off heatbed')
   output('M107 ; turn off fan')
-  output('G28 XY ; home X and Y axis')
+  --output('G28 X Y ; home X and Y axis')
+  output('G0 Z 10') -- move in Z to clear space between print and nozzle
   output('M84 ; disable motors')
   output('')
 
