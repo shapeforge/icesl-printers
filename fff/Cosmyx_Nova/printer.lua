@@ -10,22 +10,22 @@ current_frate = 0
 current_fan_speed = -1
 processing = false
 
-path_type = 1 -- 1:default, 2:Craftware, 3:Prusa/Super Slicer, 4:Cura
+path_type = 5 -- 1:default, 2:Craftware, 3:Prusa/Super Slicer, 4:Cura, 5:Ofast
 
 path_tag = {
-  --{ 'default',  'Craftware',              'Prusa/Super Slicer',       'Cura'}
-  { ';travel',    ';segType:Travel',        ';travel',                  ';travel' },
-  { ';perimeter', ';segType:Perimeter',     ';TYPE:External perimeter', ';TYPE:WALL-OUTER' },
-  { ';shell',     ';segType:HShell',        ';TYPE:Internal perimeter', ';TYPE:WALL-INNER' },
-  { ';cover',     ';segType:Infill',        ';TYPE:Solid infill',       ';TYPE:FILL' },
-  { ';infill',    ';segType:Infill',        ';TYPE:Internal infill',    ';TYPE:FILL' },
-  { ';gapfill',   ';segType:Infill',        ';TYPE:Gap fill',           ';TYPE:FILL' },
-  { ';bridge',    ';segType:SupportTouch',  ';TYPE:Overhang perimeter', ';TYPE:WALL-OUTER' },
-  { ';support',   ';segType:Support',       ';TYPE:Support material',   ';TYPE:SUPPORT' },
-  { ';brim',      ';segType:Skirt',         ';TYPE:Skirt',              ';TYPE:SKIRT' },
-  { ';raft',      ';segType:Raft',          ';TYPE:Skirt',              ';TYPE:SKIRT' },
-  { ';shield',    ';segType:Pillar',        ';TYPE:Skirt',              ';TYPE:SKIRT' },
-  { ';tower',     ';segType:Pillar',        ';TYPE:Skirt',              ';TYPE:SKIRT' },
+  --{ 'default',  'Craftware',              'Prusa/Super Slicer',       'Cura',             'Ofast' }
+  { ';travel',    ';segType:Travel',        '',                         '',                 ';TYPE:Travel' },
+  { ';perimeter', ';segType:Perimeter',     ';TYPE:External perimeter', ';TYPE:WALL-OUTER', ';TYPE:Perimeter' },
+  { ';shell',     ';segType:HShell',        ';TYPE:Internal perimeter', ';TYPE:WALL-INNER', ';TYPE:Shell' },
+  { ';cover',     ';segType:Infill',        ';TYPE:Solid infill',       ';TYPE:FILL',       ';TYPE:Cover' },
+  { ';infill',    ';segType:Infill',        ';TYPE:Internal infill',    ';TYPE:FILL',       ';TYPE:Infill' },
+  { ';gapfill',   ';segType:Infill',        ';TYPE:Gap fill',           ';TYPE:FILL',       ';TYPE:Gapill' },
+  { ';bridge',    ';segType:SupportTouch',  ';TYPE:Overhang perimeter', ';TYPE:WALL-OUTER', ';TYPE:Bridge' },
+  { ';support',   ';segType:Support',       ';TYPE:Support material',   ';TYPE:SUPPORT',    ';TYPE:Support' },
+  { ';brim',      ';segType:Skirt',         ';TYPE:Skirt',              ';TYPE:SKIRT',      ';TYPE:Brim' },
+  { ';raft',      ';segType:Raft',          ';TYPE:Skirt',              ';TYPE:SKIRT',      ';TYPE:Raft' },
+  { ';shield',    ';segType:Pillar',        ';TYPE:Skirt',              ';TYPE:SKIRT',      ';TYPE:Shield' },
+  { ';tower',     ';segType:Pillar',        ';TYPE:Skirt',              ';TYPE:SKIRT',      ';TYPE:Tower' },
 }
 
 --##################################################
@@ -94,7 +94,7 @@ function header()
   -- caution! density is in g/cm3, convertion to g/mm3 needed!
   output('; filament_used_g : \t' .. f(vol_to_mass(e_to_mm_cube(filament_diameter_mm[0], filament_tot_length_mm[0]), filament_density/1000)) )
   output('; estimated_print_time_s : \t' .. time_sec)
-  output('') 
+  output('')
 end
 
 function footer()
@@ -110,12 +110,17 @@ end
 
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. ' >')
-  output('G1 F600 Z' .. ff(zheight))
+  if not layer_spiralized then
+    output('G0 F600 Z' .. ff(zheight)) -- 10mm/s (max 20mm/s)
+    current_frate = speed
+  end
 end
 
 function layer_stop()
-  extruder_e_restart = extruder_e
-  output('G92 E0')
+  if not layer_spiralized then
+    extruder_e_restart = extruder_e
+    output('G92 E0')
+  end
   comment('</layer ' .. layer_id .. ' >')
 end
 
@@ -209,14 +214,14 @@ function move_xyze(x,y,z,e)
     processing = true
   end
 
-  local e_value = e - extruder_e_restart
   extruder_e = e
+  local e_value = extruder_e - extruder_e_restart
   output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' F' .. current_frate .. ' E' .. ff(e_value))
 end
 
 function move_e(e)
-  local e_value = e - extruder_e_restart
   extruder_e = e
+  local e_value = extruder_e - extruder_e_restart
   output('G1 E' .. ff(e_value))
 end
 
