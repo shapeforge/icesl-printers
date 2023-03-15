@@ -39,33 +39,81 @@ function round(number, decimals)
 end
 
 function header()
-  local acc_string = ''
-  acc_string = acc_string .. 'M201 X' .. x_max_acc .. ' Y' .. y_max_acc .. ' Z' .. z_max_acc .. ' E' .. e_max_acc .. ' ; sets maximum accelerations, mm/sec^2\n'
-  acc_string = acc_string .. 'M203 X' .. x_max_speed .. ' Y' .. y_max_speed .. ' Z' .. z_max_speed .. ' E' .. e_max_speed .. ' ; sets maximum feedrates, mm/sec\n'
-  acc_string = acc_string .. 'M204 P' .. ex_max_acc .. ' R' .. e_prime_max_acc .. ' T' .. ex_max_acc .. ' ; sets acceleration (P, T) and retract acceleration (R), mm/sec^2\n'
-  acc_string = acc_string .. 'M205 X' .. x_max_jerk .. ' Y' .. y_max_jerk .. ' Z' .. z_max_jerk .. ' E' .. e_max_jerk .. ' ; sets the jerk limits, mm/sec\n'
-  acc_string = acc_string .. 'M205 S0 T0 ; sets the minimum extruding and travel feed rate, mm/sec'
-
   local flow  = 95
   if z_layer_height_mm < 0.075 then 
    flow  = 100
   end
-
-  local h = file('header.gcode')
-  h = h:gsub('<NOZZLE_DIAMETER>', round(nozzle_diameter_mm_0,2))
-  h = h:gsub('<ACCELERATIONS>', acc_string)
-  h = h:gsub('<TOOLTEMP>', extruder_temp_degree_c[extruders[0]])
-  h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
-  h = h:gsub('<FLOW>', flow)
-  h = h:gsub('<FILAMENT>', filament_linear_adv_factor)
   
-  output(h)
+  output('; <THUMBNAIL_SMALL> (thumbnail management not yet supported, placeholder macro for later use)')
+  output('; <THUMBNAIL_BIG> (thumbnail management not yet supported, placeholder macro for later use)')
+  output('')
+
+  --output('M73 P0 R0')
+  --output('')
+
+  output('M201 X' .. x_max_acc .. ' Y' .. y_max_acc .. ' Z' .. z_max_acc .. ' E' .. e_max_acc .. ' ; sets maximum accelerations, mm/sec^2')
+  output('M203 X' .. x_max_speed .. ' Y' .. y_max_speed .. ' Z' .. z_max_speed .. ' E' .. e_max_speed .. ' ; sets maximum feedrates, mm/sec')
+  output('M204 P' .. printing_max_acc .. ' R' .. prime_ret_max_acc .. ' T' .. travel_max_acc .. ' ; sets acceleration (P, T) and retract acceleration (R), mm/sec^2')
+  output('M205 X' .. x_max_jerk .. ' Y' .. y_max_jerk .. ' Z' .. z_max_jerk .. ' E' .. e_max_jerk .. ' ; sets the jerk limits, mm/sec')
+  output('M205 S0 T0 ; sets the minimum extruding and travel feed rate, mm/sec')
+  output('')
+
+  output('M862.3 P "MINI" ; printer model check')
+  output('M107')
+  output('G90 ; use absolute coordinates')
+  output('M83 ; extruder relative mode')
+  output('')
+
+  output('M104 S170 ; set extruder temp for bed leveling')
+  output('M140 S' .. bed_temp_degree_c .. ' ; set bed temp')
+  output('M109 R170 ; wait for bed leveling temp')
+  output('M190 S' .. bed_temp_degree_c .. ' ; wait for bed temp')
+  output('M204 T1250 ; set travel acceleration')
+  output('G28 ; home all without mesh bed level')
+  output('G29 ; mesh bed leveling ')
+  output('M204 T2500 ; restore travel acceleration')
+  output('M104 S' ..  extruder_temp_degree_c[extruders[0]] .. ' ; set extruder temp')
+  output('G92 E0.0')
+  output('G1 Y-2.0 X179 F2400')
+  output('G1 Z3 F720')
+  output('M109 S' ..  extruder_temp_degree_c[extruders[0]] .. ' ; wait for extruder temp')
+  output('')
+
+  output('; intro line')
+  output('G1 X170 F1000')
+  output('G1 Z0.2 F720')
+  output('G1 X110.0 E8.0 F900')
+  -- output('M73 P0 R0')
+  output('G1 X40.0 E10.0 F700')
+  output('G92 E0.0')
+  output('')
+  
+  output('G21 ; set units to millimeters')
+  output('G90 ; use absolute coordinates')
+  output('M82 ; use absolute distances for extrusion')
+  output('G92 E0.0')
+  output('')
+  
+  output('M221 S' .. flow .. ' ; set flow')
+  output('M900 K' .. filament_linear_adv_factor .. ' ; Linear Advance - Filament gcode')
+  output('')
+  
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
 end
 
 function footer()
-  output(file('footer.gcode'))
+  output('')
+  output('M83 ; extruder relative mode')
+  output('G1 E-1 F2100 ; retract')
+  output('G1 X178 Y178 F4200 ; park print head')
+  output('G4 ; wait')
+  output('M104 S0 ; turn off temperature')
+  output('M140 S0 ; turn off heatbed')
+  output('M107 ; turn off fan')
+  output('M221 S100 ; reset flow')
+  output('M900 K0 ; reset LA')
+  output('M84 ; disable motors')
 end
 
 function retract(extruder,e)
@@ -99,12 +147,14 @@ function layer_start(zheight)
   else
     output('G0 F' .. frate ..' Z' .. ff(zheight))
   end
+  --remaining_time = time_sec - layer_start_time
   current_frate = frate
   changed_frate = true
 end
 
 function layer_stop()
   extruder_e_restart = extruder_e
+  --remaining_time = time_sec - layer_stop_time
   output('G92 E0')
   output(';(</layer>)')
 end
@@ -205,6 +255,7 @@ function extruder_stop()
 end
 
 function progress(percent)
+  -- output('M73 P' .. percent .. ' R' .. remaining_time)
   output('M73 P' .. percent)
 end
 
