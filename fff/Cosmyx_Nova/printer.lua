@@ -111,7 +111,7 @@ end
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. ' >')
   if not layer_spiralized then
-    output('G0 F600 Z' .. ff(zheight)) -- 10mm/s (max 20mm/s)
+    output('G1 F600 Z' .. ff(zheight)) -- 10mm/s (max 20mm/s)
     current_frate = speed
   end
 end
@@ -226,7 +226,7 @@ function move_e(e)
 end
 
 function set_feedrate(feedrate)
-  output('G1 F' .. f(feedrate))
+  output('G1 F' .. feedrate)
   current_frate = feedrate
 end
 
