@@ -204,6 +204,10 @@ function move_xyz(x,y,z)
   if processing == true then 
     tag_path() 
     processing = false
+    -- acceleration management
+    if use_per_path_accel then
+      output('M204 S' .. default_acc)
+    end
   end
   output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z))
 end
@@ -212,6 +216,19 @@ function move_xyze(x,y,z,e)
   if processing == false then 
     tag_path() 
     processing = true
+
+    -- acceleration management
+    if use_per_path_accel then
+      if      path_is_perimeter then output('M204 S' .. perimeter_acc)
+      elseif  path_is_shell     then output('M204 S' .. perimeter_acc)
+      elseif  path_is_infill    then output('M204 S' .. infill_acc)
+      elseif  path_is_raft      then output('M204 S' .. default_acc)
+      elseif  path_is_brim      then output('M204 S' .. default_acc)
+      elseif  path_is_shield    then output('M204 S' .. default_acc)
+      elseif  path_is_support   then output('M204 S' .. default_acc)
+      elseif  path_is_tower     then output('M204 S' .. default_acc)
+      end
+    end
   end
 
   extruder_e = e
