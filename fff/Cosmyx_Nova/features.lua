@@ -54,22 +54,30 @@ travel_speed_mm_per_sec_min = 20
 travel_speed_mm_per_sec_max = 500
 
 -- Acceleration settings
--- max settings are provided for reference only, as they should remain as set up on the machine
+-- (max settings are provided for reference only, 
+-- as they should remain as set up on the machine)
 -- x_max_speed = 500 -- mm/s
 -- y_max_speed = 500 -- mm/s
 -- z_max_speed = 20 -- mm/s
 -- e_max_speed = 30 -- mm/s
 
+-- based on 0.2mm SPEED presets
 -- x_max_acc = 20000 -- mm/s²
 -- y_max_acc = 20000 -- mm/s²
 -- z_max_acc = 500 -- mm/s²
 -- e_max_acc = 5000 -- mm/s²
 
 default_acc = 10000 -- mm/s²
-e_prime_max_acc = 5000 -- mm/s²
+travel_acc = 5000 -- mm/s²
 perimeter_acc = 1000 -- mm/s²
+shell_all = 5000 -- mm/s²
+cover_acc = 5000 -- mm/s²
 infill_acc = 5000 -- mm/s²
+support_acc = 2000 -- mm/s²
+first_layer_acc = 1000 -- mm/s²
 
+-- Jerk settings
+-- (not applicable here since the machine runs on klipper, hence using square corner velocity)
 -- default_jerk = 9 -- mm/s
 
 -- Misc default settings

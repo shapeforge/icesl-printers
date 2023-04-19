@@ -73,6 +73,25 @@ function tag_path()
   end
 end
 
+function set_accel()
+  if layer_id < 1 then -- fisrt layer specific acceleration
+    output('M204 S' .. first_layer_acc)
+  else
+    if      path_is_travel    then output('M204 S' .. travel_acc)
+    elseif  path_is_perimeter then output('M204 S' .. perimeter_acc)
+    elseif  path_is_shell     then output('M204 S' .. shell_all)
+    elseif  path_is_shell     then output('M204 S' .. cover_acc)
+    elseif  path_is_infill    then output('M204 S' .. infill_acc)
+    elseif  path_is_raft      then output('M204 S' .. default_acc)
+    elseif  path_is_brim      then output('M204 S' .. default_acc)
+    elseif  path_is_shield    then output('M204 S' .. support_acc)
+    elseif  path_is_support   then output('M204 S' .. support_acc)
+    elseif  path_is_tower     then output('M204 S' .. support_acc)
+    else output('M204 S' .. default_acc)
+    end
+  end
+end
+
 --##################################################
 
 function header()
@@ -206,7 +225,7 @@ function move_xyz(x,y,z)
     processing = false
     -- acceleration management
     if use_per_path_accel then
-      output('M204 S' .. default_acc)
+      set_accel()
     end
   end
   output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z))
@@ -219,15 +238,7 @@ function move_xyze(x,y,z,e)
 
     -- acceleration management
     if use_per_path_accel then
-      if      path_is_perimeter then output('M204 S' .. perimeter_acc)
-      elseif  path_is_shell     then output('M204 S' .. perimeter_acc)
-      elseif  path_is_infill    then output('M204 S' .. infill_acc)
-      elseif  path_is_raft      then output('M204 S' .. default_acc)
-      elseif  path_is_brim      then output('M204 S' .. default_acc)
-      elseif  path_is_shield    then output('M204 S' .. default_acc)
-      elseif  path_is_support   then output('M204 S' .. default_acc)
-      elseif  path_is_tower     then output('M204 S' .. default_acc)
-      end
+      set_accel()
     end
   end
 
