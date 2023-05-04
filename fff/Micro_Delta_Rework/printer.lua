@@ -16,7 +16,7 @@ current_fan_speed = -1
 
 nozzle_clearance_diameter = nozzle_diameter_mm
 
-global_z_offset = -0.1
+global_z_offset = -0.3
 
 --##################################################
 
@@ -31,7 +31,6 @@ function header()
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
-  nozzle_clearance_diameter = nozzle_diameter_mm
 end
 
 function footer()
@@ -63,6 +62,7 @@ end
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. '>')
   output('G0 F600 Z' .. ff(zheight))
+  nozzle_clearance_diameter = nozzle_diameter_mm
 end
 
 function layer_stop()
