@@ -16,6 +16,8 @@ current_fan_speed = -1
 
 nozzle_clearance_diameter = nozzle_diameter_mm
 
+global_z_offset = -0.1
+
 --##################################################
 
 function comment(text)
@@ -94,7 +96,7 @@ function move_xyz(x,y,z)
       slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
       zoffset     = nozzle_diameter_mm / 4.0 + 3.0 * math.tan(slope) * nozzle_clearance_diameter / 2.0
     end
-    outstr    = outstr .. ' Z' .. ff(z+zoffset)
+    outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
     current_z = z+zoffset
   end
   output(outstr)
@@ -121,7 +123,7 @@ function move_xyze(x,y,z,e)
       slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
       zoffset     = math.tan(slope) * nozzle_clearance_diameter / 2.0
     end
-    outstr    = outstr .. ' Z' .. ff(z+zoffset)
+    outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
     current_z = z+zoffset
   end
   output(outstr)
