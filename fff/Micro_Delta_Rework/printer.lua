@@ -14,6 +14,8 @@ current_z = 0.0
 
 current_fan_speed = -1
 
+nozzle_clearance_diameter = nozzle_diameter_mm
+
 --##################################################
 
 function comment(text)
@@ -27,6 +29,7 @@ function header()
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
+  nozzle_clearance_diameter = nozzle_diameter_mm
 end
 
 function footer()
@@ -75,22 +78,26 @@ end
 function move_xyz(x,y,z)
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
-  if z == current_z then
-    if changed_frate == true then 
-      output('G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value))
-      changed_frate = false
-    else
-      output('G0 X' .. f(x_value) .. ' Y' .. f(y_value))
-    end
+  --
+  local outstr = ''
+  if changed_frate == true then 
+    outstr = 'G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value)
+    changed_frate = false
   else
-    if changed_frate == true then
-      output('G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z))
-      changed_frate = false
-    else
-      output('G0 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z))
-    end
-    current_z = z
+    outstr = 'G0 X' .. f(x_value) .. ' Y' .. f(y_value)
   end
+  -- 
+  if z ~= current_z then
+    local zoffset = 0.0
+    if vertex_attributes['slope'] then
+      local slope = math.abs(vertex_attributes['slope'])
+      slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
+      zoffset     = nozzle_diameter_mm / 4.0 + 3.0 * math.tan(slope) * nozzle_clearance_diameter / 2.0
+    end
+    outstr    = outstr .. ' Z' .. ff(z+zoffset)
+    current_z = z+zoffset
+  end
+  output(outstr)
 end
 
 function move_xyze(x,y,z,e)
@@ -98,22 +105,26 @@ function move_xyze(x,y,z,e)
   local e_value = extruder_e - extruder_e_restart
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
-  if z == current_z then
-    if changed_frate == true then 
-      output('G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value))
-      changed_frate = false
-    else
-      output('G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value))
-    end
+  --
+  local outstr = ''
+  if changed_frate == true then 
+    outstr = 'G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value)
+    changed_frate = false
   else
-    if changed_frate == true then
-      output('G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z) .. ' E' .. ff(e_value))
-      changed_frate = false
-    else
-      output('G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z) .. ' E' .. ff(e_value))
-    end
-    current_z = z
+    outstr = 'G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value)
   end
+  -- 
+  if z ~= current_z then
+    local zoffset = 0.0
+    if vertex_attributes['slope'] then
+      local slope = math.abs(vertex_attributes['slope'])
+      slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
+      zoffset     = math.tan(slope) * nozzle_clearance_diameter / 2.0
+    end
+    outstr    = outstr .. ' Z' .. ff(z+zoffset)
+    current_z = z+zoffset
+  end
+  output(outstr)
 end
 
 function move_e(e)
