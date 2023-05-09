@@ -9,7 +9,11 @@ extruder_temp_degree_c = 235
 bed_temp_degree_c = 55
 
 -- prime/retracts
-filament_priming_mm = 0
+if direct_drive then
+  filament_priming_mm = 0.4 
+else
+  filament_priming_mm = 0.0
+end
 priming_mm_per_sec = 30
 retract_mm_per_sec = 50
 

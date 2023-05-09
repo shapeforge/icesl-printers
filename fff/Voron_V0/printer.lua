@@ -1,6 +1,6 @@
 -- Voron V0 Profile
 -- Hugron Pierre-Alexandre 29/06/2021
--- Updated by Bedell Pierre 04/05/2022
+-- Updated by Bedell Pierre 05/10/2022
 
 extruder_e = 0
 extruder_e_restart = 0
@@ -12,9 +12,8 @@ current_fan_speed = -1
 
 --##################################################
 
-function e_to_mm_cube(filament_diameter, e)
-  local r = filament_diameter / 2
-  return (math.pi * r^2 ) * e
+function comment(text)
+  output('; ' .. text)
 end
 
 function round(number, decimals)
@@ -26,9 +25,20 @@ function vol_to_mass(volume, density)
   return density * volume
 end
 
-function comment(text)
-  output('; ' .. text)
+function e_to_mm_cube(filament_diameter, e)
+  local r = filament_diameter / 2
+  return (math.pi * r^2 ) * e
 end
+
+-- get the E value (for G1 move) from a specified deposition move
+function e_from_dep(dep_length, dep_width, dep_height, extruder)
+  local r1 = dep_width / 2
+  local r2 = filament_diameter_mm[extruder] / 2
+  local extruded_vol = dep_length * math.pi * r1 * dep_height
+  return extruded_vol / (math.pi * r2^2)
+end
+
+--##################################################
 
 function header()
   if use_klipper_start_stop_macros then
@@ -94,7 +104,45 @@ function prime(extruder,e)
   return e + len
 end
 
+-- this is called once for each used extruder at startup
+-- it is used here to generate purge with proper nozzle diameter
 function select_extruder(extruder)
+  if not use_klipper_start_stop_macros then
+    local n = nozzle_diameter_mm_0
+
+    -- purge position
+    local x_pos = 10.0
+    local y_pos = 1.0
+    local z_pos = 0.3 -- used as deposition height
+
+    local l1 = 40 -- length of the purge start
+    local l2 = 40 -- length of the purge end
+
+    local w1 = n * 1.5 -- width of the purge start
+    local w2 = n * 3.0 -- width of the purge end
+
+    local speed = 25 -- mm/s
+    
+    local e_value = 0.0
+
+    output('\n; purging extruder')
+    output('G0 F6000 X' .. x_pos .. ' Y' .. y_pos ..' Z' .. z_pos)
+    output('G92 E0')
+
+    x_pos = x_pos + l1
+    e_value = round(e_from_dep(l1, w1, z_pos, extruder),2)
+    output('G1 F' .. speed * 60 .. ' X' .. x_pos .. ' E' .. e_value .. '   ; purge line start') -- purge start
+
+    x_pos = x_pos + l2
+    e_value = e_value + round(e_from_dep(l2, w2, z_pos, extruder),2)
+    output('G1 F' .. speed * 60 .. ' X' .. x_pos .. ' E' .. e_value .. '  ; purge line end') -- purge end
+    output('G92 E0')
+    output('; done purging extruder\n')
+
+    current_extruder = extruder
+    current_frate = travel_speed_mm_per_sec * 60
+    changed_frate = true
+  end
 end
 
 function swap_extruder(from,to,x,y,z)
@@ -145,9 +193,15 @@ function set_fan_speed(speed)
   end
 end
 
+-- The contents of this function is a placeholder
+-- you can replace it by what you see fit to exented "layer time"
 function wait(sec,x,y,z)
-  output(";WAIT -- " .. sec .. "s remaining") --print ou the remainign time
-  output("G0 F6200 X10 Y10") --go to a "parking" location
-  output("G4 S" .. sec .. "; wait for " .. sec .. "s") --wait for the remaining time
-  output("G0 F6200 X" .. f(x) .."Y" .. f(y) .. "Z" .. ff(z)) --go back to the previous location
+  local pos_x = 10 -- "parking" coordinates
+  local pos_y = 10
+
+  output("\n; Waiting for minimum layer time -- " .. f(sec) .. "s remaining")
+  output("G0 F" .. travel_speed_mm_per_sec * 60 .. " X" .. pos_x .. " Y" .. pos_y .. " ; go to the parking position")
+  -- G4 uses milliseconds on Klipper !
+  output("G4 P" .. f(sec) * 1000 .. " ; wait for " .. f(sec) .. "s")
+  output("G0 F" .. travel_speed_mm_per_sec * 60 .. " X" .. f(x) .." Y" .. f(y) .. " Z" .. ff(z) .. "; going back to  the previous location\n")
 end  
