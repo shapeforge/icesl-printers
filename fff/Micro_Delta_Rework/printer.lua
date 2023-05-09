@@ -18,6 +18,11 @@ nozzle_clearance_diameter = nozzle_diameter_mm
 
 global_z_offset = -0.3
 
+constant_travel_offset_mm = 0.6
+slope_travel_offset       = 1.0
+slope_printing_offset     = 1.0
+
+
 --##################################################
 
 function comment(text)
@@ -77,6 +82,19 @@ end
 function swap_extruder(from,to,x,y,z)
 end
 
+traveling = false
+
+function slope_offset()
+  if vertex_attributes['slope'] then
+    local slope = math.abs(vertex_attributes['slope'])
+    slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
+    return math.tan(slope) * nozzle_clearance_diameter / 2.0
+  else
+    return 0.0
+  end
+end
+
+
 function move_xyz(x,y,z)
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
@@ -90,16 +108,16 @@ function move_xyz(x,y,z)
   end
   -- 
   if z ~= current_z then
-    local zoffset = 0.0
-    if vertex_attributes['slope'] then
-      local slope = math.abs(vertex_attributes['slope'])
-      slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
-      zoffset     = nozzle_diameter_mm / 4.0 + 3.0 * math.tan(slope) * nozzle_clearance_diameter / 2.0
+    local zoffset = 0
+    if vertex_attributes['slope'] and path_length > 0.8 then
+      zoffset = constant_travel_offset_mm + slope_travel_offset * slope_offset()
     end
     outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
-    current_z = z+zoffset
+    current_z = z + zoffset
   end
   output(outstr)
+  traveling = true
+  travel_last = {x=x_value,y=y_value,z=z}
 end
 
 function move_xyze(x,y,z,e)
@@ -107,6 +125,14 @@ function move_xyze(x,y,z,e)
   local e_value = extruder_e - extruder_e_restart
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
+  --
+  if traveling then
+    -- this is the first point of a new path, move back to printing z
+    local zoffset = slope_printing_offset * slope_offset()
+    local fz      = travel_last.z + zoffset + global_z_offset
+    output('G0 F' .. current_frate .. ' X' .. f(travel_last.x) .. ' Y' .. f(travel_last.y) .. ' Z' .. fz)
+    traveling = false
+  end
   --
   local outstr = ''
   if changed_frate == true then 
@@ -117,14 +143,9 @@ function move_xyze(x,y,z,e)
   end
   -- 
   if z ~= current_z then
-    local zoffset = 0.0
-    if vertex_attributes['slope'] then
-      local slope = math.abs(vertex_attributes['slope'])
-      slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
-      zoffset     = math.tan(slope) * nozzle_clearance_diameter / 2.0
-    end
+    local zoffset = slope_printing_offset * slope_offset()
     outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
-    current_z = z+zoffset
+    current_z = z + zoffset
   end
   output(outstr)
 end
