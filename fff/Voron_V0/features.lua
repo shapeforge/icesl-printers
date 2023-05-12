@@ -71,6 +71,26 @@ travel_speed_mm_per_sec = 200
 travel_speed_mm_per_sec_min = 20
 travel_speed_mm_per_sec_max = 500
 
+-- Acceleration settings
+-- max settings are provided for reference only, as they should remain as set up on the machine
+-- x_max_speed = 500 -- mm/s
+-- y_max_speed = 500 -- mm/s
+-- z_max_speed = 20 -- mm/s
+-- e_max_speed = 30 -- mm/s
+
+-- x_max_acc = 20000 -- mm/s²
+-- y_max_acc = 20000 -- mm/s²
+-- z_max_acc = 500 -- mm/s²
+-- e_max_acc = 5000 -- mm/s²
+
+default_acc = 8500 -- mm/s²
+--e_prime_max_acc = 5000 -- mm/s²
+perimeter_acc = 5000 -- mm/s²
+infill_acc = 8500 -- mm/s²
+first_layer_acc = 2000 -- mm/s²
+
+-- default_jerk = 9 -- mm/s
+
 -- Misc default settings
 add_brim = true
 brim_distance_to_print_mm = 2.0
@@ -82,6 +102,12 @@ z_lift_mm = 0.4
 -- default filament infos (when using "custom" profile)
 name_en = "PLA"
 filament_density = 1.25 --g/cm3 PLA
+
+--#################################################
+
+-- Custom checkox to enable per-path acceleration control
+add_checkbox_setting('use_per_path_accel', 'Uses Per-Path Acceleration', 'Manage Accelerations depending of the current path type')
+use_per_path_accel = true
 
 --#################################################
 
