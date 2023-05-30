@@ -1,15 +1,14 @@
 name_en = "High quality"
-name_fr = "Haute qualité"
 name_es = "Alta calidad"
+name_fr = "Haute qualité"
 
 z_layer_height_mm = 0.15
 
-print_speed_mm_per_sec = 60
-first_layer_print_speed_mm_per_sec = 20
-perimeter_print_speed_mm_per_sec = 40
-cover_print_speed_mm_per_sec = 40
-
-travel_speed_mm_per_sec = 120
+print_speed_mm_per_sec = 100
+first_layer_print_speed_mm_per_sec = 30
+perimeter_print_speed_mm_per_sec = 60
+cover_print_speed_mm_per_sec = 80
+travel_speed_mm_per_sec = 200
 
 -- affecting settings to all brushes
 for i = 0, max_number_brushes, 1 do

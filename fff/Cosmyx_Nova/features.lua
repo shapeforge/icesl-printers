@@ -1,25 +1,12 @@
--- Voron V0 Profile
--- Hugron Pierre-Alexandre 29/06/2021
--- Updated by Bedell Pierre 05/10/2022
-
--- Custom checkbox to use Klipper's strat/stop macros
-add_checkbox_setting('use_klipper_start_stop_macros', "Use Klipper's start/stop macros", "Use Klipper's macros to start/stop the print instead of the classic gcode header/footer")
-use_klipper_start_stop_macros = false
-
--- Klipper macros names for start/stop
-macro_start = "START_PRINT"
-macro_stop = "END_PRINT"
-
--- Custom checkox to use a direct-drive extruder (for most V0.1)
---add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (for most V0.1)")
-direct_drive = false
+-- Cosmyx Nova Profile
+-- Bedell Pierre 13/12/2022
 
 --#################################################
 
 -- Build Area dimensions
-bed_size_x_mm = 120
-bed_size_y_mm = 120
-bed_size_z_mm = 120
+bed_size_x_mm = 300
+bed_size_y_mm = 200
+bed_size_z_mm = 270
 
 -- Printer Extruder
 extruder_count = 1
@@ -31,15 +18,10 @@ z_layer_height_mm_min = nozzle_diameter_mm * 0.10
 z_layer_height_mm_max = nozzle_diameter_mm * 0.80
 
 -- Retraction Settings
--- between 0.5mm and 0.8mm of retract/prime for direct-drive setup (V0.1), 
--- between 1mm and 3mm for bowden (V0) setup
-if direct_drive then
-  filament_priming_mm = 0.4 
-else
-  filament_priming_mm = 2.0
-end
-priming_mm_per_sec = 30
-retract_mm_per_sec = 50
+-- between 0.5mm and 0.8mm of retract/prime for direct-drive setup
+filament_priming_mm = 0.8
+priming_mm_per_sec = 35
+retract_mm_per_sec = 35
 
 -- Printing temperatures limits
 extruder_temp_degree_c = 210
@@ -72,23 +54,30 @@ travel_speed_mm_per_sec_min = 20
 travel_speed_mm_per_sec_max = 500
 
 -- Acceleration settings
--- max settings are provided for reference only, as they should remain as set up on the machine
+-- (max settings are provided for reference only, 
+-- as they should remain as set up on the machine)
 -- x_max_speed = 500 -- mm/s
 -- y_max_speed = 500 -- mm/s
 -- z_max_speed = 20 -- mm/s
 -- e_max_speed = 30 -- mm/s
 
+-- based on 0.2mm SPEED presets
 -- x_max_acc = 20000 -- mm/s²
 -- y_max_acc = 20000 -- mm/s²
 -- z_max_acc = 500 -- mm/s²
 -- e_max_acc = 5000 -- mm/s²
 
-default_acc = 8500 -- mm/s²
---e_prime_max_acc = 5000 -- mm/s²
-perimeter_acc = 5000 -- mm/s²
-infill_acc = 8500 -- mm/s²
-first_layer_acc = 2000 -- mm/s²
+default_acc = 10000 -- mm/s²
+travel_acc = 5000 -- mm/s²
+perimeter_acc = 1000 -- mm/s²
+shell_all = 5000 -- mm/s²
+cover_acc = 5000 -- mm/s²
+infill_acc = 5000 -- mm/s²
+support_acc = 2000 -- mm/s²
+first_layer_acc = 1000 -- mm/s²
 
+-- Jerk settings
+-- (not applicable here since the machine runs on klipper, hence using square corner velocity)
 -- default_jerk = 9 -- mm/s
 
 -- Misc default settings

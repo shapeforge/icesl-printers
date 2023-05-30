@@ -14,8 +14,8 @@ filament_linear_adv_factor = 0 -- default
 
 -- Retraction Settings
 filament_priming_mm = 3.2
-priming_mm_per_sec = 50
-retract_mm_per_sec = 50
+priming_mm_per_sec = 70
+retract_mm_per_sec = 40
 
 enable_z_lift = true
 z_lift_mm = 0.2
@@ -26,7 +26,7 @@ z_layer_height_mm_min = nozzle_diameter_mm * 0.10
 z_layer_height_mm_max = nozzle_diameter_mm * 0.90
 
 -- Printing temperatures
-extruder_temp_degree_c = 210
+extruder_temp_degree_c = 215
 extruder_temp_degree_c_min = 150
 extruder_temp_degree_c_max = 270
 
@@ -59,12 +59,14 @@ y_max_speed = 180 -- mm/s
 z_max_speed = 12 -- mm/s
 e_max_speed = 80 -- mm/s
 
-x_max_acc = 1250 -- mm/s²
-y_max_acc = 1250 -- mm/s²
+x_max_acc = 2500 -- mm/s²
+y_max_acc = 2500 -- mm/s²
 z_max_acc = 400 -- mm/s²
 e_max_acc = 5000 -- mm/s²
-ex_max_acc = 1250 -- mm/s²
-e_prime_max_acc = 1250 -- mm/s²
+
+travel_max_acc = 2500 -- mm/s²
+printing_max_acc = 1250 -- mm/s²
+prime_ret_max_acc = 1250 -- mm/s²
 
 perimeter_acc = 800 -- mm/s²
 infill_acc = 1000 -- mm/s²

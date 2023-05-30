@@ -10,6 +10,26 @@ current_frate = 0
 
 current_fan_speed = -1
 
+processing = false
+
+path_type = 2 -- 1:default, 2:Craftware, 3:Prusa/Super Slicer, 4:Cura
+
+path_tag = {
+  --{ 'default',  'Craftware',              'Prusa/Super Slicer',       'Cura'            }
+  { ';travel',    ';segType:Travel',        '',                         ''                },
+  { ';perimeter', ';segType:Perimeter',     ';TYPE:External perimeter', ';TYPE:WALL-OUTER'},
+  { ';shell',     ';segType:HShell',        ';TYPE:Internal perimeter', ';TYPE:WALL-INNER'},
+  { ';cover',     ';segType:Infill',        ';TYPE:Solid infill',       ';TYPE:FILL'      },
+  { ';infill',    ';segType:Infill',        ';TYPE:Internal infill',    ';TYPE:FILL'      },
+  { ';gapfill',   ';segType:Infill',        ';TYPE:Gap fill',           ';TYPE:FILL'      },
+  { ';bridge',    ';segType:SupportTouch',  ';TYPE:Overhang perimeter', ';TYPE:WALL-OUTER'},
+  { ';support',   ';segType:Support',       ';TYPE:Support material',   ';TYPE:SUPPORT'   },
+  { ';brim',      ';segType:Skirt',         ';TYPE:Skirt',              ';TYPE:SKIRT'     },
+  { ';raft',      ';segType:Raft',          ';TYPE:Skirt',              ';TYPE:SKIRT'     },
+  { ';shield',    ';segType:Pillar',        ';TYPE:Skirt',              ';TYPE:SKIRT'     },
+  { ';tower',     ';segType:Pillar',        ';TYPE:Skirt',              ';TYPE:SKIRT'     },
+}
+
 --##################################################
 
 function comment(text)
@@ -36,6 +56,41 @@ function e_from_dep(dep_length, dep_width, dep_height, extruder)
   local r2 = filament_diameter_mm[extruder] / 2
   local extruded_vol = dep_length * math.pi * r1 * dep_height
   return extruded_vol / (math.pi * r2^2)
+end
+
+function tag_path()
+  if     path_is_travel          then output(path_tag[1][path_type])
+  elseif path_is_perimeter       then output(path_tag[2][path_type])
+  elseif path_is_outer_perimeter then output(path_tag[2][path_type])
+  elseif path_is_shell           then output(path_tag[3][path_type])
+  elseif path_is_cover           then output(path_tag[4][path_type])
+  elseif path_is_infill          then output(path_tag[5][path_type])
+  elseif path_is_gapfill         then output(path_tag[6][path_type])
+  elseif path_is_bridge          then output(path_tag[7][path_type])
+  elseif path_is_support         then output(path_tag[8][path_type])
+  elseif path_is_brim            then output(path_tag[9][path_type])
+  elseif path_is_raft            then output(path_tag[10][path_type])
+  elseif path_is_shield          then output(path_tag[11][path_type])
+  elseif path_is_tower           then output(path_tag[12][path_type])
+  end
+end
+
+function set_accel()
+  if layer_id < 1 then -- fisrt layer specific acceleration
+    output('M204 S' .. first_layer_acc)
+  else
+    if      path_is_travel    then output('M204 S' .. default_acc)
+    elseif  path_is_perimeter then output('M204 S' .. perimeter_acc)
+    elseif  path_is_shell     then output('M204 S' .. perimeter_acc)
+    elseif  path_is_infill    then output('M204 S' .. infill_acc)
+    elseif  path_is_raft      then output('M204 S' .. default_acc)
+    elseif  path_is_brim      then output('M204 S' .. default_acc)
+    elseif  path_is_shield    then output('M204 S' .. default_acc)
+    elseif  path_is_support   then output('M204 S' .. default_acc)
+    elseif  path_is_tower     then output('M204 S' .. default_acc)
+    else output('M204 S' .. default_acc)
+    end
+  end
 end
 
 --##################################################
@@ -149,10 +204,29 @@ function swap_extruder(from,to,x,y,z)
 end
 
 function move_xyz(x,y,z)
+  if processing == true then 
+    tag_path() 
+    processing = false
+
+    -- acceleration management
+    if use_per_path_accel then
+      set_accel()
+    end
+  end
   output('G0 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z))
 end
 
 function move_xyze(x,y,z,e)
+  if processing == false then 
+    tag_path() 
+    processing = true
+
+    -- acceleration management
+    if use_per_path_accel then
+      set_accel()
+    end
+  end
+
   local e_value = e - extruder_e_restart
   extruder_e = e
   output('G1 X' .. f(x) .. ' Y' .. f(y) .. ' Z' .. ff(z) .. ' F' .. current_frate .. ' E' .. ff(e_value))

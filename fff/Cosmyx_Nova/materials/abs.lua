@@ -1,26 +1,28 @@
-name_en = "PETG"
-name_fr = "PETG"
-name_es = "PETG"
+name_en = "ABS-ASA"
+name_es = "ABS-ASA"
+name_fr = "ABS-ASA"
 
-filament_linear_adv_factor = 0.2 -- 0.12 for 0.6 nozzle
+filament_density = 1.04 --g/cm3
+
+filament_linear_adv_factor = 30
 
 -- temperatures
-extruder_temp_degree_c = 250
-bed_temp_degree_c = 90
+extruder_temp_degree_c = 245
+bed_temp_degree_c = 100
 
 -- prime/retracts
-filament_priming_mm = 3.2
-retract_mm_per_sec = 45
-priming_mm_per_sec = 25
+filament_priming_mm = 0.8
+priming_mm_per_sec = 35
+retract_mm_per_sec = 35
 
 -- flow
-flow_multiplier = 1.0
+flow_multiplier = 0.9
 speed_multiplier = 1.0
 
 -- cooling
 enable_fan = true
-fan_speed_percent = 50
-fan_speed_percent_on_bridges = 100
+fan_speed_percent = 35
+fan_speed_percent_on_bridges = 50
 
 --#################################################
 
@@ -37,4 +39,3 @@ for i = 0, max_number_brushes, 1 do
 	_G['flow_multiplier_'..i] = flow_multiplier 
 	_G['speed_multiplier_'..i] = speed_multiplier
 end
-
