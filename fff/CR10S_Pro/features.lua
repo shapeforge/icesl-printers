@@ -75,6 +75,7 @@ add_brim = true
 brim_distance_to_print_mm = 2.0
 brim_num_contours = 3
 
+travel_straight = true
 enable_z_lift = true
 z_lift_mm = 0.4
 

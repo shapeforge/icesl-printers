@@ -10,10 +10,17 @@ bed_size_z_mm = 280
 extruder_count = 4
 filament_diameter_mm = 1.75
 -- specific nozzle diameter
-nozzle_diameter_mm_0 = 0.4 -- extruder T0
-nozzle_diameter_mm_1 = 0.4 -- extruder T1
-nozzle_diameter_mm_2 = 0.4 -- extruder T2
-nozzle_diameter_mm_3 = 0.4 -- extruder T3
+nozzle_diameter_mm_0 = 0.4 -- extruder T0 E3D Hemera direct drive
+nozzle_diameter_mm_1 = 0.4 -- extruder T1 E3D Hemera direct drive
+nozzle_diameter_mm_2 = 0.4 -- extruder T2 E3D Hemera direct drive
+nozzle_diameter_mm_3 = 0.4 -- extruder T3 E3D Hemera direct drive
+
+-- affecting the same extruder number as the used brush
+for i = 0, max_number_brushes, 1 do
+    extruder_id = math.min(i,extruder_count-1)
+    _G['extruder_'..i] = extruder_id
+    _G['infill_extruder_'..i] = extruder_id
+end
 
 -- Retraction settings
 filament_priming_mm = 0.4 -- 0.4mm for hemera, 4mm for bowden setup(not tested value)
@@ -59,11 +66,11 @@ mixing_shield_speed_multiplier = 1
 
 -- Purge Tower
 gen_tower = true
-tower_side_x_mm = 10.0
-tower_side_y_mm = 10.0
-tower_brim_num_contours = 6
+tower_side_x_mm = 20.0
+tower_side_y_mm = 20.0
+tower_brim_num_contours = 8
 
-tower_at_location = false -- Requires extruder to swap material at a given location,
+tower_at_location = true -- Requires extruder to swap material at a given location,
                           -- this also forces the tower to appear at this same location.
 tower_location_x_mm = 280
 tower_location_y_mm = 180
@@ -83,6 +90,8 @@ raft_spacing = 1.0
 gen_supports = false
 support_extruder = 0
 
+travel_straight = true
+enable_z_lift = true
 z_lift_mm = 0.4
 
 travel_max_length_without_retract = 1

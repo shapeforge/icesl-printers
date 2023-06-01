@@ -2,6 +2,7 @@
 -- Pierre Bedell 05/06/2018
 
 -- Build Area dimensions
+bed_circular  = true
 bed_radius = 75.0
 
 bed_size_x_mm = bed_radius * 2

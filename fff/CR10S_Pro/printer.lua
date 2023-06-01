@@ -89,7 +89,9 @@ end
 function layer_start(zheight)
   local frate = 600
   comment('<layer ' .. layer_id ..'>')
-  output('G0 F' .. frate .. ' Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G0 F' .. frate .. ' Z' .. f(zheight))
+  end
   current_frate = frate
   changed_frate = true
 end

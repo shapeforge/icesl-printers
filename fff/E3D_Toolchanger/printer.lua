@@ -125,6 +125,7 @@ function undock_extruder(extruder)
     output('G92 E0')
   end
   extruder_docked[extruder] = false
+  current_z = 0.0 -- invalidate z
 end
 
 function set_fan_speed(speed)
