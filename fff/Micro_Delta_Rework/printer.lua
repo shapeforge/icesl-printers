@@ -19,8 +19,8 @@ nozzle_clearance_diameter = nozzle_diameter_mm
 global_z_offset = -0.1
 
 constant_travel_offset_mm = 0.6
-slope_travel_offset       = 1.0
-slope_printing_offset     = 1.0
+slope_travel_offset       = 1.5
+slope_printing_offset     = 1.5
 
 
 --##################################################
