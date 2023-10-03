@@ -93,10 +93,12 @@ function layer_start(zheight)
   if layer_id == 1 then
     output('M106 S' .. math.floor(255 * fan_speed_multiplier)) -- fan ON
   end
-  if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
-  else
-    output('G0 F100 Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      output('G0 F600 Z' .. ff(zheight))
+    else
+      output('G0 F100 Z' .. ff(zheight))
+    end
   end
   current_z = zheight
 end

@@ -44,7 +44,7 @@ end
 
 function header()
   local auto_level_string = 'G29 ; auto bed levelling\nG0 F6200 X0 Y0 ; back to the origin to begin the purge '
-  
+
   local h = file('header.gcode')
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
@@ -66,7 +66,9 @@ end
 
 function layer_start(zheight)
   output(';<layer ' .. layer_id .. '>')
-  output('G0 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G0 Z' .. f(zheight))
+  end
 end
 
 function layer_stop()
@@ -77,7 +79,7 @@ end
 
 function retract(extruder,e)
   extruder_e[current_extruder] = e
-  if skip_prime_retract then 
+  if skip_prime_retract then
     --comment('retract skipped')
     skip_prime_retract = false
     return e
@@ -100,7 +102,7 @@ end
 
 function prime(extruder,e)
   extruder_e[current_extruder] = e
-  if skip_prime_retract then 
+  if skip_prime_retract then
     --comment('retract skipped')
     skip_prime_retract = false
     return e
@@ -111,7 +113,7 @@ function prime(extruder,e)
     local e_value = e + len - extruder_e_reset[current_extruder]
     if filament_diameter_management == true then
       extruder_e_adjusted[current_extruder] = extruder_e_adjusted[current_extruder] + len
-      e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder] 
+      e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder]
     end
     output('G1 F' .. speed .. ' E' .. ff(e_value) .. ' A0.20 B0.20 C0.20 D0.20 H0.20')
     extruder_e[current_extruder] = e + len
@@ -149,7 +151,7 @@ function move_xyz(x,y,z)
     comment('travel')
   end
     if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -179,8 +181,8 @@ function move_xyze(x,y,z,e)
     current_D = 0.20
     current_H = 0.20
   end
-  
-  if processing == false then 
+
+  if processing == false then
     processing = true
     if craftware_debug == true then
       if      path_is_perimeter then output(';segType:Perimeter')
@@ -211,7 +213,7 @@ function move_xyze(x,y,z,e)
   local r_d = current_D
   local r_h = current_H
 
-  -- adjust based on filament diameters  
+  -- adjust based on filament diameters
   if filament_diameter_management == true then
     r_a = current_A * (filament_diameter_mm_0 * filament_diameter_mm_0)
           / (filament_diameter_A * filament_diameter_A)
@@ -237,7 +239,7 @@ function move_xyze(x,y,z,e)
   -------------------------------------
 
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value) .. ' A' .. f(r_a) .. ' B' .. f(r_b) .. ' C' .. f(r_c) .. ' D' .. f(r_d) .. ' H' .. f(r_h))
       changed_frate = false
     else
@@ -266,7 +268,7 @@ function move_e(e)
     e_value = extruder_e_adjusted[current_extruder] - extruder_e_reset[current_extruder]
   end
 
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value) .. ' A' .. f(current_A) .. ' B' .. f(current_B) .. ' C' .. f(current_C) .. ' D' .. f(current_D) .. ' H' .. f(current_H))
     changed_frate = false
   else
@@ -299,7 +301,7 @@ function set_and_wait_extruder_temperature(extruder,temperature)
 end
 
 function set_mixing_ratios(ratios)
-  if skip_ratios_change then 
+  if skip_ratios_change then
     skip_ratios_change = false
   else
     local sum = ratios[0] + ratios[1] + ratios[2] + ratios[3] + ratios[4]
@@ -310,7 +312,7 @@ function set_mixing_ratios(ratios)
       ratios[3] = 0.20
       ratios[4] = 0.20
     end
-  
+
     if ratios[0] ~= current_A or ratios[1] ~= current_B or ratios[2] ~= current_C or ratios[3] ~= current_D or ratios[4] ~= current_H then
       current_A = ratios[0]
       current_B = ratios[1]

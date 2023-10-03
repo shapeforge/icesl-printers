@@ -51,7 +51,7 @@ end
 
 function retract(extruder,e)
   extruder_e[current_extruder] = e
-  if skip_prime_retract then 
+  if skip_prime_retract then
     --comment('retract skipped')
     skip_prime_retract = false
     return e
@@ -68,7 +68,7 @@ function retract(extruder,e)
 end
 
 function prime(extruder,e)
-  if skip_prime_retract then 
+  if skip_prime_retract then
     --comment('prime skipped')
     skip_prime_retract = false
     return e
@@ -87,11 +87,13 @@ end
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
   local frate = 100
-  if layer_id == 0 then
-    frate = 600
-    output('G0 F' .. frate ..' Z' .. ff(zheight))
-  else
-    output('G0 F' .. frate ..' Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      frate = 600
+      output('G0 F' .. frate ..' Z' .. ff(zheight))
+    else
+      output('G0 F' .. frate ..' Z' .. ff(zheight))
+    end
   end
   current_frate = frate
   changed_frate = true
@@ -116,13 +118,13 @@ function select_extruder(extruder) -- called at the start of the print job for e
   last_extruder_selected = last_extruder_selected + 1
   skip_prime_retract = true
 
-  -- generate the purge part of the "header" after selecting the last extruder 
+  -- generate the purge part of the "header" after selecting the last extruder
   if last_extruder_selected == number_of_extruders then -- number_of_extruders is an IceSL internal Lua global variable which is used to know how many extruders will be used for a print job
     skip_prime_retract = false
     local p = file('purge.gcode')
     p = p:gsub('<FIRST_EXTRUDER>', extruder)
     if flow_compensation == true then -- flow compensation for small layer height
-      if z_layer_height_mm < 0.075 then 
+      if z_layer_height_mm < 0.075 then
         p = p:gsub('<FLOW>', 'G221 S100')
       else
         p = p:gsub('<FLOW>', 'G221 S95')
@@ -160,7 +162,7 @@ function move_xyz(x,y,z)
   end
 
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -182,7 +184,7 @@ function move_xyze(x,y,z,e)
 
   local e_value = extruder_e[current_extruder] - extruder_e_reset[current_extruder]
 
-  if processing == false then 
+  if processing == false then
     processing = true
     if craftware_debug == true then
       if      path_is_perimeter then output(';segType:Perimeter')
@@ -208,7 +210,7 @@ function move_xyze(x,y,z,e)
   end
 
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -230,7 +232,7 @@ function move_e(e)
 
   local e_value =  extruder_e[current_extruder] - extruder_e_reset[current_extruder]
 
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

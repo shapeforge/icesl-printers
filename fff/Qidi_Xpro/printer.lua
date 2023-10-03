@@ -99,7 +99,9 @@ end
 function layer_start(zheight)
   comment('<layer>')
   current_z = zheight
-  output('G1 Z' .. f(zheight * (0.01 * (100 + qidi_z_extra_height)) + qidi_z_offset))
+  if not layer_spiralized then
+    output('G1 Z' .. f(zheight * (0.01 * (100 + qidi_z_extra_height)) + qidi_z_offset))
+  end
 end
 
 function layer_stop()
@@ -205,7 +207,7 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
-  
+
   extruder_e = e
 
   if x == current_x and xy_caching then

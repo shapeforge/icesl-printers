@@ -78,10 +78,12 @@ end
 
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
-  if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
-  else
-    output('G0 F100 Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      output('G0 F600 Z' .. ff(zheight))
+    else
+      output('G0 F100 Z' .. ff(zheight))
+    end
   end
   current_z = zheight
 end
@@ -137,10 +139,10 @@ function unload_extruder(extruder)
   output('G1 E-10.0000 F6000')
   -- [fr] seconde etape: retrait lent
   output('G1 E-150.0000 F1800')
-  -- [fr] IMPORTANT: la somme des deux etapes doit 
+  -- [fr] IMPORTANT: la somme des deux etapes doit
   --      etre egale a la valeur utilisee dans load_extruder
   --      pour repousser le filament
-  
+
   -- [fr] pause (?)
   output('G4 S0')
   -- [fr] repasse E en absolu
@@ -171,7 +173,7 @@ function select_extruder(extruder)
   -- prime done, reset E
   output('G92 E0')
   current_extruder = extruder
-  
+
 end
 
 function swap_extruder(from,to,x,y,z)
@@ -184,7 +186,7 @@ function swap_extruder(from,to,x,y,z)
   output(';swap_extruder')
   unload_extruder(from)
   load_extruder(to)
-  
+
 end
 
 function move_xyz(x,y,z)

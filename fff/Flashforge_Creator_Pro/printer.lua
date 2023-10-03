@@ -74,7 +74,9 @@ end
 
 function layer_start(zheight)
   comment('<layer>')
-  output('G0 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G0 Z' .. f(zheight))
+  end
 end
 
 function layer_stop()

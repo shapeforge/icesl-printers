@@ -75,11 +75,13 @@ end
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
   local frate = 600
-  if layer_id == 0 then
-    output('G0 F' .. frate .. ' Z' .. ff(zheight))
-  else
-    frate = 100
-    output('G0 F' .. frate .. ' Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      output('G0 F' .. frate .. ' Z' .. ff(zheight))
+    else
+      frate = 100
+      output('G0 F' .. frate .. ' Z' .. ff(zheight))
+    end
   end
   current_z = zheight
   current_frate = frate
@@ -99,6 +101,7 @@ function swap_extruder(from,to,x,y,z)
 end
 
 function move_xyz(x,y,z)
+  output('; move_xyz')
   if z == current_z then
     if changed_frate == true then
       output('G0 F' .. f(current_frate) .. ' X' .. f(x) .. ' Y' .. f(y))
@@ -118,10 +121,11 @@ function move_xyz(x,y,z)
 end
 
 function move_xyze(x,y,z,e)
+  output('; move_xyze')
   extruder_e = e
   local e_value = to_mm_cube(e - extruder_e_reset)
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -141,7 +145,7 @@ end
 function move_e(e)
   extruder_e = e
   local e_value = to_mm_cube(e - extruder_e_reset)
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

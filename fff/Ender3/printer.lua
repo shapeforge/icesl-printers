@@ -42,7 +42,9 @@ end
 
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. '>')
-  output('G1 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G1 Z' .. f(zheight))
+  end
 end
 
 function layer_stop()
@@ -81,7 +83,7 @@ end
 
 function move_xyz(x,y,z)
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -102,7 +104,7 @@ function move_xyze(x,y,z,e)
   extruder_e = e
   local e_value = extruder_e - extruder_e_restart
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -122,7 +124,7 @@ end
 function move_e(e)
   extruder_e = e
   local e_value = extruder_e - extruder_e_restart
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

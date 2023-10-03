@@ -20,7 +20,7 @@ z_layer_height_mm_min = nozzle_diameter_mm * 0.15
 z_layer_height_mm_max = nozzle_diameter_mm * 0.75
 
 -- Retraction Settings
-filament_priming_mm = 2.0 -- min 0.5 - max 4
+filament_priming_mm = 4.5 -- min 0.5 - max 4
 priming_mm_per_sec = 30
 retract_mm_per_sec = 30
 

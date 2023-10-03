@@ -47,7 +47,7 @@ function header()
   acc_string = acc_string .. 'M205 S0 T0 ; sets the minimum extruding and travel feed rate, mm/sec'
 
   local flow  = 95
-  if z_layer_height_mm < 0.075 then 
+  if z_layer_height_mm < 0.075 then
    flow  = 100
   end
 
@@ -58,7 +58,7 @@ function header()
   h = h:gsub('<HBPTEMP>', bed_temp_degree_c)
   h = h:gsub('<FLOW>', flow)
   h = h:gsub('<FILAMENT>', filament_linear_adv_factor)
-  
+
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
@@ -93,11 +93,13 @@ end
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
   local frate = 100
-  if layer_id == 0 then
-    frate = 600
-    output('G0 F' .. frate ..' Z' .. ff(zheight))
-  else
-    output('G0 F' .. frate ..' Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      frate = 600
+      output('G0 F' .. frate ..' Z' .. ff(zheight))
+    else
+      output('G0 F' .. frate ..' Z' .. ff(zheight))
+    end
   end
   current_frate = frate
   changed_frate = true
@@ -123,7 +125,7 @@ function move_xyz(x,y,z)
   end
 
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -145,7 +147,7 @@ function move_xyze(x,y,z,e)
 
   local e_value = extruder_e - extruder_e_restart
 
-  if processing == false then 
+  if processing == false then
     processing = true
     local p_type = 1 -- default paths naming
     if craftware_debug then p_type = 2 end
@@ -161,7 +163,7 @@ function move_xyze(x,y,z,e)
   end
 
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -183,7 +185,7 @@ function move_e(e)
 
   local e_value =  extruder_e - extruder_e_restart
 
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

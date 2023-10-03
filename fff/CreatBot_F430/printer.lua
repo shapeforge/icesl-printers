@@ -66,7 +66,7 @@ function footer()
 end
 
 function retract(extruder,e)
-  if skip_retract then 
+  if skip_retract then
     --comment('retract skipped')
     skip_retract = false
     return e
@@ -84,7 +84,7 @@ function retract(extruder,e)
 end
 
 function prime(extruder,e)
-  if skip_prime then 
+  if skip_prime then
     --comment('prime skipped')
     skip_prime = false
     return e
@@ -104,11 +104,13 @@ end
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
   local frate = 100
-  if layer_id == 0 then
-    frate = 600
-    output('G0 F' .. frate .. ' Z' .. f(zheight))
-  else
-    output('G0 F' .. frate ..' Z' .. f(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      frate = 600
+      output('G0 F' .. frate .. ' Z' .. f(zheight))
+    else
+      output('G0 F' .. frate ..' Z' .. f(zheight))
+    end
   end
   current_z = zheight
   current_frate = frate
@@ -195,7 +197,7 @@ function move_xyz(x,y,z)
     end
     current_z = z
   else
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -212,7 +214,7 @@ function move_xyze(x,y,z,e)
   x = x + extruder_offset_x[current_extruder]
   y = y + extruder_offset_y[current_extruder]
 
-  if processing == false then 
+  if processing == false then
     processing = true
     if craftware_debug == true then
       if      path_is_perimeter then output(';segType:Perimeter')
@@ -238,7 +240,7 @@ function move_xyze(x,y,z,e)
   end
 
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -260,7 +262,7 @@ function move_e(e)
 
   local e_value =  extruder_e[current_extruder] - extruder_e_reset[current_extruder]
 
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

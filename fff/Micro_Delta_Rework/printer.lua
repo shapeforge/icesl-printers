@@ -16,7 +16,7 @@ current_fan_speed = -1
 
 nozzle_clearance_diameter = nozzle_diameter_mm
 
-global_z_offset = -0.3
+global_z_offset = -0.1
 
 constant_travel_offset_mm = 0.6
 slope_travel_offset       = 1.0
@@ -66,7 +66,9 @@ end
 
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. '>')
-  output('G0 F600 Z' .. ff(zheight))
+  if not layer_spiralized then
+    output('G0 F600 Z' .. ff(zheight))
+  end
   nozzle_clearance_diameter = nozzle_diameter_mm
 end
 
@@ -100,13 +102,13 @@ function move_xyz(x,y,z)
   local y_value = y - bed_origin_y
   --
   local outstr = ''
-  if changed_frate == true then 
+  if changed_frate == true then
     outstr = 'G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value)
     changed_frate = false
   else
     outstr = 'G0 X' .. f(x_value) .. ' Y' .. f(y_value)
   end
-  -- 
+  --
   if z ~= current_z then
     local zoffset = 0
     if vertex_attributes['slope'] and path_length > 0.8 then
@@ -135,13 +137,13 @@ function move_xyze(x,y,z,e)
   end
   --
   local outstr = ''
-  if changed_frate == true then 
+  if changed_frate == true then
     outstr = 'G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value)
     changed_frate = false
   else
     outstr = 'G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value)
   end
-  -- 
+  --
   if z ~= current_z then
     local zoffset = slope_printing_offset * slope_offset()
     outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
@@ -153,7 +155,7 @@ end
 function move_e(e)
   extruder_e = e
   local e_value = extruder_e - extruder_e_restart
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

@@ -152,7 +152,9 @@ end
 
 function layer_start(zheight)
   comment(';(<layer>)')
-  output('G0 F100 Z' .. f(zheight) .. ' F3000')
+  if not layer_spiralized then
+    output('G0 F100 Z' .. f(zheight) .. ' F3000')
+  end
 end
 
 function layer_stop()

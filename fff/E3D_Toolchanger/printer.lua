@@ -35,6 +35,7 @@ function header()
   local h = file('header.gcode')
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
   output(h)
+  comment('---- modified ----')
 end
 
 function footer()
@@ -69,11 +70,13 @@ end
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
   local frate = 600
-  if layer_id == 0 then
-    output('G0 F' .. frate .. ' Z' .. ff(zheight))
-  else
-    frate = 100
-    output('G0 F' .. frate .. ' Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      output('G0 F' .. frate .. ' Z' .. ff(zheight))
+    else
+      frate = 100
+      output('G0 F' .. frate .. ' Z' .. ff(zheight))
+    end
   end
   current_z     = zheight
   current_frate = frate
@@ -178,6 +181,12 @@ end
 
 function move_xyze(x,y,z,e)
   local e_value = e - extruder_e_restart[current_extruder]
+
+  if current_extruder == 1 then
+    -- HACK: calibration
+    y = y - 0.35
+  end
+
   if z == current_z then
     if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))

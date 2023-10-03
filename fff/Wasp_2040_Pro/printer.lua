@@ -44,10 +44,12 @@ end
 
 function layer_start(zheight)
   output(';(<layer ' .. layer_id .. '>)')
-  if layer_id == 0 then
-    output('G0 F600 Z' .. ff(zheight))
-  else
-    output('G0 F100 Z' .. ff(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      output('G0 F600 Z' .. ff(zheight))
+    else
+      output('G0 F100 Z' .. ff(zheight))
+    end
   end
 end
 
@@ -73,7 +75,7 @@ end
 
 function move_xyze(x,y,z,e)
   extruder_e = e
-  if z == current_z then 
+  if z == current_z then
     output('G1 F' .. current_frate .. ' X' .. f(x-bed_origin_x) .. ' Y' .. f(y-bed_origin_y) .. ' Z' .. ff(z) .. ' E' .. ff((e-extruder_e_restart)))
   else
     output('G1 F' .. current_frate .. ' X' .. f(x-bed_origin_x) .. ' Y' .. f(y-bed_origin_y) .. ' E' .. ff((e-extruder_e_restart)))

@@ -26,7 +26,9 @@ function layer_start(zheight)
   output(';<layer ' .. layer_id .. '>')
   output('G92 E0')
   extruder_e_restart = extruder_e
-  output('G1 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G1 Z' .. f(zheight))
+  end
 end
 
 function layer_stop()

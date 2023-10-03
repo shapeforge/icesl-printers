@@ -25,7 +25,9 @@ function layer_start(zheight)
   if layer == 2 then
     output('M106 S204') -- fan ON
   end
-  output('G1 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G1 Z' .. f(zheight))
+  end
   layer = layer + 1
 end
 
@@ -35,7 +37,7 @@ function layer_stop()
   comment('</layer>')
 end
 
-function retract(extruder,e) 
+function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = retract_mm_per_sec[extruder] * 60;
   letter = 'E'
