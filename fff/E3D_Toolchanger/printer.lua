@@ -158,6 +158,7 @@ function swap_extruder(from,to,x,y,z)
 end
 
 function set_mixing_ratios(ratios)
+
 end
 
 function move_xyz(x,y,z)
@@ -181,12 +182,6 @@ end
 
 function move_xyze(x,y,z,e)
   local e_value = e - extruder_e_restart[current_extruder]
-
-  if current_extruder == 1 then
-    -- HACK: calibration
-    y = y - 0.35
-  end
-
   if z == current_z then
     if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
