@@ -14,6 +14,15 @@ current_z = 0.0
 
 current_fan_speed = -1
 
+nozzle_clearance_diameter = nozzle_diameter_mm
+
+global_z_offset = -0.1
+
+constant_travel_offset_mm = 0.6
+slope_travel_offset       = 1.5
+slope_printing_offset     = 1.5
+
+
 --##################################################
 
 function comment(text)
@@ -57,7 +66,10 @@ end
 
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. '>')
-  output('G0 F600 Z' .. ff(zheight))
+  if not layer_spiralized then
+    output('G0 F600 Z' .. ff(zheight))
+  end
+  nozzle_clearance_diameter = nozzle_diameter_mm
 end
 
 function layer_stop()
@@ -72,25 +84,42 @@ end
 function swap_extruder(from,to,x,y,z)
 end
 
+traveling = false
+
+function slope_offset()
+  if vertex_attributes['slope'] then
+    local slope = math.abs(vertex_attributes['slope'])
+    slope       = math.min(slope,1.37) -- safety, limit to pi/2 - pi/16
+    return math.tan(slope) * nozzle_clearance_diameter / 2.0
+  else
+    return 0.0
+  end
+end
+
+
 function move_xyz(x,y,z)
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
-  if z == current_z then
-    if changed_frate == true then 
-      output('G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value))
-      changed_frate = false
-    else
-      output('G0 X' .. f(x_value) .. ' Y' .. f(y_value))
-    end
+  --
+  local outstr = ''
+  if changed_frate == true then
+    outstr = 'G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value)
+    changed_frate = false
   else
-    if changed_frate == true then
-      output('G0 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z))
-      changed_frate = false
-    else
-      output('G0 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z))
-    end
-    current_z = z
+    outstr = 'G0 X' .. f(x_value) .. ' Y' .. f(y_value)
   end
+  --
+  if z ~= current_z then
+    local zoffset = 0
+    if vertex_attributes['slope'] and path_length > 0.8 then
+      zoffset = constant_travel_offset_mm + slope_travel_offset * slope_offset()
+    end
+    outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
+    current_z = z + zoffset
+  end
+  output(outstr)
+  traveling = true
+  travel_last = {x=x_value,y=y_value,z=z}
 end
 
 function move_xyze(x,y,z,e)
@@ -98,28 +127,35 @@ function move_xyze(x,y,z,e)
   local e_value = extruder_e - extruder_e_restart
   local x_value = x - bed_origin_x
   local y_value = y - bed_origin_y
-  if z == current_z then
-    if changed_frate == true then 
-      output('G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value))
-      changed_frate = false
-    else
-      output('G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value))
-    end
-  else
-    if changed_frate == true then
-      output('G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z) .. ' E' .. ff(e_value))
-      changed_frate = false
-    else
-      output('G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' Z' .. ff(z) .. ' E' .. ff(e_value))
-    end
-    current_z = z
+  --
+  if traveling then
+    -- this is the first point of a new path, move back to printing z
+    local zoffset = slope_printing_offset * slope_offset()
+    local fz      = travel_last.z + zoffset + global_z_offset
+    output('G0 F' .. current_frate .. ' X' .. f(travel_last.x) .. ' Y' .. f(travel_last.y) .. ' Z' .. fz)
+    traveling = false
   end
+  --
+  local outstr = ''
+  if changed_frate == true then
+    outstr = 'G1 F' .. current_frate .. ' X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value)
+    changed_frate = false
+  else
+    outstr = 'G1 X' .. f(x_value) .. ' Y' .. f(y_value) .. ' E' .. ff(e_value)
+  end
+  --
+  if z ~= current_z then
+    local zoffset = slope_printing_offset * slope_offset()
+    outstr    = outstr .. ' Z' .. ff(z+zoffset+global_z_offset)
+    current_z = z + zoffset
+  end
+  output(outstr)
 end
 
 function move_e(e)
   extruder_e = e
   local e_value = extruder_e - extruder_e_restart
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

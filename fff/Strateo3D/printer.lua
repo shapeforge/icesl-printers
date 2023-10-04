@@ -66,11 +66,11 @@ function header()
   output('M150 ; temperature report')
 
   output('\n; preheating the extruder(s)')
-  if filament_tot_length_mm[0] > 0 then 
+  if filament_tot_length_mm[0] > 0 then
     output('M104 T0 S' .. extruder_temp_degree_c[0])
     output('M150 ; temperature report')
   end
-  if filament_tot_length_mm[1] > 0 then 
+  if filament_tot_length_mm[1] > 0 then
     output('M104 T1 S' .. extruder_temp_degree_c[1])
     output('M150 ; temperature report')
   end
@@ -84,11 +84,11 @@ function header()
   output('\n; waiting for target temperatures to be reached')
   output('M190 S' .. bed_temp_degree_c)
   output('M150 ; temperature report')
-  if filament_tot_length_mm[0] > 0 then 
+  if filament_tot_length_mm[0] > 0 then
     output('M109 T0 S' .. extruder_temp_degree_c[0])
     output('M150 ; temperature report')
   end
-  if filament_tot_length_mm[1] > 0 then 
+  if filament_tot_length_mm[1] > 0 then
     output('M109 T1 S' .. extruder_temp_degree_c[1])
     output('M150 ; temperature report')
   end
@@ -105,10 +105,10 @@ end
 
 function footer()
   output('\n; turning off extruder(s) heaters')
-  if filament_tot_length_mm[0] > 0 then 
+  if filament_tot_length_mm[0] > 0 then
     output('M104 T0 S0')
   end
-  if filament_tot_length_mm[1] > 0 then 
+  if filament_tot_length_mm[1] > 0 then
     output('M104 T1 S0')
   end
 
@@ -127,7 +127,7 @@ function footer()
   end
 
   output('\nM801.0')
-  output('M192')  
+  output('M192')
 
   output('\nM84 ; disable motors')
   output('M82 ; absolute extrusion mode')
@@ -140,15 +140,15 @@ function retract(extruder,e)
   local len   = filament_priming_mm[extruder]
   local speed = retract_mm_per_sec[extruder] * 60
   local e_value = e - extruder_e_swap[current_extruder]
-  if extruder_stored[extruder] then 
+  if extruder_stored[extruder] then
     comment('retract on extruder ' .. extruder .. ' skipped')
   else
-    comment('retract')    
+    comment('retract')
     output('G1 F' .. speed .. ' E' .. ff(e_value - extruder_e_reset[current_extruder] - len))
     extruder_e[current_extruder] = e_value - len
     current_frate = speed
     changed_frate = true
-  end  
+  end
   return e - len
 end
 
@@ -156,26 +156,28 @@ function prime(extruder,e)
   local len   = filament_priming_mm[extruder]
   local speed = priming_mm_per_sec[extruder] * 60
   local e_value = e - extruder_e_swap[current_extruder]
-  if extruder_stored[extruder] then 
+  if extruder_stored[extruder] then
     comment('prime on extruder ' .. extruder .. ' skipped')
   else
-    comment('prime')    
+    comment('prime')
     output('G1 F' .. speed .. ' E' .. ff(e_value - extruder_e_reset[current_extruder] + len))
     extruder_e[current_extruder] = e_value + len
     current_frate = speed
     changed_frate = true
-  end  
+  end
   return e + len
 end
 
 function layer_start(zheight)
   output('; <layer ' .. layer_id .. '>')
   local frate = 100
-  if layer_id == 0 then
-    frate = 600
-    output('G0 F' .. frate .. ' Z' .. f(zheight))
-  else
-    output('G0 F' .. frate ..' Z' .. f(zheight))
+  if not layer_spiralized then
+    if layer_id == 0 then
+      frate = 600
+      output('G0 F' .. frate .. ' Z' .. f(zheight))
+    else
+      output('G0 F' .. frate ..' Z' .. f(zheight))
+    end
   end
   current_z = zheight
   current_frate = frate
@@ -195,8 +197,8 @@ function select_extruder(extruder)
   local n = nozzle_diameter_mm -- should be changed to nozzle_diameter_mm[extruder] when available
   -- hack to work around not beeing a lua global
   if extruder == 0 then
-    n = nozzle_diameter_mm_0 
-  elseif extruder == 1 then 
+    n = nozzle_diameter_mm_0
+  elseif extruder == 1 then
     n = nozzle_diameter_mm_1
   end
 
@@ -208,7 +210,7 @@ function select_extruder(extruder)
 
   local w1 = n * 1.2 -- width of the purge start
   local w2 = n * 3.0 -- width of the purge end
-  
+
   local e_value = 0.0
 
   output('\n; purge extruder ' .. extruder)
@@ -264,7 +266,7 @@ function move_xyz(x,y,z)
     extruder_changed = false
     current_z = z
   else
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -275,7 +277,7 @@ end
 
 function move_xyze(x,y,z,e)
   -- path type management
-  if processing == false then 
+  if processing == false then
     processing = true
     local p_type = 1 -- default paths naming
     if craftware_debug then p_type = 2 end
@@ -309,7 +311,7 @@ function move_xyze(x,y,z,e)
 
   -- gcode generation
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -331,7 +333,7 @@ function move_e(e)
 
   local e_value =  extruder_e[current_extruder] - extruder_e_reset[current_extruder]
 
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else

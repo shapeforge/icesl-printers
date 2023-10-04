@@ -1,5 +1,5 @@
--- Anyucubic Mega Zero Profile
--- Bedell Pierre 25/06/2021
+-- Ender 3 Profile
+-- Bedell Pierre 27/10/2018
 
 extruder_e = 0
 extruder_e_restart = 0
@@ -20,11 +20,17 @@ function comment(text)
 end
 
 function header()
+  local auto_level_string = 'G29 ; auto bed levelling\nG0 F6200 X0 Y0 ; back to the origin to begin the purge '
   local h = file('header.gcode')
 
   h = h:gsub( '<TOOLTEMP>', extruder_temp_degree_c[extruders[0]] )
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
 
+  if auto_bed_leveling == true then
+    h = h:gsub( '<BEDLVL>', auto_level_string )
+  else
+    h = h:gsub( '<BEDLVL>', "G0 F6200 X0 Y0" )
+  end
   output(h)
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
@@ -36,9 +42,7 @@ end
 
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. '>')
-  if not layer_spiralized then
-    output('G1 Z' .. f(zheight))
-  end
+  output('G1 Z' .. f(zheight))
 end
 
 function layer_stop()
@@ -77,7 +81,7 @@ end
 
 function move_xyz(x,y,z)
   if z == current_z then
-    if changed_frate == true then
+    if changed_frate == true then 
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -98,7 +102,7 @@ function move_xyze(x,y,z,e)
   extruder_e = e
   local e_value = extruder_e - extruder_e_restart
   if z == current_z then
-    if changed_frate == true then
+    if changed_frate == true then 
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e_value))
       changed_frate = false
     else
@@ -118,7 +122,7 @@ end
 function move_e(e)
   extruder_e = e
   local e_value = extruder_e - extruder_e_restart
-  if changed_frate == true then
+  if changed_frate == true then 
     output('G1 F' .. current_frate .. ' E' .. ff(e_value))
     changed_frate = false
   else
@@ -142,19 +146,13 @@ end
 function progress(percent)
 end
 
-function set_extruder_temperature(extruder,temperature)
-  output('M104 S' .. temperature)
+function set_extruder_temperature(extruder,temperature)  
 end
 
 function set_and_wait_extruder_temperature(extruder,temperature)
-  output('M109 S' .. temperature)
 end
 
-function set_fan_speed(speed)
-  if speed ~= current_fan_speed then
-    output('M106 S'.. math.floor(255 * speed/100))
-    current_fan_speed = speed
-  end
+function set_fan_speed(speed)  
 end
 
 function wait(sec,x,y,z)

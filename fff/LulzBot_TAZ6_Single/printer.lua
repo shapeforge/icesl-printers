@@ -4,7 +4,7 @@
 -- 2019-06-07 Brad Morgan              Initial Release
 
 --
--- to minimize error introduced by large (float) values, 
+-- to minimize error introduced by large (float) values,
 -- E is reset at the beginning of each layer.
 --
 extruder_e = 0
@@ -20,7 +20,7 @@ changed_frate = false
 current_fan_speed = -1
 
 --
--- variables used to implement a different bed and/or nozzle 
+-- variables used to implement a different bed and/or nozzle
 -- temperature for the first layer.
 --
 first_bed = true
@@ -93,7 +93,9 @@ function layer_start(zheight)
 --  debug('first_extruder = '..tostring(first_extruder)..', extruder_first_degree_c_0 = '..tostring(extruder_first_degree_c_0)..
 --    ', extruder_temp_degree_c_0 = '..tostring(extruder_temp_degree_c_0))
   comment('<layer '.. layer_id ..'>')
-  output('G1 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G1 Z' .. f(zheight))
+  end
   current_z = zheight
   if first_bed and bed_temp_first_c ~= bed_temp_degree_c and layer_id > 0 then
     output('M140 S' .. bed_temp_degree_c)
@@ -156,7 +158,7 @@ end
 --
 function move_xyz(x,y,z)
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G0 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y))
       changed_frate = false
     else
@@ -183,7 +185,7 @@ end
 function move_xyze(x,y,z,e)
   extruder_e = e
   if z == current_z then
-    if changed_frate == true then 
+    if changed_frate == true then
       output('G1 F' .. current_frate .. ' X' .. f(x) .. ' Y' .. f(y) .. ' E' .. ff(e - extruder_e_restart))
       changed_frate = false
     else
@@ -210,7 +212,7 @@ end
 function move_e(e)
   extruder_e = e
   output('G1 E' .. ff(e - extruder_e_restart))
-  if changed_frate == true then 
+  if changed_frate == true then
     output('G1 F' .. current_frate .. ' E' .. ff(e - extruder_e_restart))
     changed_frate = false
   else

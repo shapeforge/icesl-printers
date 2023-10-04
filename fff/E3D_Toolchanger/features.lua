@@ -15,10 +15,10 @@ nozzle_diameter_mm_1 = 0.4 -- extruder T1 E3D Hemera direct drive
 nozzle_diameter_mm_2 = 0.4 -- extruder T2 E3D Hemera direct drive
 nozzle_diameter_mm_3 = 0.4 -- extruder T3 E3D Hemera direct drive
 
--- affecting the same extruder number as the used brush 
+-- affecting the same extruder number as the used brush
 for i = 0, max_number_brushes, 1 do
     extruder_id = math.min(i,extruder_count-1)
-    _G['extruder_'..i] = extruder_id 
+    _G['extruder_'..i] = extruder_id
     _G['infill_extruder_'..i] = extruder_id
 end
 

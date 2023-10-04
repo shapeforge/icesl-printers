@@ -36,7 +36,7 @@ function prime(extruder,e)
 end
 
 -- extruder retract
-function retract(extruder,e) 
+function retract(extruder,e)
   len   = filament_priming_mm[extruder]
   speed = retract_mm_per_sec[extruder] * 60;
   output('G1 F' .. speed .. ' E' .. ff(e - len - extruder_e_restart))
@@ -102,7 +102,9 @@ end
 function layer_start(zheight)
   comment('<layer ' .. layer_id .. '>')
   elephant_foot_adjust(zheight)
-  output('G1 Z' .. f(zheight))
+  if not layer_spiralized then
+    output('G1 Z' .. f(zheight))
+  end
 end
 function layer_stop()
   extruder_e_restart = extruder_e

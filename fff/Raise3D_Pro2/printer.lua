@@ -63,7 +63,7 @@ end
 
 -- extruders will be retracted of the filament_priming_mm length at the end of the header
 -- even if E = 0 due to G92 E0 command
-function header() 
+function header()
   -- heating up: bed before extruders
 
   set_bed_temperature(bed_temp_degree_c)
@@ -89,7 +89,7 @@ function header()
 
   output('G21 ; set units to millimeters')
   output('M82 ; use absolute distances for extrusion')
-  
+
   if low_motor_current then -- sets lower motor current (useful for heat creep issues)
   	output('M906 E400 ; forces motor current to 400mA to avoid heat creep')
   end
@@ -132,7 +132,7 @@ function footer()
   output('M221 T1 S100') -- reset flow to 100% for right extruder
   output('M107') -- shut down fan
   output('M84')
-  output('G90') 
+  output('G90')
 
   local nb_extr = 0
   for _, extruder in pairs(extruders) do
@@ -249,10 +249,10 @@ end
 function swap_extruder(from,to,x,y,z)
   swapping = true -- set to non-default value
   traveling = 0 -- resetting travel identification variable
-  comment('swap_extruder')  
+  comment('swap_extruder')
   retract(from, extruder_e[from])
-  extruder_e[from] = extruder_e[from] + retractlen[from] -- adding back retractlen because the next retraction is not updating the e value of ice-sl enging 
-  extruder_e_restart[from] = extruder_e[from] 
+  extruder_e[from] = extruder_e[from] + retractlen[from] -- adding back retractlen because the next retraction is not updating the e value of ice-sl enging
+  extruder_e_restart[from] = extruder_e[from]
   output('G92 E0')
   select_extruder(to)
   -- no set and wait temperature and priming because these function are called automatically by icesl
@@ -298,9 +298,13 @@ function layer_start(zheight)
       swapretraction_header_compensation()
     end
     -- applying z movement
-    output('G0 F600 Z' .. ff(zheight))
+    if not layer_spiralized then
+      output('G0 F600 Z' .. ff(zheight))
+    end
   else
-    output('G0 F100 Z' .. ff(zheight))
+    if not layer_spiralized then
+      output('G0 F100 Z' .. ff(zheight))
+    end
   end
   comment('(<layer ' .. layer_id .. '>)')
   current_z = zheight
