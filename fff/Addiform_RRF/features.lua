@@ -28,6 +28,9 @@
 --
 
 -- > Custom Settings:
+
+export_gcode_thumbnails = true
+
 s3d_debug = true
 add_checkbox_setting("s3d_debug","S3D Compatibility","Create S3D-compatibile comments for toolpath visualization,\nas well as path and layer labeling.")
 

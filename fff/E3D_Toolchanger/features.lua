@@ -1,6 +1,9 @@
 -- E3D Toolchanger
 -- Hugron Pierre-Alexandre  2021-09-21
 
+--Generate gcode thumbnails for klipper, RFF or Marlin
+export_gcode_thumbnails = true
+
 -- Build Area dimensions
 bed_size_x_mm = 300
 bed_size_y_mm = 200

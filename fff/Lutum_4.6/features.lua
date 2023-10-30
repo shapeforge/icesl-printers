@@ -2,6 +2,9 @@
 -- based on Bedell Pierre 27/10/2018
 -- Pierre-Alexandre Hugron 17/02/2023
 
+--Generate gcode thumbnails for klipper, RFF or Marlin
+export_gcode_thumbnails = true
+
 -- Build Area dimensions
 bed_size_x_mm = 435
 bed_size_y_mm = 460
