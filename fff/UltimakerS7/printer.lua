@@ -1,4 +1,4 @@
--- Ultimaker S5
+-- Ultimaker S7
 -- Based on Ultimaker 3 profile
 -- Pierre Bedell 24/01/2023
 
@@ -76,6 +76,7 @@ function header()
       material_guid = '60636bb4-518f-42e7-8237-fe77b194ebe0' -- ABS GUID
     end
   end
+
   --------------------------------------------------
   -- Header Generation (commented output will be available in a future version of IceSL)
   --------------------------------------------------
@@ -87,7 +88,7 @@ function header()
   output(';GENERATOR.NAME:' .. slicer_name)
   output(';GENERATOR.VERSION:' .. slicer_version)
   output(';GENERATOR.BUILD_DATE:' .. slicer_build_date)
-  output(';TARGET_MACHINE.NAME:Ultimaker S5\n')
+  output(';TARGET_MACHINE.NAME:Ultimaker S7\n')
 
   -- Extruder management (commented output will be available in future version of IceSL)
   if filament_tot_length_mm[0] > 0 then 
