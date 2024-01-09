@@ -73,6 +73,7 @@ function header()
       material_guid = '506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9' -- PLA GUID
     else
       material_guid = '60636bb4-518f-42e7-8237-fe77b194ebe0' -- ABS GUID
+    end
   end
 
   --------------------------------------------------
