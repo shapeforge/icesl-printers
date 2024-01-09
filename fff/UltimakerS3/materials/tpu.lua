@@ -1,6 +1,6 @@
-name_en = "TPU-85A"
-name_fr = "TPU-85A"
-name_es = "TPU-85A"
+name_en = "TPU-95A"
+name_fr = "TPU-95A"
+name_es = "TPU-95A"
 
 material_guid = '1d52b2be-a3a2-41de-a8b1-3bcdb5618695'
 
