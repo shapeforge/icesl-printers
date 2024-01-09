@@ -1,4 +1,4 @@
--- Ultimaker 3
+-- Ultimaker S3
 -- Sylvain Lefebvre  2017-07-28
 
 extruder_e = {}
@@ -69,13 +69,10 @@ function header()
   -- Material Guid management for custom settings
   --------------------------------------------------
   if material_guid == nil then
-    if extruder_temp_degree_c[0] <= 180 and extruder_temp_degree_c[0] >= 210 then 
+    if extruder_temp_degree_c[0] >= 180 and extruder_temp_degree_c[0] < 230 then 
       material_guid = '506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9' -- PLA GUID
-    elseif extruder_temp_degree_c[0] <= 230 and extruder_temp_degree_c[0] >= 260 then
-      material_guid = '60636bb4-518f-42e7-8237-fe77b194ebe0' -- ABS GUID
     else
-      material_guid = '506c9f0d-e3aa-4bd4-b2d2-23e2425b1aa9' -- PLA GUID
-    end
+      material_guid = '60636bb4-518f-42e7-8237-fe77b194ebe0' -- ABS GUID
   end
 
   --------------------------------------------------

@@ -1,8 +1,8 @@
 -- Ultimaker S3
--- Sylvain Lefebvre  2017-07-28
+-- David Jourdan 2024-01-09
 
 -- Build Area dimensions
-bed_size_x_mm = 230 -- 233 (max build width) - extruder 1 offset (18)
+bed_size_x_mm = 218 -- 230 (max build width) - extruder 1 offset (22)
 bed_size_y_mm = 190
 bed_size_z_mm = 200
 
@@ -21,7 +21,7 @@ extruder_offset_x = {}
 extruder_offset_y = {}
 extruder_offset_x[0] =   0.0
 extruder_offset_y[0] =   0.0
-extruder_offset_x[1] = -18.0
+extruder_offset_x[1] = -22.0
 extruder_offset_y[1] =   0.0
 
 -- Retraction settings
