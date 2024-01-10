@@ -9,12 +9,9 @@ auto_bed_leveling = false
 add_checkbox_setting('reload_bed_mesh', 'Reload the last bed-mesh','Reload the last saved bed-mesh if available')
 reload_bed_mesh = false
 
--- Custom checkbox to use a direct-drive extruder (ie: E3D's Hemera)
+-- Custom checkbox to use a driect-drive extruder (ie: E3D's Hemera)
 --add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (ie E3D's Hemera)")
 direct_drive = false
-
---Generate gcode thumbnails for klipper, RFF or Marlin
-export_gcode_thumbnails = false
 
 --#################################################
 

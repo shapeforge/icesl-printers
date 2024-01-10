@@ -14,9 +14,6 @@ macro_stop = "END_PRINT"
 --add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (for most V0.1)")
 direct_drive = false
 
---Generate gcode thumbnails for klipper, RFF or Marlin
-export_gcode_thumbnails = true
-
 --#################################################
 
 -- Build Area dimensions
