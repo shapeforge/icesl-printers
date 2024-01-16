@@ -22,12 +22,12 @@ brim_distance_to_print_mm = 1.0
 brim_num_contours = 4
 
 extruder_0 = 0
-num_shells_0 = 1
-cover_thickness_mm_0 = 0.6
-infill_percentage_0 = 15
-print_perimeter_0 = true
+num_shells = 1
+cover_thickness_mm = 0.6
+infill_percentage = 15
+print_perimeter = true
 
-flow_multiplier_0 = 1.0
-speed_multiplier_0 = 1.0
+flow_multiplier = 1.0
+speed_multiplier = 1.0
 
 procees_thin_features = false

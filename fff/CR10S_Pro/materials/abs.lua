@@ -13,18 +13,13 @@ else
 end
 
 -- affecting settings to each extruder
-for i = 0, extruder_count-1, 1 do
-  _G['extruder_temp_degree_c_'..i] = 240
-  _G['filament_priming_mm_'..i] = filament_priming_mm
-  _G['priming_mm_per_sec_'..i] = 45
-  _G['retract_mm_per_sec_'..i] = 45
-end
+extruder_temp_degree_c = 240
+filament_priming_mm = filament_priming_mm
+priming_mm_per_sec = 45
+retract_mm_per_sec = 45
 
--- affecting settings to all brushes
-for i = 0, max_number_brushes, 1 do
-	_G['flow_multiplier_'..i] = 0.91 -- between 0.90 and 0.93 for extrudr ASA
-	_G['speed_multiplier_'..i] = 1.0
-end
+flow_multiplier = 0.97
+speed_multiplier = 1.0
 
 enable_fan = false
 fan_speed_percent = 50

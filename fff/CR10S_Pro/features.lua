@@ -1,15 +1,15 @@
 -- Creality CR10S pro
 -- 30/07/2020
 
--- Custom checkox to enable auto_bed_leveling
+-- Custom checkbox to enable auto_bed_leveling
 add_checkbox_setting('auto_bed_leveling', 'Auto Bed Leveling','Use G29 Auto Leveling if the machine is equipped with one (BLTouch, Pinda, capacitive sensor, etc.)')
 auto_bed_leveling = false
 
--- Custom checkox to enable auto_bed_leveling
+-- Custom checkbox to enable auto_bed_leveling
 add_checkbox_setting('reload_bed_mesh', 'Reload the last bed-mesh','Reload the last saved bed-mesh if available')
 reload_bed_mesh = false
 
--- Custom checkox to use a driect-drive extruder (ie: E3D's Hemera)
+-- Custom checkbox to use a direct-drive extruder (ie: E3D's Hemera)
 --add_checkbox_setting('direct_drive', 'Extruder in direct-drive',"Use proper retraction distances for a direct-drive extruder (ie E3D's Hemera)")
 direct_drive = false
 

@@ -5,8 +5,8 @@ name_fr = "PLA"
 extruder_temp_degree_c_0 = 210
 bed_temp_degree_c = 55
 
-flow_multiplier_0 = 1.0
-speed_multiplier_0 = 1.0
+flow_multiplier = 1.0
+speed_multiplier = 1.0
 
 filament_priming_mm_0 = 7.0
 priming_mm_per_sec_0 = 30

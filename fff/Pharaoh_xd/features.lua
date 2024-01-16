@@ -1,6 +1,13 @@
-bed_size_x_mm = 100
-bed_size_y_mm = 100
+-- Build Area dimensions
+bed_circular  = true
+bed_radius = 50.0
+
+bed_size_x_mm = bed_radius * 2
+bed_size_y_mm = bed_radius * 2
+
 bed_size_z_mm = 225
+
+-- 
 
 extruder_count = 1
 nozzle_diameter_mm = 0.4

@@ -7,10 +7,10 @@ extruder_0 = 0
 z_layer_height_mm = 0.275
 procees_thin_features = false
 
-print_perimeter_0 = true
-num_shells_0 = 3
-cover_thickness_mm_0 = 1.1
-infill_percentage_0 = 25
+print_perimeter = true
+num_shells = 3
+cover_thickness_mm = 1.1
+infill_percentage = 25
 
 -- Speed
 print_speed_mm_per_sec = 60
@@ -21,8 +21,8 @@ first_layer_print_speed_mm_per_sec = 15
 travel_speed_mm_per_sec = 100
 
 -- Multipliers
-flow_multiplier_0 = 1.0
-speed_multiplier_0 = 1.0
+flow_multiplier = 1.0
+speed_multiplier = 1.0
 
 -- Additional features
 add_raft = false

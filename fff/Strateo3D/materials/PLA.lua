@@ -11,8 +11,11 @@ for i = 0, extruder_count-1, 1 do
   _G['priming_mm_per_sec_'..i] = 20
 end
 
-bed_temp_degree_c = 50
+bed_temp_degree_c = 60
 chamber_temp_degree_c = 0
+
+flow_multiplier_0 = 0.91 
+flow_multiplier_1 = 0.91
 
 enable_fan = true
 fan_speed_percent = 100

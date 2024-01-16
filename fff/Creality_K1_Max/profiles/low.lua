@@ -4,12 +4,12 @@ name_es = "Impresión rápida"
 
 z_layer_height_mm = 0.3
 
-print_speed_mm_per_sec = 70
-perimeter_print_speed_mm_per_sec = 50
-cover_print_speed_mm_per_sec = 50
-first_layer_print_speed_mm_per_sec = 20
+print_speed_mm_per_sec = 270
+perimeter_print_speed_mm_per_sec = 200
+cover_print_speed_mm_per_sec = 200
+first_layer_print_speed_mm_per_sec = 50
 
-travel_speed_mm_per_sec = 180
+travel_speed_mm_per_sec = 500
 
 num_shells = 1
 cover_thickness_mm = 1.2

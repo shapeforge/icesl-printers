@@ -5,8 +5,8 @@ name_fr = "TPU"
 extruder_temp_degree_c_0 = 235
 bed_temp_degree_c = 40
 
-flow_multiplier_0 = 1.0
-speed_multiplier_0 = 1.0
+flow_multiplier = 1.0
+speed_multiplier = 1.0
 
 filament_priming_mm_0 = 0.0
 

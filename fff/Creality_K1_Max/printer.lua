@@ -1,4 +1,5 @@
--- Seckit Sk-Go unviversal profile
+-- Creality K1 Max based on Seckit Sk-G0 universal profile
+
 -- Hugron Pierre-Alexandre 18/06/2020
 -- Updated by Bedell Pierre 30/11/2022
 
@@ -180,18 +181,21 @@ function header()
   output('G90 ; use absolute coordinates')
   output('M82 ; extruder absolute mode\n')
 
+
   set_limits(firmware)
 
-if firmware == 2 then -- klipper
+  if firmware == 2 then -- klipper
     output('START_PRINT EXTRUDER_TEMP=' .. extruder_temp_degree_c[extruders[0]] .. ' BED_TEMP=' .. bed_temp_degree_c)
-end
-output('')
-if firmware ~= 2 then -- not klipper
-  output('M104 S' .. extruder_temp_degree_c[extruders[0]] .. ' ; set extruder temp')
-  output('M190 S' .. bed_temp_degree_c .. ' ; wait for bed temp')
-  output('M107')
-  output('G28 ; home all without mesh bed level')
-end
+  end
+  output('')
+  if firmware ~= 2 then -- not klipper
+    output('M104 S' .. extruder_temp_degree_c[extruders[0]] .. ' ; set extruder temp')
+    output('M190 S' .. bed_temp_degree_c .. ' ; wait for bed temp')
+    output('M107')
+    output('G28 ; home all without mesh bed level')
+  end
+
+  
 
   if auto_bed_leveling == true and reload_bed_mesh == false then
     set_bed_level(firmware)
@@ -213,20 +217,20 @@ end
 
 function footer()
   if firmware ~= 2 then -- not klipper
-   output('')
-   output('G4 ; wait')
-   output('M104 S0 ; turn off temperature')
-   output('M140 S0 ; turn off heatbed')
-   output('M107 ; turn off fan')
-   output('G28 X Y ; home X and Y axis')
-   output('G91')
-   output('G0 Z 10') -- move in Z to clear space between print and nozzle
-   output('G90')
-   output('M84 ; disable motors')
-   output('')
-else -- klipper
-  output('END_PRINT')
-end
+    output('')
+    output('G4 ; wait')
+    output('M104 S0 ; turn off temperature')
+    output('M140 S0 ; turn off heatbed')
+    output('M107 ; turn off fan')
+    output('G28 X Y ; home X and Y axis')
+    output('G91')
+    output('G0 Z10') -- move in Z to clear space between print and nozzle
+    output('G90')
+    output('M84 ; disable motors')
+    output('')
+  else -- klipper
+    output('END_PRINT')
+  end
 
   -- restore default accel
   set_limits(firmware)
@@ -293,22 +297,24 @@ function select_extruder(extruder)
 
   local e_value = 0.0
 
-  output('\n; purge extruder')
-  output('G0 F6000 X' .. f(x_pos) .. ' Y' .. f(y_pos) ..' Z' .. f(z_pos))
-  output('G92 E0')
+  if firmware ~= 2 then -- not klipper
+    output('\n; purge extruder')
+    output('G0 F6000 X' .. f(x_pos) .. ' Y' .. f(y_pos) ..' Z' .. f(z_pos))
+    output('G92 E0')
 
-  y_pos = y_pos + l1
-  e_value = round(e_from_dep(l1, w, z_pos, extruder),2)
-  output('G1 F1500 Y' .. f(y_pos) .. ' E' .. e_value .. '   ; draw 1st line') -- purge start
+    y_pos = y_pos + l1
+    e_value = round(e_from_dep(l1, w, z_pos, extruder),2)
+    output('G1 F1500 Y' .. f(y_pos) .. ' E' .. e_value .. '   ; draw 1st line') -- purge start
 
-  x_pos = x_pos + n*0.75
-  output('G1 F5000 X' .. f(x_pos) .. '   ; move a little to the side')
+    x_pos = x_pos + n*0.75
+    output('G1 F5000 X' .. f(x_pos) .. '   ; move a little to the side')
 
-  y_pos = y_pos - l2
-  e_value = e_value + round(e_from_dep(l2, w, z_pos, extruder),2)
-  output('G1 F1000 Y' .. f(y_pos) .. ' E' .. e_value .. '  ; draw 2nd line') -- purge end
-  output('G92 E0')
-  output('; done purging extruder\n')
+    y_pos = y_pos - l2
+    e_value = e_value + round(e_from_dep(l2, w, z_pos, extruder),2)
+    output('G1 F1000 Y' .. f(y_pos) .. ' E' .. e_value .. '  ; draw 2nd line') -- purge end
+    output('G92 E0')
+    output('; done purging extruder\n')
+  end
 
   current_extruder = extruder
   current_frate = travel_speed_mm_per_sec * 60

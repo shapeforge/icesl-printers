@@ -4,12 +4,12 @@ name_es = "Alta calidad"
 
 z_layer_height_mm = 0.15
 
-print_speed_mm_per_sec = 60
-perimeter_print_speed_mm_per_sec = 40
-cover_print_speed_mm_per_sec = 40
-first_layer_print_speed_mm_per_sec = 20
+print_speed_mm_per_sec = 150
+perimeter_print_speed_mm_per_sec = 100
+cover_print_speed_mm_per_sec = 100
+first_layer_print_speed_mm_per_sec = 40
 
-travel_speed_mm_per_sec = 120
+travel_speed_mm_per_sec = 400
 
 num_shells = 3
 cover_thickness_mm = 2

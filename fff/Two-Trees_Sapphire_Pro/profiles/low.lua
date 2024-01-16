@@ -11,7 +11,7 @@ first_layer_print_speed_mm_per_sec = 20
 
 travel_speed_mm_per_sec = 180
 
-num_shells_0 = 1
-cover_thickness_mm_0 = 1.2
-infill_percentage_0 = 20
-print_perimeter_0 = true
+num_shells = 1
+cover_thickness_mm = 1.2
+infill_percentage = 20
+print_perimeter = true
