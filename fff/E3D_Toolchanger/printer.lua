@@ -35,7 +35,6 @@ function header()
   local h = file('header.gcode')
   h = h:gsub( '<HBPTEMP>', bed_temp_degree_c )
   output(h)
-  comment('---- modified ----')
 end
 
 function footer()
@@ -135,6 +134,9 @@ function set_fan_speed(speed)
   local fan={2,4,6,8} -- fan names
   if current_extruder > -1 then
     output('M106 S'.. math.floor(255 * speed/100) .. ' P' .. fan[1+current_extruder])
+    if speed > 0 then
+      current_fan_speed = speed
+    end
   end
 end
 
@@ -151,7 +153,11 @@ function swap_extruder(from,to,x,y,z)
   end
   current_extruder = to
   undock_extruder(to)
-  set_fan_speed(255)
+  if current_fan_speed > 0 then
+    set_fan_speed(current_fan_speed)
+  else
+    set_fan_speed(100)
+  end
   -- done
   current_frate = travel_speed_mm_per_sec * 60
   changed_frate = true
